@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "declaration": true,
+        "declarationDir": "declarations",
+        "outDir": "lib",
+        "alwaysStrict": true,
+        "mapRoot": "source-maps",
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "watch": true,
+        "rootDir": "./src"
+    },
+    "include":[
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "lib",
+        "declarations"
+    ]
+}

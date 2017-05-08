@@ -1,0 +1,33 @@
+{
+  "name": "enome",
+  "version": "1.0.0",
+  "description": "A library that generates genomes for all of your genetic algorithm needs.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "genetic",
+    "algorithm",
+    "genome",
+    "nucleotide"
+  ],
+  "author": "Andrew Ramos",
+  "license": "ISC",
+  "dependencies": {
+    "@types/d3-interpolate": "^1.1.5",
+    "chance": "^1.0.8",
+    "d3-interpolate": "^1.1.4",
+    "lodash": "^4.17.4",
+    "rxjs": "^5.3.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^3.5.2",
+    "@types/chance": "^0.7.33",
+    "@types/d3-interpolate": "^1.1.5",
+    "@types/lodash": "^4.14.64",
+    "@types/mocha": "^2.2.41",
+    "chai": "^3.5.0",
+    "mocha": "^3.3.0"
+  }
+}
