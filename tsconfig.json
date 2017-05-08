@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es5",
+        "target": "es6",
         "noImplicitAny": false,
         "sourceMap": true,
         "declaration": true,
@@ -12,7 +12,11 @@
         "noImplicitThis": true,
         "noImplicitReturns": true,
         "watch": true,
-        "rootDir": "./src"
+        "rootDir": "./src",
+        "lib":[
+            "esnext.asynciterable",
+            "es2015"
+        ]
     },
     "include":[
         "src/**/*"

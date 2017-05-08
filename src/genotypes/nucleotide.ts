@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import * as d3 from 'd3-interpolate';
 import * as Chance from 'chance';
 
 const chance = new Chance();

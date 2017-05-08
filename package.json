@@ -15,11 +15,11 @@
   "author": "Andrew Ramos",
   "license": "ISC",
   "dependencies": {
-    "@types/d3-interpolate": "^1.1.5",
     "chance": "^1.0.8",
+    "core-js": "^2.4.1",
     "d3-interpolate": "^1.1.4",
     "lodash": "^4.17.4",
-    "rxjs": "^5.3.1"
+    "rx": "^4.1.0"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
@@ -27,6 +27,9 @@
     "@types/d3-interpolate": "^1.1.5",
     "@types/lodash": "^4.14.64",
     "@types/mocha": "^2.2.41",
+    "@types/node": "^7.0.18",
+    "@types/rx": "^4.1.1",
+    "@types/core-js": "^0.9.41",
     "chai": "^3.5.0",
     "mocha": "^3.3.0"
   }
