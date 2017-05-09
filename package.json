@@ -4,7 +4,7 @@
   "description": "A library that generates genomes for all of your genetic algorithm needs.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register src/test/**/*.ts"
   },
   "keywords": [
     "genetic",
@@ -18,19 +18,19 @@
     "chance": "^1.0.8",
     "core-js": "^2.4.1",
     "d3-interpolate": "^1.1.4",
-    "lodash": "^4.17.4",
-    "rx": "^4.1.0"
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
     "@types/chance": "^0.7.33",
+    "@types/core-js": "^0.9.41",
     "@types/d3-interpolate": "^1.1.5",
     "@types/lodash": "^4.14.64",
     "@types/mocha": "^2.2.41",
     "@types/node": "^7.0.18",
-    "@types/rx": "^4.1.1",
-    "@types/core-js": "^0.9.41",
     "chai": "^3.5.0",
-    "mocha": "^3.3.0"
+    "mocha": "^3.3.0",
+    "ts-node": "^3.0.4",
+    "typescript": "^2.3.2"
   }
 }

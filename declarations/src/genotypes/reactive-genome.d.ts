@@ -7,15 +7,15 @@
 /// <reference types="rx-lite-experimental" />
 /// <reference types="rx-lite-joinpatterns" />
 /// <reference types="rx-lite-time" />
+import { Genome } from './genome';
 import { EnomeOptions } from './options';
 import { Nucleotide } from './nucleotide';
 import { Observable } from "rx";
 import 'core-js/shim';
-export declare class ReactiveGenome {
+export declare class ReactiveGenome extends Genome {
     options: EnomeOptions;
-    sequence: Observable<number>;
-    nucleotides: Observable<Nucleotide>;
-    constructor(options: EnomeOptions);
-    readonly randomValue: number;
-    randomValues(): Observable<number>;
+    idLength: number;
+    constructor(options: EnomeOptions, idLength?: number);
+    readonly sequence$: Observable<number>;
+    readonly nucleotides$: Observable<Nucleotide>;
 }
