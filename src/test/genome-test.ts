@@ -9,24 +9,22 @@ describe('genome', () => {
     beforeEach(() => {
         gen = new Genome({
             genomeLength: 100,
-            nucleotideLength: 1
+            nucleotideLength: 2
         });
     })
     describe('constructor', () => {
         it('should create a new genome', () => {
             expect(gen.options.genomeLength).to.eql(100);
-            expect(gen.options.nucleotideLength).to.eql(1);
+            expect(gen.options.nucleotideLength).to.eql(2);
             expect(gen).to.be.instanceof(Genome);
         })
 
         it('should generate a sequence', () => {
-            expect(gen.sequence.length).to.eql(gen.options.genomeLength);
+            expect(gen.sequence.length).to.eql(gen.options.genomeLength * gen.options.nucleotideLength);
         })
 
         it('should construct nucleotides', () => {
-            expect(gen.nucleos.length).to.eql(
-                gen.options.genomeLength / gen.options.nucleotideLength
-            );
+            expect(gen.nucleos.length).to.eql(gen.options.genomeLength);
         })
     })
 
@@ -39,7 +37,7 @@ describe('genome', () => {
     describe('nucleotides', () => {
         it('should produce nucleotides from the sequence', () => {
             expect(gen.nucleotides.length)
-                .to.eql(gen.options.genomeLength / gen.options.nucleotideLength);
+                .to.eql(gen.options.genomeLength);
 
 
             expect(gen.nucleotides[0]).to.be.instanceof(Nucleotide);
@@ -80,12 +78,12 @@ describe('genome', () => {
             let mutated: Genome<EnomeOptions> = gen.mutate(0.5);
 
             expect(mutated.sequence.length).to.eql(gen.sequence.length);
-            expect(mutated.nucleos.length).to.eql(mutated.options.genomeLength/mutated.options.nucleotideLength)
+            expect(mutated.nucleos.length).to.eql(mutated.options.genomeLength)
 
             let offspring: Genome<EnomeOptions> = gen.reproduce(mutated); //last two parameters are relative weights for each parents chance for their genes to be picked
 
             expect(offspring.sequence.length).to.eql(mutated.sequence.length);
-            expect(offspring.nucleos.length).to.eql(offspring.options.genomeLength/offspring.options.nucleotideLength);
+            expect(offspring.nucleos.length).to.eql(offspring.options.genomeLength);
 
             let n: Nucleotide = offspring.nucleo;
             expect(n.value).to.be.at.least(0);

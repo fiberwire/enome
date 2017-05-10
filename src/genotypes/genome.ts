@@ -15,7 +15,7 @@ export class Genome<T extends EnomeOptions> {
         public idLength: number = 12
     ) {
         if (this.sequence == null) {
-            this.sequence = this.randomValues(this.options.genomeLength);
+            this.sequence = this.randomValues(this.options.genomeLength * this.options.nucleotideLength);
         }
 
         this.nucleos = this.nucleotides;
