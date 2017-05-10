@@ -114,9 +114,8 @@ export class Genome<T extends EnomeOptions> {
             this.options,
             _.zip(this.sequence, other.sequence)
                 .map((values: number[]) => {
-                    console.log(`VALUES: ${values}`);
-                    let v = chance.weighted(values, [0.5, 0.5]);
-                    console.log(`V: ${v}`);
+                    //console.log(`w1: ${w1}, w2: ${w2}`);
+                    let v = chance.weighted(values, [w1, w2]);
                     return v;
                 }))
             .mutate(mutateChance, 'avg');

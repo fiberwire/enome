@@ -77,8 +77,23 @@ describe('genome', () => {
 
     describe('reproduce', () => {
         it('should produce an offspring genome with genetics from both parents', () => {
-            let mutated: Genome<EnomeOptions> = gen.mutate(0.05);
+            let mutated: Genome<EnomeOptions> = gen.mutate(0.5);
+
+            expect(mutated.sequence.length).to.eql(gen.sequence.length);
+            expect(mutated.nucleos.length).to.eql(mutated.options.genomeLength/mutated.options.nucleotideLength)
+
             let offspring: Genome<EnomeOptions> = gen.reproduce(mutated); //last two parameters are relative weights for each parents chance for their genes to be picked
+
+            expect(offspring.sequence.length).to.eql(mutated.sequence.length);
+            expect(offspring.nucleos.length).to.eql(offspring.options.genomeLength/offspring.options.nucleotideLength);
+
+            let n: Nucleotide = offspring.nucleo;
+            expect(n.value).to.be.at.least(0);
+            expect(n.value).to.be.at.most(1);
+
+            let i: number = n.int(1, 100);
+            expect(i).to.be.at.least(1);
+            expect(i).to.be.at.most(100);
 
             expect(gen).not.to.eql(mutated);
             expect(gen).not.to.eql(offspring);
