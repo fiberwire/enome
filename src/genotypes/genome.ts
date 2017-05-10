@@ -4,19 +4,18 @@ import { Nucleotide } from './nucleotide';
 import { EnomeOptions } from "./options";
 
 const chance = new Chance();
-export class Genome {
+export class Genome<T extends EnomeOptions> {
 
     //the nucleotides derived from the base values
     nucleos: Nucleotide[];
 
     constructor(
-        public options: EnomeOptions,
-        public sequence: number[] = [],
+        public options: T,
+        public sequence: number[] = null,
         public idLength: number = 12
     ) {
-        this.options = options;
-        if (this.sequence.length === 0) {
-            this.sequence = this.randomValues(options.genomeLength);
+        if (this.sequence == null) {
+            this.sequence = this.randomValues(this.options.genomeLength);
         }
 
         this.nucleos = this.nucleotides;
@@ -69,7 +68,7 @@ export class Genome {
         return chance.floating({ min: 0, max: 1 });
     }
 
-    sub(gen: Genome, mutateChance: number): Genome {
+    sub(gen: Genome<T>, mutateChance: number): Genome<T> {
         return new Genome(
             gen.options,
             gen.sequence.map(value => {
@@ -82,7 +81,7 @@ export class Genome {
             }));
     }
 
-    avg(gen: Genome, mutateChance: number): Genome {
+    avg(gen: Genome<T>, mutateChance: number): Genome<T> {
         return new Genome(
             gen.options,
             gen.sequence.map(value => {
@@ -96,8 +95,8 @@ export class Genome {
         )
     }
 
-    mutate(mutateChance: number, type: string = 'sub'): Genome {
-        let mutated: Genome;
+    mutate(mutateChance: number, type: string = 'sub'): Genome<T> {
+        let mutated: Genome<T>;
         let mutSeq: number[];
 
         switch (type) {
@@ -110,16 +109,20 @@ export class Genome {
         }
     }
 
-    reproduce(other: Genome, w1: number = 1, w2: number = 1): Genome {
-        return new Genome(
+    reproduce(other: Genome<T>, w1: number = 1, w2: number = 1, mutateChance: number = 0.05): Genome<T> {
+        return new Genome<T>(
             this.options,
             _.zip(this.sequence, other.sequence)
-                .map(values => {
-                    return chance.weighted(values, [w1, w2]);
-                }));
+                .map((values: number[]) => {
+                    console.log(`VALUES: ${values}`);
+                    let v = chance.weighted(values, [0.5, 0.5]);
+                    console.log(`V: ${v}`);
+                    return v;
+                }))
+            .mutate(mutateChance, 'avg');
     }
 
-    public static reproduceManyToOne(genomes: Genome[], weights: number[]): Genome {
+    reproduceManyToOne(genomes: Genome<T>[], weights: number[]): Genome<T> {
         let offspringSeq: number[] = _.zip(genomes.map(g => g.sequence))
             .map((sequences: number[][]) => {
                 return chance.weighted(

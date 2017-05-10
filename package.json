@@ -4,7 +4,8 @@
   "description": "A library that generates genomes for all of your genetic algorithm needs.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register src/test/**/*.ts"
+    "test": "mocha -r ts-node/register src/test/**/*.ts",
+    "sum": "node lib/examples/sum.js"
   },
   "keywords": [
     "genetic",

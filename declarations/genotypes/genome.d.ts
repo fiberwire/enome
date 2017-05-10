@@ -1,19 +1,19 @@
 import { Nucleotide } from './nucleotide';
 import { EnomeOptions } from "./options";
-export declare class Genome {
-    options: EnomeOptions;
+export declare class Genome<T extends EnomeOptions> {
+    options: T;
     sequence: number[];
     idLength: number;
     nucleos: Nucleotide[];
-    constructor(options: EnomeOptions, sequence?: number[], idLength?: number);
+    constructor(options: T, sequence?: number[], idLength?: number);
     readonly id: string;
     readonly nucleotides: Nucleotide[];
     readonly nucleo: Nucleotide;
     randomValues(n: any): number[];
     readonly value: number;
-    sub(gen: Genome, mutateChance: number): Genome;
-    avg(gen: Genome, mutateChance: number): Genome;
-    mutate(mutateChance: number, type?: string): Genome;
-    reproduce(other: Genome, w1?: number, w2?: number): Genome;
-    static reproduceManyToOne(genomes: Genome[], weights: number[]): Genome;
+    sub(gen: Genome<T>, mutateChance: number): Genome<T>;
+    avg(gen: Genome<T>, mutateChance: number): Genome<T>;
+    mutate(mutateChance: number, type?: string): Genome<T>;
+    reproduce(other: Genome<T>, w1?: number, w2?: number, mutateChance?: number): Genome<T>;
+    reproduceManyToOne(genomes: Genome<T>[], weights: number[]): Genome<T>;
 }

@@ -1,21 +1,21 @@
 import 'mocha';
 import { expect } from 'chai';
-import { Nucleotide, Genome } from "../index";
+import { Nucleotide, Genome, EnomeOptions } from "../index";
 import * as _ from 'lodash';
 
 
 describe('genome', () => {
-    let gen: Genome;
+    let gen: Genome<EnomeOptions>;
     beforeEach(() => {
         gen = new Genome({
             genomeLength: 100,
-            nucleotideLength: 2
-        }, 11);
+            nucleotideLength: 1
+        });
     })
     describe('constructor', () => {
         it('should create a new genome', () => {
             expect(gen.options.genomeLength).to.eql(100);
-            expect(gen.options.nucleotideLength).to.eql(2);
+            expect(gen.options.nucleotideLength).to.eql(1);
             expect(gen).to.be.instanceof(Genome);
         })
 
@@ -69,7 +69,7 @@ describe('genome', () => {
 
     describe('mutate', () => {
         it('should mutate the genome, given a certain mutation chance (per value in sequence)', () => {
-            let mutated: Genome = gen.mutate(0.05);
+            let mutated: Genome<EnomeOptions> = gen.mutate(0.05);
             expect(mutated.sequence).not.to.eql(gen.sequence);
             expect(mutated.sequence.length).to.eql(gen.sequence.length);
         })
@@ -77,8 +77,8 @@ describe('genome', () => {
 
     describe('reproduce', () => {
         it('should produce an offspring genome with genetics from both parents', () => {
-            let mutated: Genome = gen.mutate(0.05);
-            let offspring: Genome = gen.reproduce(mutated); //last two parameters are relative weights for each parents chance for their genes to be picked
+            let mutated: Genome<EnomeOptions> = gen.mutate(0.05);
+            let offspring: Genome<EnomeOptions> = gen.reproduce(mutated); //last two parameters are relative weights for each parents chance for their genes to be picked
 
             expect(gen).not.to.eql(mutated);
             expect(gen).not.to.eql(offspring);
@@ -88,11 +88,11 @@ describe('genome', () => {
 
     describe('reproduceManyToOne', () => {
         it('should produce an offspring from many genomes, given a weight array', () => {
-            let offspring: Genome;
+            let offspring: Genome<EnomeOptions>;
             it('should accept an array of Genomes', () => {
                 let others = _.range(0, 10).map(i => gen.mutate(0.05))
                 let weights = _.range(0, 10).map(i => gen.value);
-                offspring = Genome.reproduceManyToOne(others, weights);
+                offspring = gen.reproduceManyToOne(others, weights);
 
             })
         });

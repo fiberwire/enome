@@ -7,6 +7,20 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "sum",
+            "runtimeExecutable": "npm",
+            "windows": {
+                "runtimeExecutable": "npm.cmd"
+            },
+            "runtimeArgs": [
+                "run",
+                "sum"
+            ],
+            "port": 5858
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Mocha Test",
             "runtimeExecutable": "npm",
             "windows": {
