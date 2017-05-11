@@ -9,4 +9,5 @@ export declare class Genome<T extends GenomeOptions> {
     readonly id: string;
     readonly nucleotides: Nucleotide[];
     readonly nucleo: Nucleotide;
+    nuclei(n: number): Nucleotide[];
 }

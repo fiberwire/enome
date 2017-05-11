@@ -10,7 +10,7 @@ const chance = new Chance();
 
 export class Genome<T extends GenomeOptions> {
 
-    //the nucleotides derived from the base values
+    //the nucleotides derived from the base values, consumed by nucleo property
     nucleos: Nucleotide[];
 
     constructor(
@@ -55,5 +55,10 @@ export class Genome<T extends GenomeOptions> {
     //gets the next nucleotide
     get nucleo(): Nucleotide {
         return this.nucleos.pop();
+    }
+
+    //gets the next n nucleotides
+    nuclei(n: number): Nucleotide[] {
+        return _.range(0, n).map(i => this.nucleo);
     }
 }
