@@ -2,7 +2,10 @@ import 'mocha';
 import { expect } from 'chai';
 
 import * as _ from 'lodash';
-import { Nucleotide, Genome, GenomeOptions } from "../../src/index";
+import { Genome } from "genotypes/genome";
+import { GenomeOptions } from "options/genome-options";
+import { Nucleotide } from "genotypes/nucleotide";
+
 
 describe('genome', () => {
     let gen: Genome<GenomeOptions>;

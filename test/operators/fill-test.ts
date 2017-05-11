@@ -3,10 +3,9 @@ import 'mocha';
 import { expect } from 'chai';
 
 import * as _ from 'lodash';
-
-import { Genome } from "../../src/genotypes/genome";
-import { GenomeOptions } from "../../src/options/genome-options";
-import { fill } from "../../src/operators/fill";
+import { Genome } from "genotypes/genome";
+import { GenomeOptions } from "options/genome-options";
+import { fill } from "operators/fill";
 
 describe('operators', () => {
     describe('fill', () => {

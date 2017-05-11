@@ -2,18 +2,23 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
-        "noImplicitAny": false,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
         "removeComments": false,
+        "alwaysStrict": true,
         "sourceMap": true,
         "declaration": true,
         "declarationDir": "declarations",
         "outDir": "lib",
-        "alwaysStrict": true,
-        "mapRoot": "source-maps",
-        "noImplicitThis": true,
-        "noImplicitReturns": true,
         "watch": true,
+        "rootDir": ".",
         "baseUrl": "./src",
+        "paths": {
+            "*": [
+                "*"
+            ]
+        },
         "lib":[
             "esnext.asynciterable",
             "es2015"
@@ -26,6 +31,7 @@
     "exclude": [
         "node_modules",
         "lib",
-        "declarations"
+        "declarations",
+        ".vscode"
     ]
 }
