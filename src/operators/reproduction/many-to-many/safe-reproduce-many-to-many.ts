@@ -2,10 +2,10 @@
 import { Genome } from "genotypes/genome";
 import { GenomeOptions } from "options/genome-options";
 import { Evaluation } from "evalutation";
-import { reproduceManyToMany } from "operators/reproduction/reproduce-many-to-many";
 import { top } from "operators/top";
 
 import * as _ from 'lodash';
+import { reproduceManyToMany } from "operators/reproduction/many-to-many/reproduce-many-to-many";
 
 export function safeReproduceManyToMany<T extends GenomeOptions>(
     gens: Genome<T>[],

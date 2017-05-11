@@ -20,11 +20,14 @@ import { replenish } from "operators/replenish";
 import { safeReproduce } from "operators/reproduction/safe-reproduce";
 import { sampledReproduce } from "operators/reproduction/sampled-reproduce";
 import { safeSampledReproduce } from "operators/reproduction/safe-sampled-reproduce";
-import { reproduceManyToOne } from "operators/reproduction/reproduce-many-to-one";
-import { reproduceManyToMany } from "operators/reproduction/reproduce-many-to-many";
-import { safeReproduceManyToMany } from "operators/reproduction/safe-reproduce-many-to-many";
-import { sampledReproduceManyToMany } from "operators/reproduction/sampled-reproduce-many-to-many";
-import { safeSampledReproduceManyToMany } from "operators/reproduction/safe-sampled-reproduce-many-to-many";
+import { reproduceManyToOne } from "operators/reproduction/many-to-one/reproduce-many-to-one";
+import { reproduceManyToMany } from "operators/reproduction/many-to-many/reproduce-many-to-many";
+import { safeReproduceManyToMany } from "operators/reproduction/many-to-many/safe-reproduce-many-to-many";
+import { sampledReproduceManyToMany } from "operators/reproduction/many-to-many/sampled-reproduce-many-to-many";
+import { safeSampledReproduceManyToMany } from "operators/reproduction/many-to-many/safe-sampled-reproduce-many-to-many";
+import { safeReproduceManyToOne } from "operators/reproduction/many-to-one/safe-reproduce-many-to-one";
+import { safeSampledReproduceManyToOne } from "operators/reproduction/many-to-one/safe-sampled-reproduce-many-to-one";
+import { sampledReproduceManyToOne } from "operators/reproduction/many-to-one/sampled-reproduce-many-to-one";
 
 //options
 export {
@@ -66,6 +69,9 @@ export {
     sampledReproduce,
     safeSampledReproduce,
     reproduceManyToOne,
+    safeReproduceManyToOne,
+    sampledReproduceManyToOne,
+    safeSampledReproduceManyToOne,
     reproduceManyToMany,
     safeReproduceManyToMany,
     sampledReproduceManyToMany,

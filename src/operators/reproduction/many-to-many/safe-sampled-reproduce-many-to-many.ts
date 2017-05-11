@@ -3,8 +3,8 @@ import { Genome } from "genotypes/genome";
 import { Evaluation } from "evalutation";
 
 import * as _ from 'lodash';
-import { sampledReproduceManyToMany } from "operators/reproduction/sampled-reproduce-many-to-many";
 import { top } from "operators/top";
+import { sampledReproduceManyToMany } from "operators/reproduction/many-to-many/sampled-reproduce-many-to-many";
 
 //produces many offspring from many genomes, each one selected from a sample, then takes the top from original genomes and offspring
 export function safeSampledReproduceManyToMany<T extends GenomeOptions>(
