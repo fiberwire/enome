@@ -1,10 +1,12 @@
 
 import 'mocha';
 import { expect } from 'chai';
-import { Genome, GenomeOptions } from "../../index";
 
 import * as _ from 'lodash';
-import { fill } from "../../operators/fill";
+
+import { Genome } from "../../src/genotypes/genome";
+import { GenomeOptions } from "../../src/options/genome-options";
+import { fill } from "../../src/operators/fill";
 
 describe('operators', () => {
     describe('fill', () => {

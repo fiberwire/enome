@@ -1,6 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
-import { Genome, GenomeOptions, mutate } from "../../../index";
+import { Genome } from "../../../src/genotypes/genome";
+import { GenomeOptions } from "../../../src/options/genome-options";
+import { mutate } from "../../../src/operators/mutation/mutate";
 
 describe('operators/mutation', () => {
     describe('mutate', () => {

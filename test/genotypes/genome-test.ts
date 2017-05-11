@@ -1,9 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
-import { Nucleotide, Genome, GenomeOptions } from "../index";
-import * as _ from 'lodash';
-import { values } from "../operators/values";
 
+import * as _ from 'lodash';
+import { Nucleotide, Genome, GenomeOptions } from "../../src/index";
 
 describe('genome', () => {
     let gen: Genome<GenomeOptions>;

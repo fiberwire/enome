@@ -1,9 +1,12 @@
 import 'mocha';
 import { expect } from 'chai';
-import { Genome, GenomeOptions, mutate, value } from "../../../index";
 
 import * as _ from 'lodash';
-import { reproduceManyToOne } from "../../../operators/reproduction/reproduce-many-to-one";
+import { Genome } from "../../../src/genotypes/genome";
+import { GenomeOptions } from "../../../src/options/genome-options";
+import { mutate } from "../../../src/operators/mutation/mutate";
+import { value } from "../../../src/operators/value";
+import { reproduceManyToOne } from "../../../src/operators/reproduction/reproduce-many-to-one";
 
 describe('operators/reproduction', () => {
     describe('reproduceManyToOne', () => {

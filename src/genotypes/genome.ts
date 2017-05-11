@@ -5,8 +5,9 @@ import { GenomeOptions, value } from "../index";
 import { mutate } from "../operators/mutation/mutate";
 import { values } from "../operators/values";
 
-
 const chance = new Chance();
+
+
 export class Genome<T extends GenomeOptions> {
 
     //the nucleotides derived from the base values

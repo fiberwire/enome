@@ -3,6 +3,7 @@
         "module": "commonjs",
         "target": "es6",
         "noImplicitAny": false,
+        "removeComments": false,
         "sourceMap": true,
         "declaration": true,
         "declarationDir": "declarations",
@@ -12,14 +13,15 @@
         "noImplicitThis": true,
         "noImplicitReturns": true,
         "watch": true,
-        "rootDir": "./src",
+        "baseUrl": "./src",
         "lib":[
             "esnext.asynciterable",
             "es2015"
         ]
     },
     "include":[
-        "src/**/*"
+        "src/**/*",
+        "test/**/*"
     ],
     "exclude": [
         "node_modules",
