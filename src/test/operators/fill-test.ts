@@ -1,7 +1,7 @@
 
 import 'mocha';
 import { expect } from 'chai';
-import { Genome, EnomeOptions } from "../../index";
+import { Genome, GenomeOptions } from "../../index";
 
 import * as _ from 'lodash';
 import { fill } from "../../operators/fill";
@@ -9,7 +9,7 @@ import { fill } from "../../operators/fill";
 describe('operators', () => {
     describe('fill', () => {
 
-        let gens: Genome<EnomeOptions>[];
+        let gens: Genome<GenomeOptions>[];
 
         beforeEach(() => {
             gens = _.range(1, 5).map(i => new Genome({

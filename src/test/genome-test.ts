@@ -2,6 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { Nucleotide, Genome, GenomeOptions } from "../index";
 import * as _ from 'lodash';
+import { values } from "../operators/values";
 
 
 describe('genome', () => {
@@ -54,14 +55,6 @@ describe('genome', () => {
             let n2 = gen.nucleo;
 
             expect(n1).not.to.eql(n2);
-        })
-    })
-
-    describe('randomValues', () => {
-        it('Should produce an array of specified length of random values', () => {
-            let values = gen.randomValues(10);
-            expect(values.length).to.eql(10);
-            expect(values[0]).not.to.eql(values[1]);
         })
     })
 })

@@ -1,5 +1,4 @@
-
-export interface EnomeOptions{
+export interface GenomeOptions {
     genomeLength: number;
     nucleotideLength: number;
 }
