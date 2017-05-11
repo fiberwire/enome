@@ -6,7 +6,13 @@ import * as _ from 'lodash';
 
 const chance = new Chance();
 
-export function reproduce<T extends GenomeOptions>(gen1: Genome<T>, gen2: Genome<T>, weight1: number = 1, weight2: number = 1, mutateChance: number = 0.05): Genome<T> {
+export function reproduce<T extends GenomeOptions>(
+    gen1: Genome<T>,
+    gen2: Genome<T>,
+    weight1: number = 1,
+    weight2: number = 1,
+    mutateChance: number = 0.05
+): Genome<T> {
     return mutate(
         new Genome<T>(
             gen1.options,
