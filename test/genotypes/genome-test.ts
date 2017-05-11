@@ -59,4 +59,14 @@ describe('genome', () => {
             expect(n1).not.to.eql(n2);
         })
     })
+
+    describe('nuclei', () => {
+        it('should produce the next n nucleotides in the genome', () => {
+            const ns = gen.nuclei(5);
+            const first5 = gen.nucleotides.slice(0, 5);
+
+            expect(ns.length).to.eql(5);
+            ns.forEach(n => expect(first5).to.include(n));
+        })
+    })
 })

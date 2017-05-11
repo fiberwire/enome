@@ -54,7 +54,7 @@ export class Genome<T extends GenomeOptions> {
 
     //gets the next nucleotide
     get nucleo(): Nucleotide {
-        return this.nucleos.pop();
+        return this.nucleos.shift();
     }
 
     //gets the next n nucleotides
