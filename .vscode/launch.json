@@ -7,6 +7,21 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Mocha Tests",
+            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "--compilers",
+                "ts:ts-node/register",
+                "-r",
+                "tsconfig-paths/register",
+                "test/**/*.ts"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "protocol": "inspector"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "sum",
             "runtimeExecutable": "npm",
             "windows": {
@@ -17,28 +32,6 @@
                 "sum"
             ],
             "port": 5858
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Mocha Test",
-            "runtimeExecutable": "npm",
-            "windows": {
-                "runtimeExecutable": "npm.cmd"
-            },
-            "runtimeArgs": [
-                "test"
-            ],
-            "port": 5858
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceRoot}\\lib\\index.js",
-            "outFiles": [
-                "${workspaceRoot}/out/**/*.js"
-            ]
         }
     ]
 }
