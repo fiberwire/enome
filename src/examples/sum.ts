@@ -1,11 +1,12 @@
 
-import { EnomeOptions, Genome, Evaluation, Nucleotide } from "../index";
+import { GenomeOptions, Genome, Evaluation, Nucleotide } from "../index";
 import * as _ from 'lodash';
-import { top } from "../operators/index";
+
 import { fill } from "../operators/fill";
 import { best } from "../operators/best";
+import { top } from "../operators/top";
 
-interface ListOptions extends EnomeOptions {
+interface ListOptions extends GenomeOptions {
     min: number,
     max: number,
     length: number

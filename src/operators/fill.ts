@@ -1,8 +1,8 @@
 
-import { EnomeOptions, Genome } from "../index";
+import { GenomeOptions, Genome, reproduce } from "../index";
 import * as _ from 'lodash';
 
-export function fill<T extends EnomeOptions>(gens: Genome<T>[], n: number): Genome<T>[] {
+export function fill<T extends GenomeOptions>(gens: Genome<T>[], n: number): Genome<T>[] {
     //create offspring to fill array with
     let offspring: Genome<T>[] =
         _.range(0, n - gens.length)
@@ -14,7 +14,7 @@ export function fill<T extends EnomeOptions>(gens: Genome<T>[], n: number): Geno
                 let p2 = g.nucleo.element(gens);
                 let w1 = g.nucleo.float(0, 1);
                 let w2 = g.nucleo.float(0, 1);
-                return p1.reproduce(p2, w1, w2)
+                return reproduce(p1, p2, w1, w2)
             })
 
     return _.concat(gens, offspring);

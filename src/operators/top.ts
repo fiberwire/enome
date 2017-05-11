@@ -1,8 +1,8 @@
 
-import { Genome, EnomeOptions, Evaluation, Nucleotide } from "../index";
-import { best } from './index';
+import { Genome, GenomeOptions, Evaluation, Nucleotide } from "../index";
+import { best } from "./best";
 
-export function top<T extends EnomeOptions>(gens: Genome<T>[], cutoff: number = 0.5, fitness: (genome: Genome<T>) => Evaluation<T>): Evaluation<T>[] {
+export function top<T extends GenomeOptions>(gens: Genome<T>[], cutoff: number = 0.5, fitness: (genome: Genome<T>) => Evaluation<T>): Evaluation<T>[] {
     let b = best(gens, fitness);
 
     let evals = gens.map(fitness).sort((a, b) => {
