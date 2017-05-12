@@ -19,10 +19,10 @@ describe('operators/mutation', () => {
         });
 
         it('should return the best of a sample of mutated genomes', () => {
-            let mutant = sampledMutate(genome, fitness);
+            let mutant = sampledMutate(genome, fitness, 5, 0.5);
 
             expect(mutant.sequence.length).to.equal(genome.sequence.length);
-            expect(mutant.sequence).not.to.deep.equal(genome.sequence);
+            expect(mutant.sequence).to.not.deep.equal(genome.sequence);
         })
     })
 })
