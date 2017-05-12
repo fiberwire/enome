@@ -3,23 +3,22 @@ import { expect } from 'chai';
 import { Genome } from "genotypes/genome";
 import { GenomeOptions } from "options/genome-options";
 import { mutate } from "operators/mutation/mutate";
+import { mocks } from "../../mocks";
+import { replenish } from "operators/replenish";
 
 describe('operators/mutation', () => {
     describe('mutate', () => {
 
-        let gen: Genome<GenomeOptions>;
+        let {genome} = mocks();
 
         beforeEach(() => {
-            gen = new Genome({
-                genomeLength: 10,
-                nucleotideLength: 1
-            });
+            genome = replenish(genome);
         })
 
         it('should mutate the genome, given a certain mutation chance (per value in sequence)', () => {
-            let mutated: Genome<GenomeOptions> = mutate(gen, 0.5);
-            expect(mutated.sequence).not.to.deep.equal(gen.sequence);
-            expect(mutated.sequence.length).to.equal(gen.sequence.length);
+            let mutated: Genome<GenomeOptions> = mutate(genome, 0.5);
+            expect(mutated.sequence).to.not.deep.equal(genome.sequence);
+            expect(mutated.sequence.length).to.equal(genome.sequence.length);
         })
     })
 })

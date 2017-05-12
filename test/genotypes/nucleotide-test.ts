@@ -33,7 +33,7 @@ describe('genotypes', () => {
         })
 
         describe('natural', () => {
-            it('should produce a natural number, between 0 and max', () => {
+            it('should produce a natural number between 0 and max', () => {
                 const n = gen.nucleo.natural(10);
                 expect(n).to.be.at.least(0);
                 expect(n).to.be.at.most(10);
