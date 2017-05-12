@@ -2,12 +2,15 @@
 import { Genome, GenomeOptions, Evaluation, Nucleotide } from "../index";
 import { best } from "./best";
 
-export function top<T extends GenomeOptions>(gens: Genome<T>[], threshold: number = 0.5, fitness: (genome: Genome<T>) => Evaluation<T>): Evaluation<T>[] {
-    let b = best(gens, fitness);
+export function top<T extends GenomeOptions>(
+    genomes: Genome<T>[],
+    threshold: number = 0.5,
+    fitness: (genome: Genome<T>) => Evaluation<T>
+): Evaluation<T>[] {
+    let b = best(genomes, fitness);
 
-    let evals = gens.map(fitness).sort((a, b) => {
-        if (a.fitness > b.fitness)
-            return -1;
+    let evals = genomes.map(fitness).sort((a, b) => {
+        if (a.fitness > b.fitness) return -1;
         else return 1;
     });
 
