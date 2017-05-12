@@ -4,24 +4,23 @@ import { expect } from 'chai';
 import { Genome } from "genotypes/genome";
 import { GenomeOptions } from "options/genome-options";
 import { sub } from "operators/mutation/sub";
+import { replenish } from "operators/replenish";
+import { mocks } from "../../mocks";
 
 describe('operators/mutation', () => {
 
-    let gen: Genome<GenomeOptions>;
+    let { genome } = mocks();
 
     beforeEach(() => {
-        gen = new Genome({
-            genomeLength: 10,
-            nucleotideLength: 1
-        });
+        genome = replenish(genome);
     })
 
     describe('sub', () => {
         it('should mutate a genome by replacing values with randomly generated values', () => {
-            let mutant = sub(gen, 1);
+            let mutant = sub(genome, 1);
 
-            expect(mutant.sequence.length).to.eql(gen.sequence.length);
-            expect(mutant.sequence).not.to.deep.equal(gen.sequence);
+            expect(mutant.sequence.length).to.eql(genome.sequence.length);
+            expect(mutant.sequence).not.to.deep.equal(genome.sequence);
         })
     })
 })
