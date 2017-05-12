@@ -4,7 +4,9 @@
   "description": "A library that generates genomes for all of your genetic algorithm needs.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register src/test/**/*.ts"
+    "test": "mocha --colors --compilers ts:ts-node/register -r tsconfig-paths/register test/**/*.ts",
+    "watch": "mocha --colors --watch --compilers ts:ts-node/register -r tsconfig-paths/register test/**/*.ts",
+    "sum": "node lib/examples/sum.js"
   },
   "keywords": [
     "genetic",
@@ -31,6 +33,7 @@
     "chai": "^3.5.0",
     "mocha": "^3.3.0",
     "ts-node": "^3.0.4",
+    "tsconfig-paths": "^2.1.2",
     "typescript": "^2.3.2"
   }
 }

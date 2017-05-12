@@ -1,5 +1,6 @@
 # enome
 ## A Genome generation library
+[![Build Status](https://travis-ci.org/fiberwire/enome.svg?branch=master)](https://travis-ci.org/fiberwire/enome)
 
 ### This library is written in TypeScript, and I recommend using it with a TypeScript project.
 

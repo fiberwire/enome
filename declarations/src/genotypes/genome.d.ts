@@ -1,13 +1,13 @@
 import { Nucleotide } from './nucleotide';
-import { EnomeOptions } from "./options";
-export declare class Genome {
-    options: EnomeOptions;
-    idLength: number;
+import { GenomeOptions } from "../index";
+export declare class Genome<T extends GenomeOptions> {
+    options: T;
     sequence: number[];
+    idLength: number;
     nucleos: Nucleotide[];
-    constructor(options: EnomeOptions, idLength?: number);
+    constructor(options: T, sequence?: number[], idLength?: number);
     readonly id: string;
     readonly nucleotides: Nucleotide[];
     readonly nucleo: Nucleotide;
-    randomValues(n: any): number[];
+    nuclei(n: number): Nucleotide[];
 }

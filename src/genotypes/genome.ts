@@ -1,22 +1,25 @@
 import * as Chance from 'chance';
 import * as _ from 'lodash';
 import { Nucleotide } from './nucleotide';
-import { EnomeOptions } from "./options";
+import { GenomeOptions, value } from "../index";
+import { mutate } from "../operators/mutation/mutate";
+import { values } from "../operators/values";
 
 const chance = new Chance();
-export class Genome {
 
-    //the nucleotides derived from the base values
+
+export class Genome<T extends GenomeOptions> {
+
+    //the nucleotides derived from the base values, consumed by nucleo property
     nucleos: Nucleotide[];
 
     constructor(
-        public options: EnomeOptions,
-        public sequence: number[] = [],
+        public options: T,
+        public sequence: number[] = null,
         public idLength: number = 12
     ) {
-        this.options = options;
-        if (this.sequence.length === 0) {
-            this.sequence = this.randomValues(options.genomeLength);
+        if (this.sequence == null) {
+            this.sequence = values(this.options.genomeLength * this.options.nucleotideLength);
         }
 
         this.nucleos = this.nucleotides;
@@ -51,85 +54,11 @@ export class Genome {
 
     //gets the next nucleotide
     get nucleo(): Nucleotide {
-        return this.nucleos.pop();
+        return this.nucleos.shift();
     }
 
-    //returns n random values between 0 and 1
-    randomValues(n): number[] {
-        const values = [];
-
-        for (let i = 0; i < n; i++) {
-            values.unshift(this.value);
-        }
-
-        return values;
-    }
-
-    get value(): number {
-        return chance.floating({ min: 0, max: 1 });
-    }
-
-    sub(gen: Genome, mutateChance: number): Genome {
-        return new Genome(
-            gen.options,
-            gen.sequence.map(value => {
-                if (this.value <= mutateChance) {
-                    return this.value;
-                }
-                else {
-                    return value;
-                }
-            }));
-    }
-
-    avg(gen: Genome, mutateChance: number): Genome {
-        return new Genome(
-            gen.options,
-            gen.sequence.map(value => {
-                if (this.value <= mutateChance) {
-                    return (this.value + value) / 2
-                }
-                else {
-                    return value;
-                }
-            })
-        )
-    }
-
-    mutate(mutateChance: number, type: string = 'sub'): Genome {
-        let mutated: Genome;
-        let mutSeq: number[];
-
-        switch (type) {
-            case 'sub':
-                return this.sub(this, mutateChance);
-            case 'avg':
-                return this.avg(this, mutateChance);
-            default:
-                return this.sub(this, mutateChance);
-        }
-    }
-
-    reproduce(other: Genome, w1: number = 1, w2: number = 1): Genome {
-        return new Genome(
-            this.options,
-            _.zip(this.sequence, other.sequence)
-                .map(values => {
-                    return chance.weighted(values, [w1, w2]);
-                }));
-    }
-
-    public static reproduceManyToOne(genomes: Genome[], weights: number[]): Genome {
-        let offspringSeq: number[] = _.zip(genomes.map(g => g.sequence))
-            .map((sequences: number[][]) => {
-                return chance.weighted(
-                    chance.weighted(sequences, weights),
-                    weights);
-            });
-
-        return new Genome(
-            chance.weighted(genomes, weights).options,
-            offspringSeq
-        );
+    //gets the next n nucleotides
+    nuclei(n: number): Nucleotide[] {
+        return _.range(0, n).map(i => this.nucleo);
     }
 }
