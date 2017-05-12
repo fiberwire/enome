@@ -25,7 +25,7 @@ export function mockFitness<T extends GenomeOptions>(): (g: Genome<T>) => Evalua
     return (g: Genome<T>) => {
         g = replenish(g);
         return {
-            fitness: _.sum(g.nuclei(10)),
+            fitness: _.sum(g.nuclei(10).map(n => n.float(0, 0.1))),
             genome: g
         }
     }
