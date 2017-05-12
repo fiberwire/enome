@@ -9,32 +9,34 @@ import { replenish } from "operators/replenish";
 import { safeReproduce } from "operators/reproduction/safe-reproduce";
 import { best } from "operators/best";
 
-describe('operators/reproduction', () => {
-    describe('safeReproduce', () => {
-        let { genome, fitness, mutateChance } = mocks();
+describe('operators', () => {
+    describe('reproduction', () => {
+        describe('safeReproduce', () => {
+            let { genome, fitness, mutateChance } = mocks();
 
-        beforeEach(() => {
-            genome = replenish(genome);
+            beforeEach(() => {
+                genome = replenish(genome);
+            })
+
+            let mutant: Genome<GenomeOptions> = mutate(genome, mutateChance);
+            let offspring: Genome<GenomeOptions> = safeReproduce(genome, mutant, fitness, mutateChance = mutateChance);
+
+            it('should produce an offspring genome with genetics from both parents', () => {
+                expect(mutant.sequence.length).to.eql(genome.sequence.length);
+                expect(offspring.sequence.length).to.eql(mutant.sequence.length);
+            })
+
+            it('should return the offspring if it is better than both parents, otherwise should return the best parent', () => {
+                if (fitness(offspring).fitness > best([genome, mutant], fitness).fitness) {
+                    expect(offspring.sequence).to.not.deep.equal(genome.sequence);
+                    expect(offspring.sequence).to.not.deep.equal(mutant.sequence);
+                }
+                else {
+                    expect(offspring.sequence).to.deep.equal(best([genome, mutant], fitness).genome.sequence);
+                }
+            })
+
         })
-
-        let mutant: Genome<GenomeOptions> = mutate(genome, mutateChance);
-        let offspring: Genome<GenomeOptions> = safeReproduce(genome, mutant, fitness, mutateChance = mutateChance);
-
-        it('should produce an offspring genome with genetics from both parents', () => {
-            expect(mutant.sequence.length).to.eql(genome.sequence.length);
-            expect(offspring.sequence.length).to.eql(mutant.sequence.length);
-        })
-
-        it('should return the offspring if it is better than both parents, otherwise should return the best parent', () => {
-            if (fitness(offspring).fitness > best([genome, mutant], fitness).fitness) {
-                expect(offspring.sequence).to.not.deep.equal(genome.sequence);
-                expect(offspring.sequence).to.not.deep.equal(mutant.sequence);
-            }
-            else {
-                expect(offspring.sequence).to.deep.equal(best([genome, mutant], fitness).genome.sequence);
-            }
-        })
-
     })
 })
 

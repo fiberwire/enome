@@ -6,19 +6,21 @@ import { mutate } from "operators/mutation/mutate";
 import { mocks } from "../../mocks";
 import { replenish } from "operators/replenish";
 
-describe('operators/mutation', () => {
-    describe('mutate', () => {
+describe('operators', () => {
+    describe('mutation', () => {
+        describe('mutate', () => {
 
-        let {genome} = mocks();
+            let { genome } = mocks();
 
-        beforeEach(() => {
-            genome = replenish(genome);
-        })
+            beforeEach(() => {
+                genome = replenish(genome);
+            })
 
-        it('should mutate the genome, given a certain mutation chance (per value in sequence)', () => {
-            let mutated: Genome<GenomeOptions> = mutate(genome, 0.5);
-            expect(mutated.sequence).to.not.deep.equal(genome.sequence);
-            expect(mutated.sequence.length).to.equal(genome.sequence.length);
+            it('should mutate the genome, given a certain mutation chance (per value in sequence)', () => {
+                let mutated: Genome<GenomeOptions> = mutate(genome, 0.5);
+                expect(mutated.sequence).to.not.deep.equal(genome.sequence);
+                expect(mutated.sequence.length).to.equal(genome.sequence.length);
+            })
         })
     })
 })

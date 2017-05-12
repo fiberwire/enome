@@ -9,27 +9,29 @@ import { replenish } from "operators/replenish";
 import { mocks } from "../../mocks";
 import { safeSampledMutate } from "operators/mutation/safe-sampled-mutate";
 
-describe('operators/mutation', () => {
-    describe('safeSampledMutate', () => {
+describe('operators', () => {
+    describe('mutation', () => {
+        describe('safeSampledMutate', () => {
 
-        let { genome, fitness, mutateChance } = mocks()
+            let { genome, fitness, mutateChance } = mocks()
 
-        beforeEach(() => {
-            genome = replenish(genome);
-        });
+            beforeEach(() => {
+                genome = replenish(genome);
+            });
 
-        it('should return a mutated genome from a sampled if it\'s better than the provided one, otherwise, should return the provided genome', () => {
-            let mutant: Genome<GenomeOptions> = safeSampledMutate(genome, fitness, 5, mutateChance);
+            it('should return a mutated genome from a sampled if it\'s better than the provided one, otherwise, should return the provided genome', () => {
+                let mutant: Genome<GenomeOptions> = safeSampledMutate(genome, fitness, 5, mutateChance);
 
-            expect(mutant.sequence.length).to.equal(genome.sequence.length);
-            expect(fitness(mutant).fitness).to.be.at.least(fitness(genome).fitness);
+                expect(mutant.sequence.length).to.equal(genome.sequence.length);
+                expect(fitness(mutant).fitness).to.be.at.least(fitness(genome).fitness);
 
-            if (fitness(mutant).fitness > fitness(genome).fitness) {
-                expect(mutant.sequence).not.to.deep.equal(genome.sequence);
-            }
-            else {
-                expect(mutant.sequence).to.deep.equal(genome.sequence);
-            }
+                if (fitness(mutant).fitness > fitness(genome).fitness) {
+                    expect(mutant.sequence).not.to.deep.equal(genome.sequence);
+                }
+                else {
+                    expect(mutant.sequence).to.deep.equal(genome.sequence);
+                }
+            })
         })
     })
 })

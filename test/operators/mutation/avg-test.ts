@@ -7,20 +7,22 @@ import { avg } from "operators/mutation/avg";
 import { replenish } from "operators/replenish";
 import { mocks } from "../../mocks";
 
-describe('operators/mutation', () => {
+describe('operators', () => {
+    describe('mutation', () => {
 
-    let { genome } = mocks();
+        let { genome } = mocks();
 
-    beforeEach(() => {
-        genome = replenish(genome)
-    })
+        beforeEach(() => {
+            genome = replenish(genome)
+        })
 
-    describe('avg', () => {
-        it('should mutate a genome by averaging mutated values with randomly generated values', () => {
-            let mutant = avg(genome, 1);
+        describe('avg', () => {
+            it('should mutate a genome by averaging mutated values with randomly generated values', () => {
+                let mutant = avg(genome, 1);
 
-            expect(mutant.sequence.length).to.eql(genome.sequence.length);
-            expect(mutant.sequence).not.to.deep.equal(genome.sequence);
+                expect(mutant.sequence.length).to.eql(genome.sequence.length);
+                expect(mutant.sequence).not.to.deep.equal(genome.sequence);
+            })
         })
     })
 })

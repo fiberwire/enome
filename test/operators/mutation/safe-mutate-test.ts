@@ -9,27 +9,29 @@ import * as _ from 'lodash';
 import { replenish } from "operators/replenish";
 import { mocks } from "../../mocks";
 
-describe('operators/mutation', () => {
-    describe('safeMutate', () => {
+describe('operators', () => {
+    describe('mutation', () => {
+        describe('safeMutate', () => {
 
-        let { genome, fitness } = mocks()
+            let { genome, fitness } = mocks()
 
-        beforeEach(() => {
-            genome = replenish(genome);
-        });
+            beforeEach(() => {
+                genome = replenish(genome);
+            });
 
-        it('should return a mutated genome if it\'s better than the provided one, otherwise, should return the provided genome', () => {
-            let mutant: Genome<GenomeOptions> = safeMutate(genome, fitness);
+            it('should return a mutated genome if it\'s better than the provided one, otherwise, should return the provided genome', () => {
+                let mutant: Genome<GenomeOptions> = safeMutate(genome, fitness);
 
-            expect(mutant.sequence.length).to.equal(genome.sequence.length);
-            expect(fitness(mutant).fitness).to.be.at.least(fitness(genome).fitness);
+                expect(mutant.sequence.length).to.equal(genome.sequence.length);
+                expect(fitness(mutant).fitness).to.be.at.least(fitness(genome).fitness);
 
-            if (fitness(mutant).fitness > fitness(genome).fitness) {
-                expect(mutant.sequence).not.to.deep.equal(genome.sequence);
-            }
-            else {
-                expect(mutant.sequence).to.deep.equal(genome.sequence);
-            }
+                if (fitness(mutant).fitness > fitness(genome).fitness) {
+                    expect(mutant.sequence).not.to.deep.equal(genome.sequence);
+                }
+                else {
+                    expect(mutant.sequence).to.deep.equal(genome.sequence);
+                }
+            })
         })
     })
 })
