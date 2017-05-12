@@ -7,10 +7,10 @@ import { Genome } from "genotypes/genome";
 import { GenomeOptions } from "options/genome-options";
 import { mocks } from "../mocks";
 import { replenish } from "operators/replenish";
-import { best } from "operators/best";
+import { worst } from "operators/worst";
 
 describe('operators', () => {
-    describe('best', () => {
+    describe('worst', () => {
 
         let { genomes, fitness } = mocks();
 
@@ -18,12 +18,12 @@ describe('operators', () => {
             genomes = genomes.map(replenish);
         })
 
-        it('should return the best genome from the provided array, according to provided fitness function', () => {
-            let b = best(genomes, fitness);
+        it('should return the worst genome from the provided array, according to provided fitness function', () => {
+            let w = worst(genomes, fitness);
             
-            let better = genomes.filter(g => fitness(g).fitness > b.fitness);
+            let worse = genomes.filter(g => fitness(g).fitness < w.fitness);
 
-            expect(better.length).to.eql(0);
+            expect(worse.length).to.eql(0);
         });
     })
 })

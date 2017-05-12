@@ -28,6 +28,9 @@ import { safeSampledReproduceManyToMany } from "operators/reproduction/many-to-m
 import { safeReproduceManyToOne } from "operators/reproduction/many-to-one/safe-reproduce-many-to-one";
 import { safeSampledReproduceManyToOne } from "operators/reproduction/many-to-one/safe-sampled-reproduce-many-to-one";
 import { sampledReproduceManyToOne } from "operators/reproduction/many-to-one/sampled-reproduce-many-to-one";
+import { worst } from "operators/worst";
+import { bottom } from "operators/bottom";
+import { concat } from "operators/concat";
 
 //options
 export {
@@ -44,12 +47,15 @@ export {
 //operators
 export {
     best,
+    bottom,
+    clone,
+    concat,
+    fill,
+    replenish,
     top,
     value,
     values,
-    fill,
-    clone,
-    replenish
+    worst,
 }
 
 //mutation operators
