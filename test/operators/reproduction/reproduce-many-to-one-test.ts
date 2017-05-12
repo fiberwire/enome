@@ -7,26 +7,25 @@ import { GenomeOptions } from "options/genome-options";
 import { mutate } from "operators/mutation/mutate";
 import { value } from "operators/value";
 import { reproduceManyToOne } from "operators/reproduction/many-to-one/reproduce-many-to-one";
+import { mocks } from "../../mocks";
+import { replenish } from "operators/replenish";
 
 
 describe('operators/reproduction', () => {
     describe('reproduceManyToOne', () => {
-        let gen: Genome<GenomeOptions>;
+        let { genome } = mocks();
 
         beforeEach(() => {
-            gen = new Genome({
-                genomeLength: 10,
-                nucleotideLength: 1
-            });
+            genome = replenish(genome);
         })
 
         it('should produce an offspring from many genomes, given a weight array', () => {
             let offspring: Genome<GenomeOptions>;
             it('should accept an array of Genomes', () => {
-                let others = _.range(0, 10).map(i => mutate(gen))
+                let others = _.range(0, 10).map(i => mutate(genome))
                 let weights = _.range(0, 10).map(i => value());
-                offspring = reproduceManyToOne(_.concat(others, gen), weights);
-                expect(offspring.nucleos).to.eql(gen.options.genomeLength);
+                offspring = reproduceManyToOne(_.concat(others, genome), weights);
+                expect(offspring.nucleos).to.eql(genome.options.genomeLength);
             })
         })
     })

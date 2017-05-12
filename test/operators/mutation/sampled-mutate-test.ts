@@ -12,14 +12,14 @@ import { sampledMutate } from "operators/mutation/sampled-mutate";
 describe('operators/mutation', () => {
     describe('sampledMutate', () => {
 
-        let { genome, fitness } = mocks()
+        let { genome, fitness, mutateChance } = mocks()
 
         beforeEach(() => {
             genome = replenish(genome);
         });
 
         it('should return the best of a sample of mutated genomes', () => {
-            let mutant = sampledMutate(genome, fitness, 5, 0.5);
+            let mutant = sampledMutate(genome, fitness, 5, mutateChance);
 
             expect(mutant.sequence.length).to.equal(genome.sequence.length);
             expect(mutant.sequence).to.not.deep.equal(genome.sequence);
