@@ -7,8 +7,8 @@ import { GenomeOptions } from "options/genome-options";
 import { mutate } from "operators/mutation/mutate";
 import { value } from "operators/value";
 import { reproduceManyToOne } from "operators/reproduction/many-to-one/reproduce-many-to-one";
-import { mocks } from "../../mocks";
 import { replenish } from "operators/replenish";
+import { mocks } from "../../../mocks";
 
 
 describe('operators/reproduction', () => {
