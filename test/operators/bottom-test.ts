@@ -7,12 +7,12 @@ import { Genome } from "genotypes/genome";
 import { GenomeOptions } from "options/genome-options";
 import { mocks } from "../mocks";
 import { replenish } from "operators/replenish";
-import { top } from "operators/top";
 import { Evaluation } from "evalutation";
 import { Nucleotide } from "genotypes/nucleotide";
+import { bottom } from "operators/bottom";
 
 describe('operators', () => {
-    describe('top', () => {
+    describe('bottom', () => {
 
         let { genomes, fitness } = mocks();
 
@@ -20,24 +20,24 @@ describe('operators', () => {
             genomes = genomes.map(replenish);
         })
 
-        it('should return the best genomes from the provided array, according to provided fitness function', () => {
+        it('should return the worst genomes from the provided array, according to provided fitness function', () => {
             
-            //top 50% of genomes
-            const t = top(genomes, 0.5, fitness);
-
-            expect(t.length).to.eql(genomes.length * 0.5);
-
             //bottom 50% of genomes
-            const sorted = _.sortBy(genomes.map(fitness), e => e.fitness);
-            const b = new Nucleotide(0.5).elements(sorted);
+            const b = bottom(genomes, 0.5, fitness);
 
             expect(b.length).to.eql(genomes.length * 0.5);
 
-            const topAvgFitness = _.meanBy(t, e => e.fitness);
+            //top 50% of genomes
+            const sorted = _.sortBy(genomes.map(fitness), e => e.fitness).reverse();
+            const t = new Nucleotide(0.5).elements(sorted);
+
+            expect(t.length).to.eql(genomes.length * 0.5);
+
             const botAvgFitness = _.meanBy(b, e => e.fitness);
+            const topAvgFitness = _.meanBy(t, e => e.fitness);
 
             //top is better on average than bottom
-            expect(topAvgFitness).to.be.at.least(botAvgFitness);
+            expect(botAvgFitness).to.be.at.most(topAvgFitness);
 
         });
     })
