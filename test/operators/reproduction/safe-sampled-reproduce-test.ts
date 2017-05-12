@@ -8,9 +8,10 @@ import { mocks } from "../../mocks";
 import { replenish } from "operators/replenish";
 import { safeReproduce } from "operators/reproduction/safe-reproduce";
 import { best } from "operators/best";
+import { safeSampledReproduce } from "operators/reproduction/safe-sampled-reproduce";
 
 describe('operators/reproduction', () => {
-    describe('safeReproduce', () => {
+    describe('safeSampledReproduce', () => {
         let { genome, fitness, mutateChance } = mocks();
 
         beforeEach(() => {
@@ -18,9 +19,9 @@ describe('operators/reproduction', () => {
         })
 
         let mutant: Genome<GenomeOptions> = mutate(genome, mutateChance);
-        let offspring: Genome<GenomeOptions> = safeReproduce(genome, mutant, fitness, mutateChance = mutateChance);
+        let offspring: Genome<GenomeOptions> = safeSampledReproduce(genome, mutant, fitness, mutateChance = mutateChance);
 
-        it('should produce an offspring genome with genetics from both parents', () => {
+        it('should produce an offspring genome with genetics from both parents, selected from a sample', () => {
             expect(mutant.sequence.length).to.eql(genome.sequence.length);
             expect(offspring.sequence.length).to.eql(mutant.sequence.length);
         })
@@ -34,7 +35,6 @@ describe('operators/reproduction', () => {
                 expect(offspring.sequence).to.deep.equal(best([genome, mutant], fitness).genome.sequence);
             }
         })
-
     })
 })
 
