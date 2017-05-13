@@ -8,6 +8,10 @@
     "watch": "mocha --colors --watch --compilers ts:ts-node/register -r tsconfig-paths/register test/**/*.ts",
     "sum": "node lib/examples/sum.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fiberwire/enome.git"
+  },
   "keywords": [
     "genetic",
     "algorithm",

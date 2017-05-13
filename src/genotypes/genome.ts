@@ -15,13 +15,9 @@ export class Genome<T extends GenomeOptions> {
 
     constructor(
         public options: T,
-        public sequence: number[] = null,
-        public idLength: number = 12
+        public sequence: number[] = values(options.genomeLength * options.nucleotideLength),
+        public idLength: number = Math.min(12, options.genomeLength)
     ) {
-        if (this.sequence == null) {
-            this.sequence = values(this.options.genomeLength * this.options.nucleotideLength);
-        }
-
         this.nucleos = this.nucleotides;
     }
 
@@ -33,13 +29,13 @@ export class Genome<T extends GenomeOptions> {
         letters = _
             .chunk(nucleos, numLetters).slice(0, this.idLength) //group nucleotides
             .map((n: Nucleotide[]) =>
-                n.reduce((p: Nucleotide, n: Nucleotide) => new Nucleotide((p.value + n.value) / 2)) //average nucleotides)
+                n.reduce((a: Nucleotide, b: Nucleotide) => new Nucleotide((a.value + b.value) / 2)) //average nucleotides)
             )
-            .map((n: Nucleotide) => n.letter());
+            .map((n: Nucleotide) => n.letter()); //interpolate letter from averaged nucleotides
 
 
         //return string of letters
-        return letters.reduce((p, n) => p + n);
+        return letters.reduce((a, b) => a + b);
     }
 
     //chunks values in sequence together into nucleotides, determined by options.nucleotideLength

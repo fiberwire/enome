@@ -6,9 +6,11 @@ export interface Mock {
     genomes: Genome<GenomeOptions>[];
     fitness: (g: Genome<GenomeOptions>) => Evaluation<GenomeOptions>;
     mutateChance: number;
+    weights: number[];
 }
 export declare function mockGenome(): Genome<GenomeOptions>;
 export declare function mockGenomes(): Genome<GenomeOptions>[];
 export declare function mockFitness<T extends GenomeOptions>(): (g: Genome<T>) => Evaluation<T>;
 export declare function mockMutateChance(): number;
+export declare function mockWeights(): number[];
 export declare function mocks(): Mock;
