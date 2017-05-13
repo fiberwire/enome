@@ -2,16 +2,22 @@ import * as _ from 'lodash';
 import { GenomeOptions } from "options/genome-options";
 import { Genome } from "genotypes/genome";
 
-export function reproduceManyToOne<T extends GenomeOptions>(genomes: Genome<T>[], weights: number[]): Genome<T> {
-        let offspringSeq: number[] = _.zip(genomes.map(g => g.sequence))
-            .map((sequences: number[][]) => {
-                return chance.weighted(
-                    chance.weighted(sequences, weights),
-                    weights);
-            });
+import * as Chance from 'chance';
+import { value } from "operators/value";
+let chance = new Chance();
 
-        return new Genome(
-            chance.weighted(genomes, weights).options,
-            offspringSeq
-        );
-    }
+export function reproduceManyToOne<T extends GenomeOptions>(
+    genomes: Genome<T>[],
+    weights: number[] = _.range(0, genomes.length).map(i => value())
+): Genome<T> {
+    let offspringSeq: number[] = _
+        .zip(...genomes.map(g => g.sequence)) // [0, 1, 2] and [3, 4, 5] => [[0, 3], [1, 4], [2, 5]], for example
+        .map((slice: number[]) => {
+            return chance.weighted(slice, weights);
+        });
+
+    return new Genome(
+        chance.weighted(genomes, weights).options,
+        offspringSeq
+    );
+}
