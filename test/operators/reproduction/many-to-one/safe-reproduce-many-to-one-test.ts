@@ -14,13 +14,13 @@ import { best } from "operators/best";
 describe('operators', () => {
     describe('reproduction', () => {
         describe('safeReproduceManyToOne', () => {
-            let { genomes, fitness, weights } = mocks();
+            let { genomes, fitness } = mocks();
 
             beforeEach(() => {
                 genomes = genomes.map(replenish);
             })
 
-            let offspring = safeReproduceManyToOne(genomes, weights, fitness);
+            let offspring = safeReproduceManyToOne(genomes, fitness);
             let t = top(genomes, 0.5, fitness);
             let offspringFitness = fitness(offspring).fitness;
             let avgFitness = _.meanBy(t, e => e.fitness);

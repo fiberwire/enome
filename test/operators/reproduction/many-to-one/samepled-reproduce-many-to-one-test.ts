@@ -12,13 +12,13 @@ import { sampledReproduceManyToOne } from "operators/reproduction/many-to-one/sa
 describe('operators', () => {
     describe('reproduction', () => {
         describe('sampledReproduceManyToOne', () => {
-            let { genomes, fitness, weights } = mocks();
+            let { genomes, fitness } = mocks();
 
             beforeEach(() => {
                 genomes = genomes.map(replenish);
             })
 
-            let offspring = sampledReproduceManyToOne(genomes, weights, fitness);
+            let offspring = sampledReproduceManyToOne(genomes, fitness);
 
             it('should produce an offspring from many genomes, given a weight array, selected from a sample', () => {
                 expect(offspring.sequence.length).to.eql(_.meanBy(genomes, g => g.sequence.length));

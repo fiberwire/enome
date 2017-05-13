@@ -7,13 +7,14 @@ import * as _ from 'lodash';
 import { best } from "operators/best";
 import { reproduceManyToMany } from "operators/reproduction/many-to-many/reproduce-many-to-many";
 import { reproduceManyToOne } from "operators/reproduction/many-to-one/reproduce-many-to-one";
+import { value } from "operators/value";
 
 //produces many offspring from many genomes, each one selected from a sample
 export function sampledReproduceManyToMany<T extends GenomeOptions>(
     genomes: Genome<T>[],
-    weights: number[],
     n: number,
     fitness: (gen: Genome<T>) => Evaluation<T>,
+    weights: number[] = _.range(0, genomes.length).map(i => value()),
     sampleSize: number = 5,
 ): Genome<T>[] {
     //create many genomes (according to n)

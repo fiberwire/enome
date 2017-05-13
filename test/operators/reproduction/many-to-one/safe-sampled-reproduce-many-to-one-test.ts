@@ -14,13 +14,13 @@ import { safeSampledReproduceManyToOne } from "operators/reproduction/many-to-on
 describe('operators', () => {
     describe('reproduction', () => {
         describe('safeSampledReproduceManyToOne', () => {
-            let { genomes, fitness, weights } = mocks();
+            let { genomes, fitness } = mocks();
 
             beforeEach(() => {
                 genomes = genomes.map(replenish);
             })
 
-            let offspring = safeSampledReproduceManyToOne(genomes, weights, fitness);
+            let offspring = safeSampledReproduceManyToOne(genomes, fitness);
             let t = top(genomes, 0.5, fitness);
             let offspringFitness = fitness(offspring).fitness;
             let avgFitness = _.meanBy(t, e => e.fitness);

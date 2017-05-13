@@ -15,7 +15,7 @@ import { reproduceManyToMany } from "operators/reproduction/many-to-many/reprodu
 describe('operators', () => {
     describe('reproduction', () => {
         describe('reproduceManyToMany', () => {
-            let { genomes, weights } = mocks();
+            let { genomes } = mocks();
 
             beforeEach(() => {
                 genomes = genomes.map(replenish);
