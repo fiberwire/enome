@@ -8,11 +8,12 @@ import * as _ from 'lodash';
 import { reproduceManyToMany } from "operators/reproduction/many-to-many/reproduce-many-to-many";
 
 export function safeReproduceManyToMany<T extends GenomeOptions>(
-    gens: Genome<T>[],
+    genomes: Genome<T>[],
     weights: number[],
-    n: number, 
+    n: number,
     fitness: (gen: Genome<T>) => Evaluation<T>
 ): Genome<T>[] {
-    let offspring = reproduceManyToMany(gens, weights, n);
-    return top(_.concat(gens, offspring), 0.5, fitness).map(e => e.genome);
+    let offspring = reproduceManyToMany(genomes, n, weights);
+    let sorted = _.sortBy(_.concat(genomes, offspring), g => fitness(g).fitness).reverse();
+    return sorted.slice(0, n);
 }

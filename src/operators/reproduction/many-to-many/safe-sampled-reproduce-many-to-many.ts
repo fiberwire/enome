@@ -8,12 +8,13 @@ import { sampledReproduceManyToMany } from "operators/reproduction/many-to-many/
 
 //produces many offspring from many genomes, each one selected from a sample, then takes the top from original genomes and offspring
 export function safeSampledReproduceManyToMany<T extends GenomeOptions>(
-    gens: Genome<T>[],
+    genomes: Genome<T>[],
     weights: number[],
     n: number,
     fitness: (gen: Genome<T>) => Evaluation<T>,
     sampleSize: number = 5,
 ): Genome<T>[] {
-    let offspring = sampledReproduceManyToMany(gens, weights, n, fitness, sampleSize);
-    return top(_.concat(gens, offspring), 0.5, fitness).map(e => e.genome);
+    let offspring = sampledReproduceManyToMany(genomes, weights, n, fitness, sampleSize);
+    let sorted = _.sortBy(_.concat(genomes, offspring), g => fitness(g).fitness).reverse();
+    return sorted.slice(0, n);
 }
