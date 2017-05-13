@@ -31,25 +31,25 @@ export class Nucleotide {
     //returns an upper or lower case letter, interpolated based on this.value
     letter(value: number = this.value): string {
         let letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ'.split('');
-        return letters[this.int(0, letters.length - 1)];
+        return this.element(letters);
     }
 
     //returns a lower case letter, interpolated based on this.value
     letterLower(value: number = this.value): string {
         let letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
-        return letters[this.int(0, letters.length - 1)];
+        return this.element(letters);
     }
 
     //returns an upper case letter, interpolated based on this.value
     letterUpper(value: number = this.value): string {
         let letters = 'ABCDEFGIJKLMNOPQRSTUVWXYZ'.split('');
-        return letters[this.int(0, letters.length - 1)];
+        return this.element(letters);
     }
 
     //returns a character, interpolated based on this.value
     char(value: number = this.value): string {
-        let letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'.split('');
-        return letters[this.int(0, letters.length - 1)];
+        let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'.split('');
+        return this.element(chars);
     }
 
     //returns an element of the given array, interpolated based on this.value;
@@ -59,11 +59,11 @@ export class Nucleotide {
 
     //returns a number of elements of the given array, the number of elements is interpolated based on this.value
     elements<T>(array: T[]): T[] {
-        return array.slice(0, this.int(0, array.length - 1));
+        return array.slice(0, this.int(0, array.length));
     }
 
     //returns a number of randomly selected elements of the given array, the number of elements is interpolated based on this.value
     randomElements<T>(array: T[]): T[] {
-        return chance.shuffle(array).slice(0, this.int(0, array.length - 1));
+        return chance.shuffle(array).slice(0, this.int(0, array.length));
     }
 }
