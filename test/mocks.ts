@@ -5,16 +5,18 @@ import { Evaluation } from "evalutation";
 import { GenomeOptions } from "options/genome-options";
 
 import * as _ from 'lodash';
+import { value } from "operators/value";
 
-export interface Mock{
-    genome: Genome<GenomeOptions>,
-    genomes: Genome<GenomeOptions>[],
-    fitness: (g: Genome<GenomeOptions>) => Evaluation<GenomeOptions>,
+export interface Mock {
+    genome: Genome<GenomeOptions>;
+    genomes: Genome<GenomeOptions>[];
+    fitness: (g: Genome<GenomeOptions>) => Evaluation<GenomeOptions>;
     mutateChance: number;
+    weights: number[];
 }
 
 export function mockGenome(): Genome<GenomeOptions> {
-    return new Genome({ genomeLength: 100, nucleotideLength: 1 });
+    return new Genome({ genomeLength: 10, nucleotideLength: 1 });
 }
 
 export function mockGenomes(): Genome<GenomeOptions>[] {
@@ -22,11 +24,11 @@ export function mockGenomes(): Genome<GenomeOptions>[] {
 }
 
 export function mockFitness<T extends GenomeOptions>(): (g: Genome<T>) => Evaluation<T> {
-    return (g: Genome<T>) => {
-        g = replenish(g);
+    return (gen: Genome<T>) => {
+        let g = replenish(gen);
         return {
             fitness: _.sum(g.nuclei(10).map(n => n.float(0, 0.1))),
-            genome: g
+            genome: gen
         }
     }
 }
@@ -35,11 +37,16 @@ export function mockMutateChance(): number {
     return 0.5;
 }
 
+export function mockWeights(): number[] {
+    return _.range(0, 10).map(i => value());
+}
+
 export function mocks(): Mock {
     return {
         genome: mockGenome(),
         genomes: mockGenomes(),
         fitness: mockFitness(),
-        mutateChance: mockMutateChance()
+        mutateChance: mockMutateChance(),
+        weights: mockWeights()
     }
 }
