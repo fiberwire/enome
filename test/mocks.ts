@@ -16,7 +16,7 @@ export interface Mock {
 }
 
 export function mockGenome(): Genome<GenomeOptions> {
-    return new Genome({ genomeLength: 10, nucleotideLength: 1 });
+    return new Genome({ genomeLength: 50, nucleotideLength: 1 });
 }
 
 export function mockGenomes(): Genome<GenomeOptions>[] {
