@@ -31,6 +31,7 @@ import { sampledReproduceManyToOne } from "operators/reproduction/many-to-one/sa
 import { worst } from "operators/worst";
 import { bottom } from "operators/bottom";
 import { concat } from "operators/concat";
+import { avgFitness } from "operators/avg-fitness";
 
 //options
 export {
@@ -46,6 +47,7 @@ export {
 
 //operators
 export {
+    avgFitness,
     best,
     bottom,
     clone,
@@ -55,33 +57,41 @@ export {
     top,
     value,
     values,
-    worst,
+    worst
 }
 
 //mutation operators
 export {
     avg,
-    sub,
     mutate,
     safeMutate,
+    safeSampledMutate,
     sampledMutate,
-    safeSampledMutate
+    sub
 }
 
 //reproduction operators
 export {
     reproduce,
     safeReproduce,
-    sampledReproduce,
     safeSampledReproduce,
+    sampledReproduce
+}
+
+//many-to-one reproduction operators
+export {
     reproduceManyToOne,
     safeReproduceManyToOne,
-    sampledReproduceManyToOne,
     safeSampledReproduceManyToOne,
+    sampledReproduceManyToOne
+}
+
+//many-to-many reproduction operators
+export {
     reproduceManyToMany,
     safeReproduceManyToMany,
-    sampledReproduceManyToMany,
-    safeSampledReproduceManyToMany
+    safeSampledReproduceManyToMany,
+    sampledReproduceManyToMany
 }
 
 //misc

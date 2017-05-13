@@ -31,9 +31,12 @@ import { sampledReproduceManyToOne } from "operators/reproduction/many-to-one/sa
 import { worst } from "operators/worst";
 import { bottom } from "operators/bottom";
 import { concat } from "operators/concat";
+import { avgFitness } from "operators/avg-fitness";
 export { GenomeOptions, PopulationOptions };
 export { Genome, Nucleotide };
-export { best, bottom, clone, concat, fill, replenish, top, value, values, worst };
-export { avg, sub, mutate, safeMutate, sampledMutate, safeSampledMutate };
-export { reproduce, safeReproduce, sampledReproduce, safeSampledReproduce, reproduceManyToOne, safeReproduceManyToOne, sampledReproduceManyToOne, safeSampledReproduceManyToOne, reproduceManyToMany, safeReproduceManyToMany, sampledReproduceManyToMany, safeSampledReproduceManyToMany };
+export { avgFitness, best, bottom, clone, concat, fill, replenish, top, value, values, worst };
+export { avg, mutate, safeMutate, safeSampledMutate, sampledMutate, sub };
+export { reproduce, safeReproduce, safeSampledReproduce, sampledReproduce };
+export { reproduceManyToOne, safeReproduceManyToOne, safeSampledReproduceManyToOne, sampledReproduceManyToOne };
+export { reproduceManyToMany, safeReproduceManyToMany, safeSampledReproduceManyToMany, sampledReproduceManyToMany };
 export { Evaluation };
