@@ -14,19 +14,18 @@ import { mocks } from "../../../mocks";
 describe('operators', () => {
     describe('reproduction', () => {
         describe('reproduceManyToOne', () => {
-            let { genome } = mocks();
+            let { genomes } = mocks();
 
             beforeEach(() => {
-                genome = replenish(genome);
+                genomes = genomes.map(replenish);
             })
 
             it('should produce an offspring from many genomes, given a weight array', () => {
-                let offspring: Genome<GenomeOptions>;
-                it('should accept an array of Genomes', () => {
-                    let others = _.range(0, 10).map(i => mutate(genome))
-                    let weights = _.range(0, 10).map(i => value());
-                    offspring = reproduceManyToOne(_.concat(others, genome), weights);
-                    expect(offspring.nucleos).to.eql(genome.options.genomeLength);
+                let offspring = reproduceManyToOne(genomes);
+                expect(offspring.nucleos.length).to.eql(genomes[0].options.genomeLength);
+
+                genomes.forEach(g => {
+                    expect(offspring.sequence).to.not.deep.equal(g.sequence);
                 })
             })
         })
