@@ -1,16 +1,14 @@
-
-import { GenomeOptions } from "options/genome-options";
-import { Genome } from "genotypes/genome";
-import { Evaluation } from "evalutation";
-import { Nucleotide } from "genotypes/nucleotide";
-
 import * as _ from 'lodash';
+import { Evaluation } from '../evaluation';
+import { Genome } from '../genotypes/genome';
+import { GenomeOptions } from '../options/genome-options';
+import { Nucleotide } from '../genotypes/nucleotide';
 
-export function top<T extends GenomeOptions>(
+export function top<T extends GenomeOptions, U>(
     genomes: Genome<T>[],
     threshold: number = 0.5,
-    fitness: (genome: Genome<T>) => Evaluation<T>
-): Evaluation<T>[] {
+    fitness: (genome: Genome<T>) => Evaluation<T, U>
+): Evaluation<T, U>[] {
     //sort evaluations of genomes by fitness, descending order
     let t = _.sortBy(genomes.map(fitness), e => e.fitness).reverse();
 

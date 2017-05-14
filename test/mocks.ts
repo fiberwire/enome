@@ -1,16 +1,15 @@
-
-import { replenish } from "operators/replenish";
-import { Genome } from "genotypes/genome";
-import { Evaluation } from "evalutation";
-import { GenomeOptions } from "options/genome-options";
-
 import * as _ from 'lodash';
-import { value } from "operators/value";
+import { Evaluation } from '../src/evaluation';
+import { Genome } from '../src/genotypes/genome';
+import { GenomeOptions } from '../src/options/genome-options';
+import { Nucleotide } from '../src/genotypes/nucleotide';
+import { replenish } from '../src/operators/replenish';
+import { value } from '../src/operators/value';
 
 export interface Mock {
     genome: Genome<GenomeOptions>;
     genomes: Genome<GenomeOptions>[];
-    fitness: (g: Genome<GenomeOptions>) => Evaluation<GenomeOptions>;
+    fitness: (g: Genome<GenomeOptions>) => Evaluation<GenomeOptions, number[]>;
     mutateChance: number;
     weights: number[];
 }
@@ -23,12 +22,18 @@ export function mockGenomes(): Genome<GenomeOptions>[] {
     return _.range(0, 10).map(i => mockGenome());
 }
 
-export function mockFitness<T extends GenomeOptions>(): (g: Genome<T>) => Evaluation<T> {
+export function MockCreate<T extends GenomeOptions>(genome: Genome<T>): number[] {
+    return genome.nuclei(10).map((n: Nucleotide) => n.float(0, 0.1));
+}
+
+export function mockFitness<T extends GenomeOptions>(): (g: Genome<T>) => Evaluation<GenomeOptions, number[]> {
     return (gen: Genome<T>) => {
-        let g = replenish(gen);
+        let list = MockCreate(replenish(gen));
+
         return {
-            fitness: _.sum(g.nuclei(10).map(n => n.float(0, 0.1))),
-            genome: gen
+            fitness: _.sum(list),
+            genome: gen,
+            creation: list
         }
     }
 }

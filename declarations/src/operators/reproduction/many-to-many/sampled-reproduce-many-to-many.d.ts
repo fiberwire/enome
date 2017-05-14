@@ -1,4 +1,4 @@
-import { GenomeOptions } from "options/genome-options";
-import { Genome } from "genotypes/genome";
-import { Evaluation } from "evalutation";
-export declare function sampledReproduceManyToMany<T extends GenomeOptions>(genomes: Genome<T>[], n: number, fitness: (gen: Genome<T>) => Evaluation<T>, weights?: number[], sampleSize?: number): Genome<T>[];
+import { Evaluation } from '../../../evaluation';
+import { Genome } from '../../../genotypes/genome';
+import { GenomeOptions } from '../../../options/genome-options';
+export declare function sampledReproduceManyToMany<T extends GenomeOptions, U>(genomes: Genome<T>[], n: number, fitness: (gen: Genome<T>) => Evaluation<T, U>, weights?: number[], sampleSize?: number): Genome<T>[];

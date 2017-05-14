@@ -1,13 +1,9 @@
-
-import 'mocha';
-import { expect } from 'chai';
-
 import * as _ from 'lodash';
-import { Genome } from "genotypes/genome";
-import { GenomeOptions } from "options/genome-options";
-import { mocks } from "../mocks";
-import { replenish } from "operators/replenish";
-import { best } from "operators/best";
+import { best } from '../../src/operators/best';
+import { expect } from 'chai';
+import { mocks } from '../mocks';
+import { replenish } from '../../src/operators/replenish';
+import 'mocha';
 
 describe('operators', () => {
     describe('best', () => {

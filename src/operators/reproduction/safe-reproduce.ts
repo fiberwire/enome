@@ -1,14 +1,13 @@
+import { GenomeOptions } from '../../options/genome-options';
+import { Genome } from '../../genotypes/genome';
+import { reproduce } from './reproduce';
+import { best } from '../best';
+import { Evaluation } from "../../evaluation";
 
-import { Genome } from "genotypes/genome";
-import { GenomeOptions } from "options/genome-options";
-import { reproduce } from "operators/reproduction/reproduce";
-import { best } from "operators/best";
-import { Evaluation } from "evalutation";
-
-export function safeReproduce<T extends GenomeOptions>(
+export function safeReproduce<T extends GenomeOptions, U>(
     gen1: Genome<T>,
     gen2: Genome<T>,
-    fitness: (gen: Genome<T>) => Evaluation<T>,
+    fitness: (gen: Genome<T>) => Evaluation<T, U>,
     weight1: number = 1,
     weight2: number = 1,
     mutateChance: number = 0.05

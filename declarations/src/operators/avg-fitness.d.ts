@@ -1,4 +1,4 @@
-import { GenomeOptions } from "options/genome-options";
-import { Genome } from "genotypes/genome";
-import { Evaluation } from "index";
-export declare function avgFitness<T extends GenomeOptions>(genomes: Genome<T>[], fitness: (gen: Genome<T>) => Evaluation<T>): number;
+import { Evaluation } from '../evaluation';
+import { Genome } from '../genotypes/genome';
+import { GenomeOptions } from '../options/genome-options';
+export declare function avgFitness<T extends GenomeOptions, U>(genomes: Genome<T>[], fitness: (gen: Genome<T>) => Evaluation<T, U>): number;

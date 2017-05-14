@@ -1,11 +1,8 @@
-
-import 'mocha';
+import { avg } from '../../../src/operators/mutation/avg';
 import { expect } from 'chai';
-import { Genome } from "genotypes/genome";
-import { GenomeOptions } from "options/genome-options";
-import { avg } from "operators/mutation/avg";
-import { replenish } from "operators/replenish";
-import { mocks } from "../../mocks";
+import { mocks } from '../../mocks';
+import { replenish } from '../../../src/operators/replenish';
+import 'mocha';
 
 describe('operators', () => {
     describe('mutation', () => {

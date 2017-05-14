@@ -1,13 +1,9 @@
-import 'mocha';
-import { expect } from 'chai';
-
 import * as _ from 'lodash';
-import { Genome } from "genotypes/genome";
-import { GenomeOptions } from "options/genome-options";
-import { replenish } from "operators/replenish";
-import { mocks } from "../../../mocks";
-import { sampledReproduceManyToOne } from "operators/reproduction/many-to-one/sampled-reproduce-many-to-one";
-
+import { expect } from 'chai';
+import { mocks } from '../../../mocks';
+import { replenish } from '../../../../src/operators/replenish';
+import { sampledReproduceManyToOne } from '../../../../src/operators/reproduction/many-to-one/sampled-reproduce-many-to-one';
+import 'mocha';
 
 describe('operators', () => {
     describe('reproduction', () => {

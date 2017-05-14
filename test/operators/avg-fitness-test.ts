@@ -1,9 +1,8 @@
-import 'mocha';
-import { expect } from 'chai';
-import { mocks } from "../mocks";
-import { avgFitness } from "operators/avg-fitness";
-
 import * as _ from 'lodash';
+import { avgFitness } from '../../src/operators/avg-fitness';
+import { expect } from 'chai';
+import { mocks } from '../mocks';
+import 'mocha';
 
 describe('operators', () => {
 

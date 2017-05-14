@@ -1,18 +1,15 @@
-
-import { Genome } from "genotypes/genome";
-import { GenomeOptions } from "options/genome-options";
-import { Evaluation } from "evalutation";
-import { top } from "operators/top";
-
 import * as _ from 'lodash';
-import { reproduceManyToMany } from "operators/reproduction/many-to-many/reproduce-many-to-many";
-import { value } from "operators/value";
-import { avgFitness } from "operators/avg-fitness";
+import { avgFitness } from '../../avg-fitness';
+import { Evaluation } from '../../../evaluation';
+import { Genome } from '../../../genotypes/genome';
+import { GenomeOptions } from '../../../options/genome-options';
+import { reproduceManyToMany } from './reproduce-many-to-many';
+import { value } from '../../value';
 
-export function safeReproduceManyToMany<T extends GenomeOptions>(
+export function safeReproduceManyToMany<T extends GenomeOptions, U>(
     genomes: Genome<T>[],
     n: number,
-    fitness: (gen: Genome<T>) => Evaluation<T>,
+    fitness: (gen: Genome<T>) => Evaluation<T, U>,
     weights: number[] = _.range(0, genomes.length).map(i => value()),
 ): Genome<T>[] {
 

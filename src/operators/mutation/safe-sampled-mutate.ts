@@ -1,14 +1,12 @@
+import { best } from '../best';
+import { Evaluation } from '../../evaluation';
+import { Genome } from '../../genotypes/genome';
+import { GenomeOptions } from '../../options/genome-options';
+import { sampledMutate } from './sampled-mutate';
 
-import { GenomeOptions } from "options/genome-options";
-import { Genome } from "genotypes/genome";
-import { Evaluation } from "evalutation";
-import { sampledMutate } from "operators/mutation/sampled-mutate";
-import { best } from "operators/best";
-import { replenish } from "operators/replenish";
-
-export function safeSampledMutate<T extends GenomeOptions>(
+export function safeSampledMutate<T extends GenomeOptions, U>(
     gen: Genome<T>,
-    fitness: (gen: Genome<T>) => Evaluation<T>,
+    fitness: (gen: Genome<T>) => Evaluation<T, U>,
     sampleSize: number = 5,
     mutateChance: number = 0.05,
     mutateType: string = 'sub',

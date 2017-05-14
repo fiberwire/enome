@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --colors --compilers ts:ts-node/register -r tsconfig-paths/register test/**/*.ts",
     "watch": "mocha --colors --watch --compilers ts:ts-node/register -r tsconfig-paths/register test/**/*.ts",
-    "sum": "node lib/examples/sum.js"
+    "sum": "node lib/src/examples/sum.js"
   },
   "repository": {
     "type": "git",

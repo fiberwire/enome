@@ -1,13 +1,12 @@
-import 'mocha';
+import { best } from '../../../src/operators/best';
 import { expect } from 'chai';
-import { Genome } from "genotypes/genome";
-import { GenomeOptions } from "options/genome-options";
-import { mutate } from "operators/mutation/mutate";
-import { Nucleotide } from "genotypes/nucleotide";
-import { mocks } from "../../mocks";
-import { replenish } from "operators/replenish";
-import { safeReproduce } from "operators/reproduction/safe-reproduce";
-import { best } from "operators/best";
+import { Genome } from '../../../src/genotypes/genome';
+import { GenomeOptions } from '../../../src/options/genome-options';
+import { mocks } from '../../mocks';
+import { mutate } from '../../../src/operators/mutation/mutate';
+import { replenish } from '../../../src/operators/replenish';
+import { safeReproduce } from '../../../src/operators/reproduction/safe-reproduce';
+import 'mocha';
 
 describe('operators', () => {
     describe('reproduction', () => {

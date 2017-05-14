@@ -1,6 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
-import { values } from "operators/values";
+import { values } from "../../src/index";
+
 
 
 describe('operators', () => {

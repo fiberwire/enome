@@ -1,1 +1,1 @@
-{"version":3,"file":"clone.js","sourceRoot":"","sources":["../../../src/operators/clone.ts"],"names":[],"mappings":";;AAIA,4BAA4B;AAE5B,eAA+C,GAAc;IACzD,MAAM,CAAC,CAAC,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC;AACxB,CAAC;AAFD,sBAEC"}
+{"version":3,"file":"clone.js","sourceRoot":"","sources":["../../../src/operators/clone.ts"],"names":[],"mappings":";;AAAA,4BAA4B;AAI5B,eAA+C,GAAc;IACzD,MAAM,CAAC,CAAC,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC;AACxB,CAAC;AAFD,sBAEC"}

@@ -1,19 +1,16 @@
-
-import { GenomeOptions } from "options/genome-options";
-import { Genome } from "genotypes/genome";
-import { Evaluation } from "evalutation";
-
 import * as _ from 'lodash';
-import { best } from "operators/best";
-import { reproduceManyToMany } from "operators/reproduction/many-to-many/reproduce-many-to-many";
-import { reproduceManyToOne } from "operators/reproduction/many-to-one/reproduce-many-to-one";
-import { value } from "operators/value";
+import { best } from '../../best';
+import { Evaluation } from '../../../evaluation';
+import { Genome } from '../../../genotypes/genome';
+import { GenomeOptions } from '../../../options/genome-options';
+import { reproduceManyToOne } from '../many-to-one/reproduce-many-to-one';
+import { value } from '../../value';
 
 //produces many offspring from many genomes, each one selected from a sample
-export function sampledReproduceManyToMany<T extends GenomeOptions>(
+export function sampledReproduceManyToMany<T extends GenomeOptions, U>(
     genomes: Genome<T>[],
     n: number,
-    fitness: (gen: Genome<T>) => Evaluation<T>,
+    fitness: (gen: Genome<T>) => Evaluation<T, U>,
     weights: number[] = _.range(0, genomes.length).map(i => value()),
     sampleSize: number = 5,
 ): Genome<T>[] {

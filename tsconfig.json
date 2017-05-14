@@ -13,12 +13,12 @@
         "outDir": "lib",
         "watch": true,
         "rootDir": ".",
-        "baseUrl": "./src",
-        "paths": {
-            "*": [
-                "*"
-            ]
-        },
+        //"baseUrl": "./src",
+        // "paths": {
+        //     "*": [
+        //         "*"
+        //     ]
+        // },
         "lib":[
             "esnext.asynciterable",
             "es2015"

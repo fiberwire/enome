@@ -1,4 +1,4 @@
-import { GenomeOptions } from "options/genome-options";
-import { Genome } from "genotypes/genome";
-import { Evaluation } from "evalutation";
-export declare function sampledMutate<T extends GenomeOptions>(gen: Genome<T>, fitness: (gen: Genome<T>) => Evaluation<T>, sampleSize?: number, mutateChance?: number, mutateType?: string): Genome<T>;
+import { Evaluation } from '../../evaluation';
+import { Genome } from '../../genotypes/genome';
+import { GenomeOptions } from '../../options/genome-options';
+export declare function sampledMutate<T extends GenomeOptions, U>(gen: Genome<T>, fitness: (gen: Genome<T>) => Evaluation<T, U>, sampleSize?: number, mutateChance?: number, mutateType?: string): Genome<T>;

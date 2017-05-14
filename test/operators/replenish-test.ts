@@ -1,7 +1,8 @@
+import { replenish } from '../../src/operators/replenish';
 import 'mocha';
 import { expect } from 'chai';
 import { mocks } from "../mocks";
-import { replenish } from "operators/replenish";
+
 
 
 describe('operators', () => {

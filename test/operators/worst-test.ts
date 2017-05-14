@@ -3,11 +3,8 @@ import 'mocha';
 import { expect } from 'chai';
 
 import * as _ from 'lodash';
-import { Genome } from "genotypes/genome";
-import { GenomeOptions } from "options/genome-options";
 import { mocks } from "../mocks";
-import { replenish } from "operators/replenish";
-import { worst } from "operators/worst";
+import { replenish, worst } from "../../src/index";
 
 describe('operators', () => {
     describe('worst', () => {

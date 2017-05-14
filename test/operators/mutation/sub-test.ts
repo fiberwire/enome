@@ -1,10 +1,8 @@
+import { sub } from '../../../src/operators/mutation/sub';
+import { replenish } from '../../../src/operators/replenish';
 
 import 'mocha';
 import { expect } from 'chai';
-import { Genome } from "genotypes/genome";
-import { GenomeOptions } from "options/genome-options";
-import { sub } from "operators/mutation/sub";
-import { replenish } from "operators/replenish";
 import { mocks } from "../../mocks";
 
 describe('operators', () => {

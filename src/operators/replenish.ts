@@ -1,7 +1,5 @@
-
-import { GenomeOptions } from "options/genome-options";
-import { Genome } from "genotypes/genome";
-import { clone } from "operators/clone";
+import { Genome } from '../genotypes/genome';
+import { GenomeOptions } from '../options/genome-options';
 
 //returns a new genome with the same options and sequence as the provided genome,
 //essentially replenishing its nucleos

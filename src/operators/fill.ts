@@ -7,7 +7,7 @@ export function fill<T extends GenomeOptions>(gens: Genome<T>[], n: number): Gen
     let offspring: Genome<T>[] =
         _.range(0, n - gens.length)
             .map(i => {
-                let g = new Genome({ genomeLength: 4, nucleotideLength: 1 });
+                let g = new Genome(gens[0].options);
 
                 //select two random parents, and create an offspring using two random weights
                 let p1 = g.nucleo.element(gens);

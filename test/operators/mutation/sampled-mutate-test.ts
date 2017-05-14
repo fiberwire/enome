@@ -1,13 +1,9 @@
-import 'mocha';
-import { expect } from 'chai';
-import { Genome } from "genotypes/genome";
-import { GenomeOptions } from "options/genome-options";
-import { Evaluation } from "evalutation";
-
 import * as _ from 'lodash';
-import { replenish } from "operators/replenish";
-import { mocks } from "../../mocks";
-import { sampledMutate } from "operators/mutation/sampled-mutate";
+import { expect } from 'chai';
+import { mocks } from '../../mocks';
+import { replenish } from '../../../src/operators/replenish';
+import { sampledMutate } from '../../../src/operators/mutation/sampled-mutate';
+import 'mocha';
 
 describe('operators', () => {
     describe('mutation', () => {

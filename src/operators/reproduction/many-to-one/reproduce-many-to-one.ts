@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
-import { GenomeOptions } from "options/genome-options";
-import { Genome } from "genotypes/genome";
-
 import * as Chance from 'chance';
-import { value } from "operators/value";
+import { Genome } from '../../../genotypes/genome';
+import { GenomeOptions } from '../../../options/genome-options';
+import { value } from '../../value';
+
 let chance = new Chance();
 
 export function reproduceManyToOne<T extends GenomeOptions>(
