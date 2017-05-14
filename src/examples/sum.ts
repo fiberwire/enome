@@ -1,12 +1,14 @@
-import { replenish } from '../operators/replenish';
-
-import { GenomeOptions, Genome, Evaluation, Nucleotide, Population, PopulationOptions } from "../index";
 import * as _ from 'lodash';
-
-import { fill } from "../operators/fill";
-import { best } from "../operators/best";
-import { top } from "../operators/top";
-
+import { best } from '../operators/best';
+import {
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    Nucleotide,
+    Population,
+    PopulationOptions
+    } from '../index';
+import { replenish } from '../operators/replenish';
 
 interface ListOptions extends GenomeOptions {
     min: number,
@@ -28,7 +30,7 @@ let pOptions: PopulationOptions = {
     mutateType: 'sub'
 };
 
-function createlist(genome: Genome<ListOptions>): number[] {
+function createList(genome: Genome<ListOptions>): number[] {
     return _.range(0, genome.options.length)
         .map((i: number) => {
             let n: Nucleotide = genome.nucleo;
@@ -40,7 +42,7 @@ function createlist(genome: Genome<ListOptions>): number[] {
 function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]> {
     let target = 123456;
 
-    let list = createlist(replenish(genome));
+    let list = createList(replenish(genome));
     let sum = _.sum(list);
     let absDifference = Math.abs(target - sum);
     //console.log(`target: ${target}, sum: ${sum}, absDiff: ${absDifference}, 1/absDiff: ${1/absDifference}`);
@@ -51,7 +53,7 @@ function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]>
 let pop = new Population(
     pOptions,
     gOptions,
-    createlist,
+    createList,
     fitness
 );
 
@@ -59,7 +61,7 @@ let ev = pop.evolve$(100)
     .subscribe(e => {
         let list = e.result;
         let f = e.fitness;
-        console.log(`\tlist: ${list}, sum: ${_.sum(list)}, fitness: ${f}`);
+        console.log(`\t`,`list: ${list}, sum: ${_.sum(list)}, fitness: ${f}`);
     },
     err => console.log(err))
 
