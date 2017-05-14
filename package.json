@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --colors --compilers ts:ts-node/register -r tsconfig-paths/register test/**/*.ts",
     "watch": "mocha --colors --watch --compilers ts:ts-node/register -r tsconfig-paths/register test/**/*.ts",
-    "sum": "node lib/src/examples/sum.js"
+    "sum": "ts-node src/examples/sum.ts"
   },
   "repository": {
     "type": "git",
@@ -24,9 +24,11 @@
     "chance": "^1.0.8",
     "core-js": "^2.4.1",
     "d3-interpolate": "^1.1.4",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "rx": "^4.1.0"
   },
   "devDependencies": {
+    "@types/rx": "^4.1.1",
     "@types/chai": "^3.5.2",
     "@types/chance": "^0.7.33",
     "@types/core-js": "^0.9.41",

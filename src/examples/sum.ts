@@ -1,10 +1,12 @@
+import { replenish } from '../operators/replenish';
 
-import { GenomeOptions, Genome, Evaluation, Nucleotide } from "../index";
+import { GenomeOptions, Genome, Evaluation, Nucleotide, Population, PopulationOptions } from "../index";
 import * as _ from 'lodash';
 
 import { fill } from "../operators/fill";
 import { best } from "../operators/best";
 import { top } from "../operators/top";
+
 
 interface ListOptions extends GenomeOptions {
     min: number,
@@ -12,53 +14,53 @@ interface ListOptions extends GenomeOptions {
     length: number
 }
 
-let options: ListOptions = {
-    genomeLength: 300,
+let gOptions: ListOptions = {
+    genomeLength: 100,
     nucleotideLength: 1,
     min: 1,
-    max: 100,
-    length: 3
+    max: 10000,
+    length: 20
 }
 
-function createlist(gen: Genome<ListOptions>): number[] {
-    return _.range(0, gen.options.length)
-        .map((i: number) => {
+let pOptions: PopulationOptions = {
+    populationSize: 10,
+    mutateChance: 0.01,
+    mutateType: 'sub'
+};
 
-            let n: Nucleotide = gen.nucleo;
-            //console.log(`n: ${n}`);
-            i = n.int(gen.options.min, gen.options.max);
-            return gen.nucleo.int(gen.options.min, gen.options.max);
+function createlist(genome: Genome<ListOptions>): number[] {
+    return _.range(0, genome.options.length)
+        .map((i: number) => {
+            let n: Nucleotide = genome.nucleo;
+            i = n.int(genome.options.min, genome.options.max);
+            return genome.nucleo.int(genome.options.min, genome.options.max);
         });
 }
 
-function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions> {
-    let target = 256;
-    let list = createlist(genome);
+function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]> {
+    let target = 123456;
+
+    let list = createlist(replenish(genome));
     let sum = _.sum(list);
     let absDifference = Math.abs(target - sum);
     //console.log(`target: ${target}, sum: ${sum}, absDiff: ${absDifference}, 1/absDiff: ${1/absDifference}`);
 
-    return { fitness: 1 / absDifference, genome: genome };
+    return { fitness: 1 / absDifference, genome: genome, result: list };
 }
 
-let genomes = _.range(0, 100).map(i => new Genome(options))
+let pop = new Population(
+    pOptions,
+    gOptions,
+    createlist,
+    fitness
+);
 
+let ev = pop.evolve$(100)
+    .subscribe(e => {
+        let list = e.result;
+        let f = e.fitness;
+        console.log(`\tlist: ${list}, sum: ${_.sum(list)}, fitness: ${f}`);
+    },
+    err => console.log(err))
 
-
-function evolve(gens: Genome<ListOptions>[], fitness: (genome: Genome<ListOptions>) => Evaluation<ListOptions>): Genome<ListOptions>[] {
-    let t = top(gens, 0.75, fitness).map(e => e.genome);
-    let f = fill(t, 100);
-    return f;
-}
-
-let generation = 0;
-while (best(genomes, fitness).fitness < .9999) {
-    generation++;
-    genomes = evolve(genomes, fitness);
-    let bst = best(genomes, fitness);
-    let gen = bst.genome;
-    let sum = _.sum(createlist(gen));
-    let fit = bst.fitness;
-    console.log(`generation: ${generation} sum: ${sum} fitness: ${fit}`);
-}
 

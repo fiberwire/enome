@@ -7,6 +7,13 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "sum",
+            "program": "${workspaceRoot}/lib/src/examples/sum.js",
+            "protocol": "inspector"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Mocha Tests",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "args": [
@@ -19,20 +26,6 @@
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "protocol": "inspector"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "sum",
-            "runtimeExecutable": "npm",
-            "windows": {
-                "runtimeExecutable": "npm.cmd"
-            },
-            "runtimeArgs": [
-                "run",
-                "sum"
-            ],
-            "port": 5858
         }
     ]
 }

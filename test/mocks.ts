@@ -33,7 +33,7 @@ export function mockFitness<T extends GenomeOptions>(): (g: Genome<T>) => Evalua
         return {
             fitness: _.sum(list),
             genome: gen,
-            creation: list
+            result: list
         }
     }
 }
