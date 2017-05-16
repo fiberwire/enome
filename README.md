@@ -31,7 +31,7 @@ What enome allows you to do:
  # Example usage
  say you want to evolve a list of three numbers between 1 and 100 that will add up to 256.
 
-`
+```
 import * as _ from 'lodash';
 import {
     sampledReproduce,
@@ -125,5 +125,5 @@ let ev = pop.evolve$(100)
     },
     err => console.log(err))
 
-`
+```
 
