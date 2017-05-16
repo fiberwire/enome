@@ -114,7 +114,7 @@ let pop = new Population(
 let evSync = pop.evolve(100);
 let list = evSync.result;
 let fit = evSync.fitness;
-console.log(`\t`, `list: ${list}, mean: ${_.mean(list)}, fitness: ${fit}`);
+console.log(`\t`, `list: ${list}, sum: ${_.sum(list)}, fitness: ${fit}`);
 
 //or reactively
 let ev = pop.evolve$(100)
