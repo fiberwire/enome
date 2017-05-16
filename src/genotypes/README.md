@@ -6,7 +6,7 @@ classes used in the evolution process
  - [Nucleotide](#nucleotide)
 
 
-### [Genome]
+### Genome
 The smallest evolvable unit. Contains `Nucleotide`s. Can be evolved by a `Population`.
 
 #### constructor()
