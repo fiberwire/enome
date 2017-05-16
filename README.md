@@ -121,7 +121,7 @@ let ev = pop.evolve$(100)
     .subscribe(e => {
         let list = e.result;
         let fit = e.fitness;
-        console.log(`\t`, `list: ${list}, mean: ${_.mean(list)}, fitness: ${fit}`);
+        console.log(`\t`, `list: ${list}, sum: ${_.sum(list)}, fitness: ${fit}`);
     },
     err => console.log(err))
 
