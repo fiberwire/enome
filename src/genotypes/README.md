@@ -3,13 +3,14 @@ classes used in the evolution process
 
 ## Table of Contents
  - [Genome](#genome)
+    - [constructor](#genome-constructor)
  - [Nucleotide](#nucleotide)
 
 
 ### Genome
 The smallest evolvable unit. Contains `Nucleotide`s. Can be evolved by a `Population`.
 
-#### constructor()
+#### <a name="genome-constructor"/></a>constructor()
 - `options`: `T`
     - options for setting up a `Genome`.
 - `sequence`: `number[]?`
