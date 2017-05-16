@@ -11,8 +11,8 @@ export function safeSampledReproduceManyToMany<T extends GenomeOptions, U>(
     genomes: Genome<T>[],
     n: number,
     fitness: (gen: Genome<T>) => Evaluation<T, U>,
-    weights: number[] = _.range(0, genomes.length).map(i => value()),
     sampleSize: number = 5,
+    weights: number[] = _.range(0, genomes.length).map(i => value()),
 ): Genome<T>[] {
     let result: Genome<T>[] = [];
     let avgFit = avgFitness(genomes, fitness);
@@ -20,7 +20,7 @@ export function safeSampledReproduceManyToMany<T extends GenomeOptions, U>(
     while (result.length < n) {
         result = _.concat(
             result,
-            sampledReproduceManyToMany(genomes, n, fitness, weights, sampleSize)
+            sampledReproduceManyToMany(genomes, n, fitness, sampleSize, weights)
                 .filter(g => fitness(g).fitness > avgFit)
         )
     }

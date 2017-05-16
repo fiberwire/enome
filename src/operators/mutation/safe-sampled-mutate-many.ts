@@ -9,14 +9,15 @@ export function safeSampledMutateMany<T extends GenomeOptions, U>(
     genomes: Genome<T>[],
     fitness: (gen: Genome<T>) => Evaluation<T, U>,
     mutateChance: number = 0.05,
-    mutateType: string = 'sub'
+    mutateType: string = 'sub',
+    sampleSize: number = 5
 ): Genome<T>[] {
     let result: Genome<T>[] = [];
 
     while (result.length < genomes.length) {
         result = _.concat(
             result,
-            sampledMutateMany(genomes, fitness, mutateChance, mutateType)
+            sampledMutateMany(genomes, fitness, mutateChance, mutateType, sampleSize)
                 .filter(g => fitness(g).fitness > avgFitness(genomes, fitness))
         )
     }

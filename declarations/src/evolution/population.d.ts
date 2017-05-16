@@ -16,7 +16,10 @@ export declare class Population<T extends GenomeOptions, U extends PopulationOpt
     fitness: (gen: Genome<T>) => Evaluation<T, V>;
     genomes: Genome<T>[];
     constructor(popOptions: U, genOptions: T, create: (gen: Genome<T>) => V, fitness: (gen: Genome<T>) => Evaluation<T, V>);
+    reproduce(gens: Genome<T>[]): Genome<T>[];
+    mutate(gens: Genome<T>[]): Genome<T>[];
+    fill(gens: Genome<T>[]): Genome<T>[];
     evolveStep(): Genome<T>[];
     evolve(generations: number): Evaluation<T, V>;
-    evolve$(generations: number, timeout?: number): Observable<Evaluation<T, V>>;
+    evolve$(generations?: number, timeout?: number): Observable<Evaluation<T, V>>;
 }

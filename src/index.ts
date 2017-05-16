@@ -6,6 +6,8 @@ import { clone } from './operators/clone';
 import { concat } from './operators/concat';
 import { Evaluation } from './evaluation';
 import { fill } from './operators/fill';
+import { fillRandom } from './operators/fill-random';
+import { fillWorst } from './operators/fill-worst';
 import { Genome } from './genotypes/genome';
 import { GenomeOptions } from './options/genome-options';
 import { mutate } from './operators/mutation/mutate';
@@ -14,6 +16,7 @@ import { Nucleotide } from './genotypes/nucleotide';
 import { Population } from './evolution/population';
 import { PopulationOptions } from './options/population-options';
 import { replenish } from './operators/replenish';
+import { replenishMany } from './operators/replenish-many';
 import { reproduce } from './operators/reproduction/reproduce';
 import { reproduceManyToMany } from './operators/reproduction/many-to-many/reproduce-many-to-many';
 import { reproduceManyToOne } from './operators/reproduction/many-to-one/reproduce-many-to-one';
@@ -58,7 +61,10 @@ export {
     clone,
     concat,
     fill,
+    fillWorst,
+    fillRandom,
     replenish,
+    replenishMany,
     top,
     value,
     values,

@@ -50,11 +50,29 @@ export class Genome<T extends GenomeOptions> {
 
     //gets the next nucleotide
     get nucleo(): Nucleotide {
+        if (this.nucleos.length == 0) {
+            if (this.options.extendNucleotides) {
+                this.nucleos = this.nucleotides;
+            }
+            else {
+                throw (`${this.id} ran out of nucleos`);
+            }
+        }
+
         return this.nucleos.shift();
     }
 
     //gets the next n nucleotides
     nuclei(n: number): Nucleotide[] {
+        if (this.nucleos.length < n) {
+            if (this.options.extendNucleotides) {
+                this.nucleos = this.nucleotides;
+            }
+            else {
+                throw (`${this.id} ran out of nucleos`);
+            }
+        }
+
         return _.range(0, n).map(i => this.nucleo);
     }
 }
