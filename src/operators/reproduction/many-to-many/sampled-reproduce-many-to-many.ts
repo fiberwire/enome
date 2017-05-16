@@ -11,8 +11,8 @@ export function sampledReproduceManyToMany<T extends GenomeOptions, U>(
     genomes: Genome<T>[],
     n: number,
     fitness: (gen: Genome<T>) => Evaluation<T, U>,
-    weights: number[] = _.range(0, genomes.length).map(i => value()),
     sampleSize: number = 5,
+    weights: number[] = _.range(0, genomes.length).map(i => value())
 ): Genome<T>[] {
     //create many genomes (according to n)
     return _.range(0, n)

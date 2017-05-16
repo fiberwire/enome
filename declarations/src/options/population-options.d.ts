@@ -1,5 +1,9 @@
+import { MutateOptions } from './mutate-options';
+import { ReproduceOptions } from './reproduce-options';
 export interface PopulationOptions {
     populationSize: number;
-    mutateChance: number;
-    mutateType: string;
+    fillType: string;
+    fillPercent: number;
+    reproduceOptions: ReproduceOptions;
+    mutateOptions: MutateOptions;
 }
