@@ -34,7 +34,7 @@ describe('genotypes', () => {
 
         describe('natural', () => {
             it('should produce a natural number between 0 and max', () => {
-                const n = genome.nucleo.natural(10);
+                const n = genome.nucleo.natural(-1, 10);
                 expect(n).to.be.at.least(0);
                 expect(n).to.be.at.most(10);
                 expect(n % 1).to.eql(0);
