@@ -18,7 +18,7 @@ describe('operators', () => {
         it('should return the worst genomes from the provided array, according to provided fitness function', () => {
             
             //bottom 50% of genomes
-            const b = bottom(genomes, 0.5, fitness);
+            const b = bottom(genomes, fitness, 0.5);
 
             expect(b.length).to.eql(genomes.length * 0.5);
 
