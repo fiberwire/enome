@@ -73,6 +73,6 @@ export class Genome<T extends GenomeOptions> {
             }
         }
 
-        return _.range(0, n).map(i => this.nucleo);
+        return _.range(n).map(i => this.nucleo);
     }
 }

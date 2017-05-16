@@ -15,13 +15,13 @@ describe('genotypes', () => {
         let { genome } = mocks();
 
         beforeEach(() => {
-            replenish(genome);
+            genome = replenish(genome);
         })
 
         describe('constructor', () => {
             it('should create a new genome', () => {
-                expect(genome.options.genomeLength).to.eql(100);
-                expect(genome.options.nucleotideLength).to.eql(2);
+                expect(genome.options.genomeLength).to.eql(50);
+                expect(genome.options.nucleotideLength).to.eql(1);
                 expect(genome).to.be.instanceof(Genome);
             })
 
