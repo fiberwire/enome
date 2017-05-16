@@ -75,7 +75,7 @@ returns an array of `Evaluation<T, U>`s of the bottom X percent (specified by `p
 - `genomes`: `Genome<T>[]`
 - `fitness`: (`genome`: `Genome<T>`) => `Evaluation<T, U>`
 - `percent`: `number`
-    - defaults to `0.5` for 50%
+    - defaults to `0.5` (for 50%)
 
 example usage:
 ```
@@ -93,7 +93,7 @@ let b = bottom(genomes, fitness, 0.5);
 // b => Genome<T>[5]
 ```
 
-### <a name=""></a> clone<T>(genome: Genome<T>: Genome<T>
+### <a name=""></a> clone: Genome<T>
 returns an exact copy of the `Genome` passed to it, including the state of its `nucleos`.
 - `genome`: `Genome<T>`
     - the `Genome` you would like to copy.
