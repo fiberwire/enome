@@ -1,5 +1,4 @@
-
-import { GenomeOptions, Genome } from "./index";
+import { Genome, GenomeOptions } from './index';
 
 export interface Evaluation<T extends GenomeOptions, U> {
     fitness: number;

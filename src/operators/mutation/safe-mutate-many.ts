@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
-import { avgFitness } from '../avg-fitness';
-import { Evaluation } from '../../evaluation';
-import { Genome } from '../../genotypes/genome';
-import { GenomeOptions } from '../../options/genome-options';
-import { mutateMany } from './mutate-many';
+import {
+    avgFitness,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    mutateMany
+    } from '../../index';
 
 export function safeMutateMany<T extends GenomeOptions, U>(
     genomes: Genome<T>[],

@@ -13,7 +13,7 @@ import { GenomeOptions } from './options/genome-options';
 import { mutate } from './operators/mutation/mutate';
 import { mutateMany } from './operators/mutation/mutate-many';
 import { Nucleotide } from './genotypes/nucleotide';
-import { Population } from './evolution/population';
+import { Population } from './populations/population';
 import { PopulationOptions } from './options/population-options';
 import { replenish } from './operators/replenish';
 import { replenishMany } from './operators/replenish-many';

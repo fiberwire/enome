@@ -1,10 +1,12 @@
 import * as _ from 'lodash';
-import { avgFitness } from '../../avg-fitness';
-import { Evaluation } from '../../../evaluation';
-import { Genome } from '../../../genotypes/genome';
-import { GenomeOptions } from '../../../options/genome-options';
-import { reproduceManyToMany } from './reproduce-many-to-many';
-import { value } from '../../value';
+import {
+    avgFitness,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    reproduceManyToMany,
+    value
+} from '../../../index';
 
 export function safeReproduceManyToMany<T extends GenomeOptions, U>(
     genomes: Genome<T>[],

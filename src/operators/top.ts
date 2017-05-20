@@ -1,8 +1,10 @@
 import * as _ from 'lodash';
-import { Evaluation } from '../evaluation';
-import { Genome } from '../genotypes/genome';
-import { GenomeOptions } from '../options/genome-options';
-import { Nucleotide } from '../genotypes/nucleotide';
+import {
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    Nucleotide
+} from '../index';
 
 export function top<T extends GenomeOptions, U>(
     genomes: Genome<T>[],

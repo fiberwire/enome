@@ -1,12 +1,13 @@
-import * as Chance from 'chance';
 import * as _ from 'lodash';
-import { Nucleotide } from './nucleotide';
-import { GenomeOptions, value } from "../index";
-import { mutate } from "../operators/mutation/mutate";
-import { values } from "../operators/values";
+import * as Chance from 'chance';
+import {
+    GenomeOptions,
+    Nucleotide,
+    value,
+    values
+    } from '../index';
 
 const chance = new Chance();
-
 
 export class Genome<T extends GenomeOptions> {
 

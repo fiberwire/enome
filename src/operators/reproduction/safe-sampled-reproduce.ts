@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
-import { best } from '../best';
-import { Evaluation } from '../../evaluation';
-import { Genome } from '../../genotypes/genome';
-import { GenomeOptions } from '../../options/genome-options';
-import { reproduce } from './reproduce';
+import {
+    best,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    reproduce
+} from '../../index';
 
 export function safeSampledReproduce<T extends GenomeOptions, U>(
     gen1: Genome<T>,

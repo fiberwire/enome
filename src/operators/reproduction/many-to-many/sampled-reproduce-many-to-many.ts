@@ -1,10 +1,12 @@
 import * as _ from 'lodash';
-import { best } from '../../best';
-import { Evaluation } from '../../../evaluation';
-import { Genome } from '../../../genotypes/genome';
-import { GenomeOptions } from '../../../options/genome-options';
-import { reproduceManyToOne } from '../many-to-one/reproduce-many-to-one';
-import { value } from '../../value';
+import {
+    best,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    reproduceManyToOne,
+    value
+} from '../../../index';
 
 //produces many offspring from many genomes, each one selected from a sample
 export function sampledReproduceManyToMany<T extends GenomeOptions, U>(

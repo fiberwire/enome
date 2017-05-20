@@ -1,8 +1,10 @@
-import { GenomeOptions } from '../../options/genome-options';
-import { Genome } from '../../genotypes/genome';
-import { reproduce } from './reproduce';
-import { best } from '../best';
-import { Evaluation } from "../../evaluation";
+import {
+    best,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    reproduce
+} from '../../index';
 
 export function safeReproduce<T extends GenomeOptions, U>(
     gen1: Genome<T>,
@@ -11,7 +13,7 @@ export function safeReproduce<T extends GenomeOptions, U>(
     weight1: number = 1,
     weight2: number = 1,
     mutateChance: number = 0.05
-): Genome<T>{
+): Genome<T> {
     let offspring = reproduce(gen1, gen2, weight1, weight2, mutateChance);
 
     return best([gen1, gen2, offspring], fitness).genome;

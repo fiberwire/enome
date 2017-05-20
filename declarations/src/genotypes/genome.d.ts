@@ -1,5 +1,4 @@
-import { Nucleotide } from './nucleotide';
-import { GenomeOptions } from "../index";
+import { GenomeOptions, Nucleotide } from '../index';
 export declare class Genome<T extends GenomeOptions> {
     options: T;
     sequence: number[];

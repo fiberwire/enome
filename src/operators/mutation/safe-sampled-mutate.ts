@@ -1,8 +1,10 @@
-import { best } from '../best';
-import { Evaluation } from '../../evaluation';
-import { Genome } from '../../genotypes/genome';
-import { GenomeOptions } from '../../options/genome-options';
-import { sampledMutate } from './sampled-mutate';
+import {
+    best,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    sampledMutate
+    } from '../../index';
 
 export function safeSampledMutate<T extends GenomeOptions, U>(
     gen: Genome<T>,

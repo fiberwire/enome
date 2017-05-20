@@ -1,7 +1,5 @@
 import * as _ from 'lodash';
-import { Genome } from '../../genotypes/genome';
-import { GenomeOptions } from '../../options/genome-options';
-import { mutate } from './mutate';
+import { Genome, GenomeOptions, mutate } from '../../index';
 
 export function mutateMany<T extends GenomeOptions>(
     genomes: Genome<T>[],

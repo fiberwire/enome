@@ -1,6 +1,5 @@
-
-import { Genome, GenomeOptions, Evaluation } from "../index";
 import * as _ from 'lodash';
+import { Evaluation, Genome, GenomeOptions } from '../index';
 
 export function best<T extends GenomeOptions, U>(
     genomes: Genome<T>[],

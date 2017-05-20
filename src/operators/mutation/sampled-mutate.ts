@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
-import { best } from '../best';
-import { Evaluation } from '../../evaluation';
-import { Genome } from '../../genotypes/genome';
-import { GenomeOptions } from '../../options/genome-options';
-import { mutate } from './mutate';
+import {
+    best,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    mutate
+} from '../../index';
 
 //produces a number of mutated genomes, then returns the best one.
 export function sampledMutate<T extends GenomeOptions, U>(

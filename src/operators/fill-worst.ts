@@ -9,7 +9,6 @@ import {
     top
 } from '../index';
 
-
 //replaces the worst genomes with random ones
 export function fillWorst<T extends GenomeOptions, U>(
     genomes: Genome<T>[],

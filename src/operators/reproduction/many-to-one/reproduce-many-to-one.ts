@@ -1,8 +1,6 @@
 import * as _ from 'lodash';
 import * as Chance from 'chance';
-import { Genome } from '../../../genotypes/genome';
-import { GenomeOptions } from '../../../options/genome-options';
-import { value } from '../../value';
+import { Genome, GenomeOptions, value } from '../../../index';
 
 let chance = new Chance();
 

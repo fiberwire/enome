@@ -1,7 +1,5 @@
 import * as _ from 'lodash';
-import { Evaluation } from '../evaluation';
-import { Genome } from '../genotypes/genome';
-import { GenomeOptions } from '../options/genome-options';
+import { Evaluation, Genome, GenomeOptions } from '../index';
 
 export function worst<T extends GenomeOptions, U>(
     genomes: Genome<T>[],

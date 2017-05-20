@@ -1,10 +1,12 @@
 import * as _ from 'lodash';
-import { avgFitness } from '../../avg-fitness';
-import { Evaluation } from '../../../evaluation';
-import { Genome } from '../../../genotypes/genome';
-import { GenomeOptions } from '../../../options/genome-options';
-import { sampledReproduceManyToMany } from './sampled-reproduce-many-to-many';
-import { value } from '../../value';
+import {
+    avgFitness,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    sampledReproduceManyToMany,
+    value
+} from '../../../index';
 
 //produces many offspring from many genomes, each group selected from a sample, then returns the best group of offspring
 export function safeSampledReproduceManyToMany<T extends GenomeOptions, U>(

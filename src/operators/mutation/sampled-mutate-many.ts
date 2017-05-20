@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
-import { best } from '../best';
-import { Evaluation } from '../../evaluation';
-import { Genome } from '../../genotypes/genome';
-import { GenomeOptions } from '../../options/genome-options';
-import { mutate } from './mutate';
+import {
+    best,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    mutate
+} from '../../index';
 
 export function sampledMutateMany<T extends GenomeOptions, U>(
     genomes: Genome<T>[],

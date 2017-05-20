@@ -1,8 +1,6 @@
-
-import { Genome, GenomeOptions } from "../../index";
-import { mutate } from "../mutation/mutate";
-import { Chance } from 'chance';
 import * as _ from 'lodash';
+import { Chance } from 'chance';
+import { Genome, GenomeOptions, mutate } from '../../index';
 
 const chance = new Chance();
 

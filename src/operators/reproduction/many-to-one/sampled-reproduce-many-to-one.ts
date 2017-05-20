@@ -1,10 +1,12 @@
 import * as _ from 'lodash';
-import { best } from '../../best';
-import { Evaluation } from '../../../evaluation';
-import { Genome } from '../../../genotypes/genome';
-import { GenomeOptions } from '../../../options/genome-options';
-import { reproduceManyToOne } from './reproduce-many-to-one';
-import { value } from '../../value';
+import {
+    best,
+    Evaluation,
+    Genome,
+    GenomeOptions,
+    reproduceManyToOne,
+    value
+} from '../../../index';
 
 //produce one offspring from many provided genomes, each one selected from a sample
 export function sampledReproduceManyToOne<T extends GenomeOptions, U>(
@@ -15,9 +17,9 @@ export function sampledReproduceManyToOne<T extends GenomeOptions, U>(
 ): Genome<T> {
     //produce offspring
     let offspring = _.range(0, sampleSize)
-    .map (i => {
-        return reproduceManyToOne(genomes, weights);
-    })
+        .map(i => {
+            return reproduceManyToOne(genomes, weights);
+        })
 
     return best(offspring, fitness).genome;
 }

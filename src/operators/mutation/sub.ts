@@ -1,6 +1,4 @@
-
-import { Genome, GenomeOptions } from "../../index";
-import { value } from "../value";
+import { Genome, GenomeOptions, value } from '../../index';
 
 export function sub<T extends GenomeOptions>(gen: Genome<T>, mutateChance: number): Genome<T> {
     return new Genome(

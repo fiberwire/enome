@@ -1,8 +1,10 @@
 import * as _ from 'lodash';
-import { Genome } from '../../../genotypes/genome';
-import { GenomeOptions } from '../../../options/genome-options';
-import { reproduceManyToOne } from '../many-to-one/reproduce-many-to-one';
-import { value } from '../../value';
+import {
+    Genome,
+    GenomeOptions,
+    reproduceManyToOne,
+    value
+} from '../../../index';
 
 export function reproduceManyToMany<T extends GenomeOptions>(
     genomes: Genome<T>[],

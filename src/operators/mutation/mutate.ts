@@ -1,9 +1,9 @@
-
-
-import { GenomeOptions } from "../../options/genome-options";
-import { Genome } from "../../index";
-import { sub } from "./sub";
-import { avg } from "./avg";
+import {
+    avg,
+    Genome,
+    GenomeOptions,
+    sub
+    } from '../../index';
 
 export function mutate<T extends GenomeOptions>(
     gen: Genome<T>,
