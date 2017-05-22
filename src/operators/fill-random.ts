@@ -1,10 +1,7 @@
 import * as _ from 'lodash';
-import {
-    Evaluation,
-    Genome,
-    GenomeOptions,
-    Nucleotide
-} from '../index';
+import { Genome } from '../genotypes/genome';
+import { GenomeOptions } from '../options/genome-options';
+import { Nucleotide } from '../genotypes/nucleotide';
 
 //randomly replaces a percent of genomes (regardless of fitness) with random ones
 export function fillRandom<T extends GenomeOptions, U>(

@@ -9,7 +9,6 @@ import 'mocha';
 
 describe('genotypes', () => {
 
-
     describe('genome', () => {
 
         let { genome } = mocks();
