@@ -1,16 +1,13 @@
-import { fillRandom } from '../operators/fill-random';
-import { fillWorst } from '../operators/fill-worst';
-import { bottom } from '../operators/bottom';
-import { worst } from '../operators/worst';
 import * as _ from 'lodash';
 import { BehaviorSubject, ControlledObservable, Observable } from 'rx';
 import {
     best,
     Evaluation,
+    generateGenomes,
     Genome,
     GenomeOptions,
     mutateMany,
-    PopulationOptions,
+    NaturalSelectionOptions,
     reproduceManyToMany,
     safeMutateMany,
     safeReproduceManyToMany,
@@ -19,8 +16,12 @@ import {
     sampledMutateMany,
     sampledReproduceManyToMany
 } from '../index';
+import { bottom } from '../operators/bottom';
+import { fillRandom } from '../operators/fill-random';
+import { fillWorst } from '../operators/fill-worst';
+import { worst } from '../operators/worst';
 
-export class Population<T extends GenomeOptions, U extends PopulationOptions, V> {
+export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectionOptions, V> {
     genomes: Genome<T>[];
 
     constructor(
@@ -29,8 +30,7 @@ export class Population<T extends GenomeOptions, U extends PopulationOptions, V>
         public create: (gen: Genome<T>) => V,
         public fitness: (gen: Genome<T>) => Evaluation<T, V>
     ) {
-        this.genomes = _.range(0, popOptions.populationSize)
-            .map(i => new Genome(genOptions));
+        this.genomes = generateGenomes(this.popOptions.populationSize, this.genOptions);
     }
 
     reproduce(gens: Genome<T>[]): Genome<T>[] {

@@ -1,3 +1,5 @@
+import { ArtificialSelection } from './populations/artificial-selection';
+import { ArtificialSelectionOptions } from './options/artificial-selection-options';
 import { avg } from './operators/mutation/avg';
 import { avgFitness } from './operators/avg-fitness';
 import { best } from './operators/best';
@@ -8,18 +10,21 @@ import { Evaluation } from './evaluation';
 import { fill } from './operators/fill';
 import { fillRandom } from './operators/fill-random';
 import { fillWorst } from './operators/fill-worst';
+import { generateGenomes } from './operators/generate-genomes';
 import { Genome } from './genotypes/genome';
 import { GenomeOptions } from './options/genome-options';
 import { mutate } from './operators/mutation/mutate';
 import { mutateMany } from './operators/mutation/mutate-many';
+import { MutateOptions } from './options/mutate-options';
+import { NaturalSelection } from './populations/natural-selection';
+import { NaturalSelectionOptions } from './options/natural-selection-options';
 import { Nucleotide } from './genotypes/nucleotide';
-import { Population } from './populations/population';
-import { PopulationOptions } from './options/population-options';
 import { replenish } from './operators/replenish';
 import { replenishMany } from './operators/replenish-many';
 import { reproduce } from './operators/reproduction/reproduce';
 import { reproduceManyToMany } from './operators/reproduction/many-to-many/reproduce-many-to-many';
 import { reproduceManyToOne } from './operators/reproduction/many-to-one/reproduce-many-to-one';
+import { ReproduceOptions } from './options/reproduce-options';
 import { safeMutate } from './operators/mutation/safe-mutate';
 import { safeMutateMany } from './operators/mutation/safe-mutate-many';
 import { safeReproduce } from './operators/reproduction/safe-reproduce';
@@ -44,7 +49,10 @@ import { worst } from './operators/worst';
 //options
 export {
     GenomeOptions,
-    PopulationOptions
+    MutateOptions,
+    ReproduceOptions,
+    NaturalSelectionOptions,
+    ArtificialSelectionOptions
 };
 
 //genotypes
@@ -63,6 +71,7 @@ export {
     fill,
     fillWorst,
     fillRandom,
+    generateGenomes,
     replenish,
     replenishMany,
     top,
@@ -116,5 +125,6 @@ export {
 //misc
 export {
     Evaluation,
-    Population
+    NaturalSelection,
+    ArtificialSelection
 }

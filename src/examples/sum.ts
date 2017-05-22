@@ -1,14 +1,14 @@
 import * as _ from 'lodash';
 import {
-    sampledReproduce,
     best,
     Evaluation,
     Genome,
     GenomeOptions,
+    NaturalSelection,
+    NaturalSelectionOptions,
     Nucleotide,
-    Population,
-    PopulationOptions,
-    replenish
+    replenish,
+    sampledReproduce
 } from '../index';
 
 interface ListOptions extends GenomeOptions {
@@ -33,7 +33,7 @@ function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]>
     let mean = _.mean(list);
     let absDifference = Math.abs(target - mean);
     //console.log(`target: ${target}, sum: ${sum}, absDiff: ${absDifference}, 1/absDiff: ${1/absDifference}`);
-    
+
     return { fitness: absDifference, genome: genome, result: list };
 }
 
@@ -46,7 +46,7 @@ let gOptions: ListOptions = {
     extendNucleotides: false
 }
 
-let pOptions: PopulationOptions = {
+let pOptions: NaturalSelectionOptions = {
     populationSize: 20,
     fillType: 'random', //either worst or random
     fillPercent: 0.15,
@@ -64,7 +64,7 @@ let pOptions: PopulationOptions = {
     }
 };
 
-let pop = new Population(
+let pop = new NaturalSelection(
     pOptions,
     gOptions,
     createList,
