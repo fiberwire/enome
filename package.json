@@ -4,8 +4,8 @@
   "description": "A library that generates genomes for all of your genetic algorithm needs.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha --colors --compilers ts:ts-node/register -r tsconfig-paths/register test/**/*.ts",
-    "watch": "mocha --colors --watch --compilers ts:ts-node/register -r tsconfig-paths/register test/**/*.ts",
+    "test": "mocha --colors --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
+    "watch": "mocha --colors --watch --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
     "sum": "ts-node src/examples/sum.ts",
     "letters": "ts-node src/examples/letters.ts"
   },

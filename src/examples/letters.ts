@@ -34,7 +34,7 @@ let pOptions: ArtificialSelectionOptions = {
     maxSixe: 15,
     mutateOptions: {
         mutateChance: 15,
-        mutateType: 'sub',
+        mutateType: 'avg',
         sampled: false,
         safe: false,
         sampleSize: 5
