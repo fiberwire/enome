@@ -1,4 +1,6 @@
-import { Genome, GenomeOptions, value } from '../../index';
+import { Genome } from '../../genotypes/genome';
+import { GenomeOptions } from '../../options/genome-options';
+import { value } from '../value';
 
 export function avg<T extends GenomeOptions>(gen: Genome<T>, mutateChance: number): Genome<T> {
     return new Genome(

@@ -1,6 +1,7 @@
-
-import { GenomeOptions, Genome, reproduce } from "../index";
 import * as _ from 'lodash';
+import { Genome } from '../genotypes/genome';
+import { GenomeOptions } from '../options/genome-options';
+import { reproduce } from './reproduction/reproduce';
 
 export function fill<T extends GenomeOptions>(
     gens: Genome<T>[],
@@ -17,7 +18,7 @@ export function fill<T extends GenomeOptions>(
                 let p2 = g.nucleo.element(gens);
                 let w1 = g.nucleo.float(0, 1);
                 let w2 = g.nucleo.float(0, 1);
-                return reproduce(p1, p2, w1, w2)
+                return reproduce(p1, p2, w1, w2);
             });
 
     return _.concat(gens, offspring);
