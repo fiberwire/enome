@@ -42,11 +42,11 @@ function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]>
 }
 
 let gOptions: ListOptions = {
-    genomeLength: 5,
-    nucleotideLength: 1,
+    genomeLength: 3,
+    nucleotideLength: 5,
     min: 1,
     max: 100,
-    length: 5,
+    length: 3,
     extendNucleotides: true
 }
 
