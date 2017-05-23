@@ -76,7 +76,7 @@ let pop = new NaturalSelection(
 
 
 let ev = pop.evolve$()
-    .subscribe(e => {
+    .subscribe((e: Evaluation<ListOptions, number[]>) => {
         let list = e.result;
         let f = e.fitness;
         console.log(`\t`, `list: ${list}, sum: ${_.sum(list)}, fitness: ${f}`);

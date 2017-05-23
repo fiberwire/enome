@@ -1,10 +1,10 @@
-import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
 import { ArtificialSelection } from '../src/populations/artificial-selection';
-import { NaturalSelectionOptions } from '../src/options/natural-selection-options';
-import { Evaluation } from '../src/evaluation';
+import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
+import { Evaluation } from '../src/interfaces/evaluation';
 import { Genome } from '../src/genotypes/genome';
 import { GenomeOptions } from '../src/options/genome-options';
 import { NaturalSelection } from '../src/populations/natural-selection';
+import { NaturalSelectionOptions } from '../src/options/natural-selection-options';
 export interface Mock {
     genome: Genome<GenomeOptions>;
     genomes: Genome<GenomeOptions>[];

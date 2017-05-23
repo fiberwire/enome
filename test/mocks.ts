@@ -1,18 +1,18 @@
-import { MutateType } from '../src/enums/mutate-type';
-import { ReproduceType } from '../src/enums/reproduce-type';
+import * as _ from 'lodash';
+import { ArtificialSelection } from '../src/populations/artificial-selection';
+import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
+import { Evaluation } from '../src/interfaces/evaluation';
 import { FillType } from '../src/enums/fill-type';
 import { FitnessObjective } from '../src/enums/fitness-objective';
-import { MutateOp } from '../src/enums/mutate-op';
-import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
-import { ArtificialSelection } from '../src/populations/artificial-selection';
-import { NaturalSelectionOptions } from '../src/options/natural-selection-options';
-import * as _ from 'lodash';
-import { Evaluation } from '../src/evaluation';
 import { Genome } from '../src/genotypes/genome';
 import { GenomeOptions } from '../src/options/genome-options';
+import { MutateOp } from '../src/enums/mutate-op';
+import { MutateType } from '../src/enums/mutate-type';
 import { NaturalSelection } from '../src/populations/natural-selection';
+import { NaturalSelectionOptions } from '../src/options/natural-selection-options';
 import { Nucleotide } from '../src/genotypes/nucleotide';
 import { replenish } from '../src/operators/replenish';
+import { ReproduceType } from '../src/enums/reproduce-type';
 import { value } from '../src/operators/value';
 
 export interface Mock {
@@ -90,7 +90,7 @@ export function mockASOptions(): ArtificialSelectionOptions {
     return {
         initSize: 10,
         minSize: 5,
-        maxSixe: 15,
+        maxSize: 15,
         mutateOptions: {
             type: MutateType.normal,
             sampleSize: 5,

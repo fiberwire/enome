@@ -1,8 +1,8 @@
-import { bottom } from '../../bottom';
 import * as _ from 'lodash';
 import { avgFitness } from '../../avg-fitness';
 import { best } from '../../best';
-import { Evaluation } from '../../../evaluation';
+import { bottom } from '../../bottom';
+import { Evaluation } from '../../../interfaces/evaluation';
 import { FitnessObjective } from '../../../enums/fitness-objective';
 import { Genome } from '../../../genotypes/genome';
 import { GenomeOptions } from '../../../options/genome-options';

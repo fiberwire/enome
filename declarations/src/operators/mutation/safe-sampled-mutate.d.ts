@@ -1,4 +1,4 @@
-import { Evaluation } from '../../evaluation';
+import { Evaluation } from '../../interfaces/evaluation';
 import { FitnessObjective } from '../../enums/fitness-objective';
 import { Genome } from '../../genotypes/genome';
 import { GenomeOptions } from '../../options/genome-options';

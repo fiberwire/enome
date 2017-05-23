@@ -1,5 +1,5 @@
+import { Evaluation } from '../../interfaces/evaluation';
 import { FitnessObjective } from '../../enums/fitness-objective';
-import { Evaluation } from '../../evaluation';
 import { Genome } from '../../genotypes/genome';
 import { GenomeOptions } from '../../options/genome-options';
 import { MutateOp } from '../../enums/mutate-op';

@@ -30,9 +30,9 @@ export declare class ArtificialSelection<T extends GenomeOptions, U extends Arti
     private remove(genome);
     private removeAtIndex(index);
     keep(): void;
-    replace(): void;
-    reproduce(n?: number): void;
     kill(): void;
+    reproduce(n?: number): void;
+    delete(): void;
     random(): void;
     generate(): void;
 }

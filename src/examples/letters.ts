@@ -33,7 +33,7 @@ let gOptions: LettersOptions = {
 let pOptions: ArtificialSelectionOptions = {
     initSize: 10,
     minSize: 5,
-    maxSixe: 15,
+    maxSize: 15,
     mutateOptions: {
         mutateChance: 15,
         mutateOp: MutateOp.avg,
@@ -69,20 +69,20 @@ pop.genomes$
                 //requeues the current genome to the end of the array
                 pop.keep();
                 break;
-            case 'replace':
+            case 'kill':
             case '2':
                 //removes the current genome, adds a new offspring of the whole array to the end
-                pop.replace();
+                pop.kill();
                 break;
             case 'reproduce':
             case '3':
                 //adds a new offspring of the whole array to the end
                 pop.reproduce();
                 break;
-            case 'kill':
+            case 'delete':
             case '4':
                 //removes the current genome
-                pop.kill();
+                pop.delete();
                 break;
             case 'random':
             case '5':

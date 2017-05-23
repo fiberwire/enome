@@ -6,7 +6,6 @@ import { best } from './operators/best';
 import { bottom } from './operators/bottom';
 import { clone } from './operators/clone';
 import { concat } from './operators/concat';
-import { Evaluation } from './evaluation';
 import { fill } from './operators/fill';
 import { fillRandom } from './operators/fill-random';
 import { fillWorst } from './operators/fill-worst';
@@ -45,6 +44,7 @@ import { top } from './operators/top';
 import { value } from './operators/value';
 import { values } from './operators/values';
 import { worst } from './operators/worst';
+import { Evaluation } from "interfaces/evaluation";
 
 //options
 export {

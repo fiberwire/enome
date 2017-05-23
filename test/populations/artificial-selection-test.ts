@@ -70,7 +70,7 @@ describe('populations', () => {
                 let first1 = artificial.genomes[0];
                 let last1 = artificial.genomes[artificial.genomes.length - 1];
 
-                artificial.replace();
+                artificial.kill();
 
                 let l2 = artificial.genomes.length;
                 let first2 = artificial.genomes[0];
@@ -107,7 +107,7 @@ describe('populations', () => {
                 let first1 = artificial.genomes[0];
                 let last1 = artificial.genomes[artificial.genomes.length - 1];
 
-                artificial.kill();
+                artificial.delete();
 
                 let l2 = artificial.genomes.length;
                 let first2 = artificial.genomes[0];
