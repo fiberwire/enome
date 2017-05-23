@@ -2,7 +2,7 @@
   "name": "enome",
   "version": "1.0.0",
   "description": "A library that generates genomes for all of your genetic algorithm needs.",
-  "main": "lib/index.js",
+  "main": "lib/src/index.js",
   "scripts": {
     "test": "mocha --colors --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
     "watch": "mocha --colors --watch --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
