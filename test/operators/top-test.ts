@@ -8,7 +8,7 @@ import 'mocha';
 describe('operators', () => {
     describe('top', () => {
 
-        let { genomes, fitness } = mocks();
+        let { genomes, nsFitness } = mocks();
 
         beforeEach(() => {
             genomes = genomes.map(replenish);
@@ -17,12 +17,12 @@ describe('operators', () => {
         it('should return the best genomes from the provided array, according to provided fitness function', () => {
             
             //top 50% of genomes
-            const t = top(genomes, 0.5, fitness);
+            const t = top(genomes, 0.5, nsFitness);
 
             expect(t.length).to.eql(genomes.length * 0.5);
 
             //bottom 50% of genomes
-            const sorted = _.sortBy(genomes.map(fitness), e => e.fitness);
+            const sorted = _.sortBy(genomes.map(nsFitness), e => e.fitness);
             const b = new Nucleotide(0.5).elements(sorted);
 
             expect(b.length).to.eql(genomes.length * 0.5);

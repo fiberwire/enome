@@ -8,13 +8,13 @@ import 'mocha';
 describe('operators', () => {
     describe('reproduction', () => {
         describe('sampledReproduceManyToOne', () => {
-            let { genomes, fitness } = mocks();
+            let { genomes, nsFitness } = mocks();
 
             beforeEach(() => {
                 genomes = genomes.map(replenish);
             })
 
-            let offspring = sampledReproduceManyToOne(genomes, fitness);
+            let offspring = sampledReproduceManyToOne(genomes, nsFitness);
 
             it('should produce an offspring from many genomes, given a weight array, selected from a sample', () => {
                 expect(offspring.sequence.length).to.eql(_.meanBy(genomes, g => g.sequence.length));

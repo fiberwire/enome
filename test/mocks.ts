@@ -1,3 +1,5 @@
+import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
+import { ArtificialSelection } from '../src/populations/artificial-selection';
 import { NaturalSelectionOptions } from '../src/options/natural-selection-options';
 import * as _ from 'lodash';
 import { Evaluation } from '../src/evaluation';
@@ -11,13 +13,15 @@ import { value } from '../src/operators/value';
 export interface Mock {
     genome: Genome<GenomeOptions>;
     genomes: Genome<GenomeOptions>[];
-    fitness: (g: Genome<GenomeOptions>) => Evaluation<GenomeOptions, number[]>;
+    nsFitness: (g: Genome<GenomeOptions>) => Evaluation<GenomeOptions, number[]>;
     mutateChance: number;
     weights: number[];
     natural: NaturalSelection<GenomeOptions, NaturalSelectionOptions, number[]>;
-    create: (g: Genome<GenomeOptions>) => number[];
+    nsCreate: (g: Genome<GenomeOptions>) => number[];
     genomeOptions: GenomeOptions;
     naturalOptions: NaturalSelectionOptions;
+    artificial: ArtificialSelection<GenomeOptions, ArtificialSelectionOptions, string[]>;
+    asCreate: (g: Genome<GenomeOptions>) => string[];
 }
 
 export function mockGenome(): Genome<GenomeOptions> {
@@ -32,12 +36,16 @@ export function mockGenomes(): Genome<GenomeOptions>[] {
     return _.range(0, 10).map(i => mockGenome());
 }
 
-export function mockCreate(genome: Genome<GenomeOptions>): number[] {
+export function mockNSCreate(genome: Genome<GenomeOptions>): number[] {
     return genome.nuclei(10).map((n: Nucleotide) => n.float(0, 0.1));
 }
 
-export function mockFitness(gen: Genome<GenomeOptions>) {
-    let list = mockCreate(replenish(gen));
+export function mockASCreate(genome: Genome<GenomeOptions>): string[] {
+    return genome.nuclei(10).map((n: Nucleotide) => n.letter());
+}
+
+export function mockNSFitness(gen: Genome<GenomeOptions>) {
+    let list = mockNSCreate(replenish(gen));
 
     return {
         fitness: _.sum(list),
@@ -54,7 +62,7 @@ export function mockWeights(): number[] {
     return _.range(0, 10).map(i => value());
 }
 
-export function mockNaturalSelectionOptions(): NaturalSelectionOptions {
+export function mockNSOptions(): NaturalSelectionOptions {
     return {
         populationSize: 20,
         fillType: 'random', //either worst or random
@@ -74,6 +82,21 @@ export function mockNaturalSelectionOptions(): NaturalSelectionOptions {
     }
 }
 
+export function mockASOptions(): ArtificialSelectionOptions {
+    return {
+        initSize: 10,
+        minSize: 5,
+        maxSixe: 15,
+        mutateOptions: {
+            safe: false,
+            sampled: false,
+            sampleSize: 5,
+            mutateChance: 0.15,
+            mutateType: 'avg' //either sub or avg
+        },
+    }
+}
+
 export function mockGenomeOptions(): GenomeOptions {
     return {
         genomeLength: 50,
@@ -82,25 +105,34 @@ export function mockGenomeOptions(): GenomeOptions {
     }
 }
 
-export function mockNaturalSelection(): NaturalSelection<GenomeOptions, NaturalSelectionOptions, number[]> {
+export function mockNS(): NaturalSelection<GenomeOptions, NaturalSelectionOptions, number[]> {
     return new NaturalSelection(
-        mockNaturalSelectionOptions(),
+        mockNSOptions(),
         mockGenomeOptions(),
-        mockCreate,
-        mockFitness
+        mockNSCreate,
+        mockNSFitness
     )
 }
 
+export function mockAS(): ArtificialSelection<GenomeOptions, ArtificialSelectionOptions, string[]> {
+    return new ArtificialSelection(
+        mockASOptions(),
+        mockGenomeOptions(),
+        mockASCreate
+    )
+}
 export function mocks(): Mock {
     return {
         genome: mockGenome(),
         genomes: mockGenomes(),
-        fitness: mockFitness,
+        nsFitness: mockNSFitness,
         mutateChance: mockMutateChance(),
         weights: mockWeights(),
-        natural: mockNaturalSelection(),
-        create: mockCreate,
-        naturalOptions: mockNaturalSelectionOptions(),
-        genomeOptions: mockGenomeOptions()
+        natural: mockNS(),
+        nsCreate: mockNSCreate,
+        naturalOptions: mockNSOptions(),
+        genomeOptions: mockGenomeOptions(),
+        artificial: mockAS(),
+        asCreate: mockASCreate
     }
 }

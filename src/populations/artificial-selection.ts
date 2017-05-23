@@ -1,17 +1,14 @@
+import { create } from 'domain';
+import { Genome } from '../genotypes/genome';
+import { generateGenomes } from '../operators/generate-genomes';
+import { replenishMany } from '../operators/replenish-many';
+import { reproduceManyToOne } from '../operators/reproduction/many-to-one/reproduce-many-to-one';
+import { mutate } from '../operators/mutation/mutate';
+import { reproduceManyToMany } from '../operators/reproduction/many-to-many/reproduce-many-to-many';
+import { mutateMany } from '../operators/mutation/mutate-many';
+import { GenomeOptions } from '../options/genome-options';
+import { ArtificialSelectionOptions } from '../options/artificial-selection-options';
 import * as _ from 'lodash';
-import {
-    ArtificialSelectionOptions,
-    Evaluation,
-    generateGenomes,
-    Genome,
-    GenomeOptions,
-    reproduceManyToOne,
-    sampledReproduceManyToOne,
-    reproduceManyToMany,
-    mutate,
-    mutateMany,
-    replenishMany
-} from '../index';
 import { BehaviorSubject, Observable } from 'rx';
 
 export class ArtificialSelection<T extends GenomeOptions, U extends ArtificialSelectionOptions, V>{
@@ -32,16 +29,25 @@ export class ArtificialSelection<T extends GenomeOptions, U extends ArtificialSe
         this._genomes$ = new BehaviorSubject(this.genomes);
     }
 
+    get current(): Genome<T> {
+        return this.genomes[0];
+    }
+
+    get current$(): Observable<Genome<T>> {
+        return this.genomes$
+            .map(genomes => genomes[0]);
+    }
+
     private refresh() {
-        console.log('refreshing...');
+        //console.log('refreshing...');
         this._genomes$.onNext(replenishMany(this.genomes));
     }
 
-    private _add(genome: Genome<T>) {
+    private add(genome: Genome<T>) {
         this.genomes.push(genome);
     }
 
-    private _addRange(genomes: Genome<T>[]) {
+    private addRange(genomes: Genome<T>[]) {
         if (this.genomes.length + genomes.length > this.popOptions.maxSixe) {
             this.genomes = _.concat(this.genomes, genomes)
                 .slice(0, this.popOptions.maxSixe);
@@ -52,13 +58,13 @@ export class ArtificialSelection<T extends GenomeOptions, U extends ArtificialSe
 
     }
 
-    private _insert(genome: Genome<T>, index: number, delCount: number) {
+    private insert(genome: Genome<T>, index: number, delCount: number) {
         this.genomes.splice(index, delCount, genome);
     }
 
-    private _dequeue(): Genome<T> {
+    private dequeue(): Genome<T> {
         let g = this.genomes.shift();
-        this._remove(g);
+        this.remove(g);
 
         if (this.genomes.length < this.popOptions.minSize) {
             this.reproduce();
@@ -69,29 +75,29 @@ export class ArtificialSelection<T extends GenomeOptions, U extends ArtificialSe
         }
     }
 
-    private _requeue() {
-        this._add(this._dequeue());
+    private requeue() {
+        this.add(this.dequeue());
     }
 
-    private _remove(genome: Genome<T>) {
+    private remove(genome: Genome<T>) {
         this.genomes = this.genomes.filter(g => !_.isEqual(g, genome));
     }
 
-    private _removeAtIndex(index: number) {
+    private removeAtIndex(index: number) {
         let g = this.genomes[index];
-        this._remove(g);
+        this.remove(g);
     }
 
 
     //requeues the current genome to the end of the array
     keep() {
-        this._requeue();
+        this.requeue();
         this.refresh();
     }
 
     //removes the current genome, adds a new offspring of the whole array to the end
     replace() {
-        this._dequeue();
+        this.dequeue();
         this.reproduce();
     }
 
@@ -101,44 +107,44 @@ export class ArtificialSelection<T extends GenomeOptions, U extends ArtificialSe
             if (n == 1) {
                 let g = reproduceManyToOne(this.genomes);
                 g = mutate(g, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateType);
-                this._dequeue();
-                this._add(g);
+                this.dequeue();
+                this.add(g);
             }
             else {
                 let gs = reproduceManyToMany(this.genomes, n)
                 gs = mutateMany(gs, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateType)
-                _.range(n).forEach(i => this._dequeue());
-                this._addRange(gs);
+                _.range(n).forEach(i => this.dequeue());
+                this.addRange(gs);
             }
         }
         else {
             if (n == 1) {
                 let g = reproduceManyToOne(this.genomes);
                 g = mutate(g, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateType);
-                this._add(g);
+                this.add(g);
             }
             else {
                 let gs = reproduceManyToMany(this.genomes, n)
                 gs = mutateMany(gs, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateType)
-                this._addRange(gs);
+                this.addRange(gs);
             }
         }
         this.refresh();
     }
 
     kill() {
-        this._dequeue();
+        this.dequeue();
         this.refresh();
     }
 
     random() {
-        this._dequeue();
-        this._add(new Genome(this.genOptions));
+        this.dequeue();
+        this.add(new Genome(this.genOptions));
         this.refresh();
     }
 
     generate() {
-        this._add(new Genome(this.genOptions));
+        this.add(new Genome(this.genOptions));
         this.refresh();
     }
 }

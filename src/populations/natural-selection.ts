@@ -150,7 +150,7 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
     evolve$(generations: number = 1000, timeout: number = 3000): Observable<Evaluation<T, V>> {
         return Observable
             .interval(1)
-            .do(i => console.log(`Generation: ${i + 1}`))
+            // .do(i => console.log(`Generation: ${i + 1}`))
             .map(i => this.genomes)
             .map(gens => {
                 this.genomes = this.evolveStep();

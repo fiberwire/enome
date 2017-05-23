@@ -9,16 +9,16 @@ import { replenish, worst } from "../../src/index";
 describe('operators', () => {
     describe('worst', () => {
 
-        let { genomes, fitness } = mocks();
+        let { genomes, nsFitness } = mocks();
 
         beforeEach(() => {
             genomes = genomes.map(replenish);
         })
 
         it('should return the worst genome from the provided array, according to provided fitness function', () => {
-            let w = worst(genomes, fitness);
+            let w = worst(genomes, nsFitness);
             
-            let worse = genomes.filter(g => fitness(g).fitness < w.fitness);
+            let worse = genomes.filter(g => nsFitness(g).fitness < w.fitness);
 
             expect(worse.length).to.eql(0);
         });

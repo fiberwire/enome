@@ -8,14 +8,14 @@ import 'mocha';
 describe('operators', () => {
     describe('reproduction', () => {
         describe('sampledReproduceManyToMany', () => {
-            let { genomes, fitness } = mocks();
+            let { genomes, nsFitness } = mocks();
 
             beforeEach(() => {
                 genomes = genomes.map(replenish);
             })
 
             it('should produce many offspring from many genomes, given a weight array', () => {
-                let offspring = sampledReproduceManyToMany(genomes, 5, fitness);
+                let offspring = sampledReproduceManyToMany(genomes, 5, nsFitness);
 
                 offspring.forEach(o => {
                     expect(o.nucleos.length).to.eql(genomes[0].options.genomeLength);

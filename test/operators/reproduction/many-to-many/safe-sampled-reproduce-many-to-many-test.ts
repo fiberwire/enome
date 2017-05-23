@@ -9,15 +9,15 @@ import 'mocha';
 describe('operators', () => {
     describe('reproduction', () => {
         describe('safeSampledReproduceManyToMany', () => {
-            let { genomes, fitness } = mocks();
+            let { genomes, nsFitness } = mocks();
 
             beforeEach(() => {
                 genomes = genomes.map(replenish);
             })
 
             it('should produce many offspring from many genomes, given a weight array', () => {
-                let offspring = safeSampledReproduceManyToMany(genomes, 5, fitness);
-                let avgFit = avgFitness(genomes, fitness);
+                let offspring = safeSampledReproduceManyToMany(genomes, 5, nsFitness);
+                let avgFit = avgFitness(genomes, nsFitness);
 
                 expect(offspring.length).to.eql(5);
 
@@ -28,7 +28,7 @@ describe('operators', () => {
                 genomes.forEach(g => {
                     offspring.forEach(o => {
                         expect(o.sequence).to.not.deep.equal(g.sequence);
-                        expect(fitness(o).fitness).to.be.at.least(avgFit);
+                        expect(nsFitness(o).fitness).to.be.at.least(avgFit);
                     })
                 })
             })

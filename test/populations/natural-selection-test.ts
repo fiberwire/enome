@@ -1,8 +1,7 @@
-import { mocks } from '../mocks';
-import { expect } from 'chai';
-import 'mocha';
-
 import * as _ from 'lodash';
+import { expect } from 'chai';
+import { mocks } from '../mocks';
+import 'mocha';
 
 describe('populations', () => {
 

@@ -11,19 +11,19 @@ describe('operators', () => {
     describe('mutation', () => {
         describe('safeSampledMutate', () => {
 
-            let { genome, fitness, mutateChance } = mocks()
+            let { genome, nsFitness, mutateChance } = mocks()
 
             beforeEach(() => {
                 genome = replenish(genome);
             });
 
             it('should return a mutated genome from a sampled if it\'s better than the provided one, otherwise, should return the provided genome', () => {
-                let mutant: Genome<GenomeOptions> = safeSampledMutate(genome, fitness, 5, mutateChance);
+                let mutant: Genome<GenomeOptions> = safeSampledMutate(genome, nsFitness, 5, mutateChance);
 
                 expect(mutant.sequence.length).to.equal(genome.sequence.length);
-                expect(fitness(mutant).fitness).to.be.at.least(fitness(genome).fitness);
+                expect(nsFitness(mutant).fitness).to.be.at.least(nsFitness(genome).fitness);
 
-                if (fitness(mutant).fitness > fitness(genome).fitness) {
+                if (nsFitness(mutant).fitness > nsFitness(genome).fitness) {
                     expect(mutant.sequence).not.to.deep.equal(genome.sequence);
                 }
                 else {

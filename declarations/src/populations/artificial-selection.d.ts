@@ -7,7 +7,9 @@
 /// <reference types="rx-lite-experimental" />
 /// <reference types="rx-lite-joinpatterns" />
 /// <reference types="rx-lite-time" />
-import { ArtificialSelectionOptions, Genome, GenomeOptions } from '../index';
+import { Genome } from '../genotypes/genome';
+import { GenomeOptions } from '../options/genome-options';
+import { ArtificialSelectionOptions } from '../options/artificial-selection-options';
 import { Observable } from 'rx';
 export declare class ArtificialSelection<T extends GenomeOptions, U extends ArtificialSelectionOptions, V> {
     popOptions: U;
@@ -17,14 +19,16 @@ export declare class ArtificialSelection<T extends GenomeOptions, U extends Arti
     private _genomes$;
     readonly genomes$: Observable<Genome<T>[]>;
     constructor(popOptions: U, genOptions: T, create: (gen: Genome<T>) => V);
+    readonly current: Genome<T>;
+    readonly current$: Observable<Genome<T>>;
     private refresh();
-    private _add(genome);
-    private _addRange(genomes);
-    private _insert(genome, index, delCount);
-    private _dequeue();
-    private _requeue();
-    private _remove(genome);
-    private _removeAtIndex(index);
+    private add(genome);
+    private addRange(genomes);
+    private insert(genome, index, delCount);
+    private dequeue();
+    private requeue();
+    private remove(genome);
+    private removeAtIndex(index);
     keep(): void;
     replace(): void;
     reproduce(n?: number): void;
