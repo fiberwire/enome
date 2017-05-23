@@ -1,3 +1,4 @@
+import { Parent } from '../src/interfaces/parent';
 import * as _ from 'lodash';
 import { ArtificialSelection } from '../src/populations/artificial-selection';
 import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
@@ -27,6 +28,7 @@ export interface Mock {
     naturalOptions: NaturalSelectionOptions;
     artificial: ArtificialSelection<GenomeOptions, ArtificialSelectionOptions, string[]>;
     asCreate: (g: Genome<GenomeOptions>) => string[];
+    parent: Parent<GenomeOptions>;
 }
 
 export function mockGenome(): Genome<GenomeOptions> {
@@ -124,6 +126,10 @@ export function mockAS(): ArtificialSelection<GenomeOptions, ArtificialSelection
         mockASCreate
     )
 }
+
+function mockParent(): Parent<GenomeOptions> {
+    return { genome: mockGenome(), age: 1 };
+}
 export function mocks(): Mock {
     return {
         genome: mockGenome(),
@@ -136,6 +142,7 @@ export function mocks(): Mock {
         naturalOptions: mockNSOptions(),
         genomeOptions: mockGenomeOptions(),
         artificial: mockAS(),
-        asCreate: mockASCreate
+        asCreate: mockASCreate,
+        parent: mockParent()
     }
 }

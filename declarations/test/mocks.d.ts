@@ -1,3 +1,4 @@
+import { Parent } from '../src/interfaces/parent';
 import { ArtificialSelection } from '../src/populations/artificial-selection';
 import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
 import { Evaluation } from '../src/interfaces/evaluation';
@@ -17,6 +18,7 @@ export interface Mock {
     naturalOptions: NaturalSelectionOptions;
     artificial: ArtificialSelection<GenomeOptions, ArtificialSelectionOptions, string[]>;
     asCreate: (g: Genome<GenomeOptions>) => string[];
+    parent: Parent<GenomeOptions>;
 }
 export declare function mockGenome(): Genome<GenomeOptions>;
 export declare function mockGenomes(): Genome<GenomeOptions>[];
