@@ -1,3 +1,4 @@
+import { MutateType } from '../enums/mutate-type';
 import * as _ from 'lodash';
 import * as readline from 'readline-sync';
 import {
@@ -34,7 +35,7 @@ let pOptions: ArtificialSelectionOptions = {
     maxSixe: 15,
     mutateOptions: {
         mutateChance: 15,
-        mutateType: 'avg',
+        mutateType: MutateType.avg,
         sampled: false,
         safe: false,
         sampleSize: 5

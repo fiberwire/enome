@@ -1,3 +1,6 @@
+import { FillType } from '../src/enums/fill-type';
+import { FitnessObjective } from '../src/enums/fitness-objective';
+import { MutateType } from '../src/enums/mutate-type';
 import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
 import { ArtificialSelection } from '../src/populations/artificial-selection';
 import { NaturalSelectionOptions } from '../src/options/natural-selection-options';
@@ -65,14 +68,15 @@ export function mockWeights(): number[] {
 export function mockNSOptions(): NaturalSelectionOptions {
     return {
         populationSize: 20,
-        fillType: 'random', //either worst or random
+        fillType: FillType.random, //either worst or random
         fillPercent: 0.15,
+        objective: FitnessObjective.minimize,
         mutateOptions: {
             safe: false,
             sampled: false,
             sampleSize: 5,
             mutateChance: 0.15,
-            mutateType: 'sub' //either sub or avg
+            mutateType: MutateType.sub //either sub or avg
         },
         reproduceOptions: {
             safe: true,
@@ -92,7 +96,7 @@ export function mockASOptions(): ArtificialSelectionOptions {
             sampled: false,
             sampleSize: 5,
             mutateChance: 0.15,
-            mutateType: 'avg' //either sub or avg
+            mutateType: MutateType.avg //either sub or avg
         },
     }
 }

@@ -1,3 +1,6 @@
+import { FillType } from '../enums/fill-type';
+import { FitnessObjective } from '../enums/fitness-objective';
+import { MutateType } from '../enums/mutate-type';
 import * as _ from 'lodash';
 import {
     best,
@@ -30,32 +33,32 @@ function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]>
     let target = 1234;
 
     let list = createList(replenish(genome));
-    let mean = _.mean(list);
-    let absDifference = Math.abs(target - mean);
-    //console.log(`target: ${target}, sum: ${sum}, absDiff: ${absDifference}, 1/absDiff: ${1/absDifference}`);
+    let sum = _.sum(list);
+    let fit = Math.abs(target - sum);
 
-    return { fitness: absDifference, genome: genome, result: list };
+    return { fitness: fit, genome: genome, result: list };
 }
 
 let gOptions: ListOptions = {
-    genomeLength: 50,
+    genomeLength: 15,
     nucleotideLength: 1,
     min: 1,
-    max: 10000,
-    length: 15,
+    max: 100,
+    length: 3,
     extendNucleotides: false
 }
 
 let pOptions: NaturalSelectionOptions = {
     populationSize: 20,
-    fillType: 'random', //either worst or random
+    fillType: FillType.worst, //either worst or random
     fillPercent: 0.15,
+    objective: FitnessObjective.minimize,
     mutateOptions: {
-        safe: false,
+        safe: true,
         sampled: false,
         sampleSize: 5,
         mutateChance: 0.15,
-        mutateType: 'sub' //either sub or avg
+        mutateType: MutateType.avg //either sub or avg
     },
     reproduceOptions: {
         safe: true,

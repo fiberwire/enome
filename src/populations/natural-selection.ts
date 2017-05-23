@@ -1,3 +1,4 @@
+import { FillType } from '../enums/fill-type';
 import * as _ from 'lodash';
 import { BehaviorSubject, ControlledObservable, Observable } from 'rx';
 import {
@@ -118,9 +119,9 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
 
     fill(gens: Genome<T>[]): Genome<T>[] {
         switch (this.popOptions.fillType) {
-            case 'worst':
+            case FillType.worst:
                 return fillWorst(gens, this.fitness, this.popOptions.fillPercent);
-            case 'random':
+            case FillType.random:
                 return fillRandom(gens, this.popOptions.fillPercent);
             default:
                 return fillWorst(gens, this.fitness, this.popOptions.fillPercent);
