@@ -1,4 +1,4 @@
-import { MutateType } from '../../enums/mutate-type';
+import { MutateOp } from '../../enums/mutate-op';
 import * as _ from 'lodash';
 import { Chance } from 'chance';
 import { Genome } from '../../genotypes/genome';
@@ -25,6 +25,6 @@ export function reproduce<T extends GenomeOptions>(
                     return v;
                 })),
         mutateChance, 
-        MutateType.avg
+        MutateOp.avg
         );
 }

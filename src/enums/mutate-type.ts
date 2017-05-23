@@ -1,5 +1,6 @@
-
-export enum MutateType {
-    avg,
-    sub
+export enum MutateType{
+    normal,
+    safe,
+    sampled,
+    safeSampled
 }

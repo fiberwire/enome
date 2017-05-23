@@ -1,6 +1,8 @@
+import { MutateType } from '../enums/mutate-type';
+import { ReproduceType } from '../enums/reproduce-type';
 import { FillType } from '../enums/fill-type';
 import { FitnessObjective } from '../enums/fitness-objective';
-import { MutateType } from '../enums/mutate-type';
+import { MutateOp } from '../enums/mutate-op';
 import * as _ from 'lodash';
 import {
     best,
@@ -30,7 +32,7 @@ function createList(genome: Genome<ListOptions>): number[] {
 }
 
 function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]> {
-    let target = 1234;
+    let target = 100;
 
     let list = createList(replenish(genome));
     let sum = _.sum(list);
@@ -40,29 +42,27 @@ function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]>
 }
 
 let gOptions: ListOptions = {
-    genomeLength: 15,
+    genomeLength: 5,
     nucleotideLength: 1,
     min: 1,
     max: 100,
-    length: 3,
-    extendNucleotides: false
+    length: 5,
+    extendNucleotides: true
 }
 
 let pOptions: NaturalSelectionOptions = {
     populationSize: 20,
-    fillType: FillType.worst, //either worst or random
-    fillPercent: 0.15,
+    fillType: FillType.none,
+    fillPercent: 0.25,
     objective: FitnessObjective.minimize,
     mutateOptions: {
-        safe: true,
-        sampled: false,
+        type: MutateType.safeSampled,
         sampleSize: 5,
         mutateChance: 0.15,
-        mutateType: MutateType.avg //either sub or avg
+        mutateOp: MutateOp.sub
     },
     reproduceOptions: {
-        safe: true,
-        sampled: false,
+        type: ReproduceType.normal,
         sampleSize: 5
     }
 };
@@ -75,10 +75,10 @@ let pop = new NaturalSelection(
 );
 
 
-let ev = pop.evolve$(1000)
+let ev = pop.evolve$()
     .subscribe(e => {
         let list = e.result;
         let f = e.fitness;
-        console.log(`\t`, `list: ${list}, mean: ${_.mean(list)}, fitness: ${f}`);
+        console.log(`\t`, `list: ${list}, sum: ${_.sum(list)}, fitness: ${f}`);
     },
     err => console.log(err))

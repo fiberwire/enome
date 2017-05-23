@@ -1,3 +1,4 @@
+import { FitnessObjective } from '../../../src/enums/fitness-objective';
 import { best } from '../../../src/operators/best';
 import { expect } from 'chai';
 import { Genome } from '../../../src/genotypes/genome';
@@ -18,7 +19,7 @@ describe('operators', () => {
             })
 
             let mutant: Genome<GenomeOptions> = mutate(genome, mutateChance);
-            let offspring: Genome<GenomeOptions> = safeReproduce(genome, mutant, nsFitness, mutateChance = mutateChance);
+            let offspring: Genome<GenomeOptions> = safeReproduce(genome, mutant, nsFitness, FitnessObjective.maximize, 1, 1, mutateChance = mutateChance);
 
             it('should produce an offspring genome with genetics from both parents', () => {
                 expect(mutant.sequence.length).to.eql(genome.sequence.length);

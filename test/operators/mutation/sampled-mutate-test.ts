@@ -1,3 +1,4 @@
+import { FitnessObjective } from '../../../src/enums/fitness-objective';
 import * as _ from 'lodash';
 import { expect } from 'chai';
 import { mocks } from '../../mocks';
@@ -16,7 +17,7 @@ describe('operators', () => {
             });
 
             it('should return the best of a sample of mutated genomes', () => {
-                let mutant = sampledMutate(genome, nsFitness, 5, mutateChance);
+                let mutant = sampledMutate(genome, nsFitness, FitnessObjective.maximize, 5, mutateChance);
 
                 expect(mutant.sequence.length).to.equal(genome.sequence.length);
                 expect(mutant.sequence).to.not.deep.equal(genome.sequence);

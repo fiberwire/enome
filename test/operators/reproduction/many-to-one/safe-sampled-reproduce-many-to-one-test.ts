@@ -19,7 +19,7 @@ describe('operators', () => {
             })
 
             let offspring = safeSampledReproduceManyToOne(genomes, nsFitness);
-            let t = top(genomes, 0.5, nsFitness);
+            let t = top(genomes, nsFitness, 0.5);
             let offspringFitness = nsFitness(offspring).fitness;
             let avgFitness = _.meanBy(t, e => e.fitness);
             let b = best(genomes, nsFitness);

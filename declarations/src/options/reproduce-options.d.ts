@@ -1,5 +1,5 @@
+import { ReproduceType } from '../enums/reproduce-type';
 export interface ReproduceOptions {
-    safe: boolean;
-    sampled: boolean;
+    type: ReproduceType;
     sampleSize: number;
 }

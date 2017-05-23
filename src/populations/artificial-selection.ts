@@ -106,13 +106,13 @@ export class ArtificialSelection<T extends GenomeOptions, U extends ArtificialSe
         if (this.genomes.length + n > this.popOptions.maxSixe) { //at capacity
             if (n == 1) {
                 let g = reproduceManyToOne(this.genomes);
-                g = mutate(g, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateType);
+                g = mutate(g, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateOp);
                 this.dequeue();
                 this.add(g);
             }
             else {
                 let gs = reproduceManyToMany(this.genomes, n)
-                gs = mutateMany(gs, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateType)
+                gs = mutateMany(gs, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateOp)
                 _.range(n).forEach(i => this.dequeue());
                 this.addRange(gs);
             }
@@ -120,12 +120,12 @@ export class ArtificialSelection<T extends GenomeOptions, U extends ArtificialSe
         else {
             if (n == 1) {
                 let g = reproduceManyToOne(this.genomes);
-                g = mutate(g, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateType);
+                g = mutate(g, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateOp);
                 this.add(g);
             }
             else {
                 let gs = reproduceManyToMany(this.genomes, n)
-                gs = mutateMany(gs, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateType)
+                gs = mutateMany(gs, this.popOptions.mutateOptions.mutateChance, this.popOptions.mutateOptions.mutateOp)
                 this.addRange(gs);
             }
         }

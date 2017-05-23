@@ -1,6 +1,8 @@
+import { MutateType } from '../src/enums/mutate-type';
+import { ReproduceType } from '../src/enums/reproduce-type';
 import { FillType } from '../src/enums/fill-type';
 import { FitnessObjective } from '../src/enums/fitness-objective';
-import { MutateType } from '../src/enums/mutate-type';
+import { MutateOp } from '../src/enums/mutate-op';
 import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
 import { ArtificialSelection } from '../src/populations/artificial-selection';
 import { NaturalSelectionOptions } from '../src/options/natural-selection-options';
@@ -70,17 +72,15 @@ export function mockNSOptions(): NaturalSelectionOptions {
         populationSize: 20,
         fillType: FillType.random, //either worst or random
         fillPercent: 0.15,
-        objective: FitnessObjective.minimize,
+        objective: FitnessObjective.maximize,
         mutateOptions: {
-            safe: false,
-            sampled: false,
+            type: MutateType.safeSampled,
             sampleSize: 5,
             mutateChance: 0.15,
-            mutateType: MutateType.sub //either sub or avg
+            mutateOp: MutateOp.sub //either sub or avg
         },
         reproduceOptions: {
-            safe: true,
-            sampled: false,
+            type: ReproduceType.safe,
             sampleSize: 5
         }
     }
@@ -92,11 +92,10 @@ export function mockASOptions(): ArtificialSelectionOptions {
         minSize: 5,
         maxSixe: 15,
         mutateOptions: {
-            safe: false,
-            sampled: false,
+            type: MutateType.normal,
             sampleSize: 5,
             mutateChance: 0.15,
-            mutateType: MutateType.avg //either sub or avg
+            mutateOp: MutateOp.avg //either sub or avg
         },
     }
 }

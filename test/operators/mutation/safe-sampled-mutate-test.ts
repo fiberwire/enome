@@ -1,3 +1,4 @@
+import { FitnessObjective } from '../../../src/enums/fitness-objective';
 import * as _ from 'lodash';
 import { expect } from 'chai';
 import { Genome } from '../../../src/genotypes/genome';
@@ -18,7 +19,7 @@ describe('operators', () => {
             });
 
             it('should return a mutated genome from a sampled if it\'s better than the provided one, otherwise, should return the provided genome', () => {
-                let mutant: Genome<GenomeOptions> = safeSampledMutate(genome, nsFitness, 5, mutateChance);
+                let mutant: Genome<GenomeOptions> = safeSampledMutate(genome, nsFitness, FitnessObjective.maximize, 5, mutateChance);
 
                 expect(mutant.sequence.length).to.equal(genome.sequence.length);
                 expect(nsFitness(mutant).fitness).to.be.at.least(nsFitness(genome).fitness);

@@ -1,4 +1,6 @@
 export declare enum MutateType {
-    avg = 0,
-    sub = 1,
+    normal = 0,
+    safe = 1,
+    sampled = 2,
+    safeSampled = 3,
 }
