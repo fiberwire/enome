@@ -2,11 +2,27 @@
 ## [![Build Status](https://travis-ci.org/fiberwire/enome.svg?branch=master)](https://travis-ci.org/fiberwire/enome)
 ## A Genome generation library
 
-## Note: This library is still in the early stages of active development, and should not be considered producion-ready by any means. I haven't finalized the API for the initial release, and as a result, it has yet to be published to NPM.
+## Note: This library is still in the early stages of active development, and should not be considered producion-ready by any means.
 
 ### This library is written in TypeScript, and I recommend using it with a TypeScript project.
 
-What enome does:
+### There are a few different ways you can use enome.
+
+1. `Natural Selection`
+    -  Automatically evolves genomes based on their fitness.
+2. `Artificial Selection`
+    - Allows you to select which genomes will reproduce to spawn future generations
+        - Genomes are presented in a queue-like manner, where you review and take action on genomes one at a time. 
+3. Artificial Pooled Selection
+    - Allows you to select which genomes will be parents to future generations
+        - Parents are not recycled back into the general population queue, and are instead part of a separate pool of genomes that are exclusively used for reproduction.
+        - You can set the size of the parent pool, and when the capacity is reached, any new additions will remove the oldest parent from the pool.
+4. Go it on your own
+    - You can use enome primitives (genomes and nucleotides) however you want.
+    - The premade population types are just there to make your life easier. If their functionality doesn't fit your needs, you're free to make your own, or not use one at all.
+    - enome provides a host of operators for doing various things to/with genomes.
+
+How enome generates `Genome`s:
 - Generates a `sequence` of `values` between `zero` and `one`
 - Groups those `values` into `Nucleotides` by averaging them together
   - This results in the `Genome` being less sensitive to `mutation`
@@ -14,21 +30,27 @@ What enome does:
 - Groups those `Nucleotides` into a `Genome`
   - `Genome` exposes a property called `nucleo` that allows you to get the next `Nucleotide` in the `Genome`.
     - This allows you to pass the `Genome` around, consuming its `Nucleotide`s as you need them.
-- accepts an `options` object, which must implement `GenomeOptions`
-  - `GenomeOptions` just has a few essential properties
-    - `genomeLength` determines how many `Nucleotides` the `Genome` will contain.
-    - `nucleotideLength` determines how many values will average together to form a `Nucleotide`
-- Automatically evolves a `Population` of `Genome`s.
-- Makes extensive use of `chance.js`, `d3-interpolate`, and `lodash`.
+
+How enome determines the `fitness` of a `Genome`:
+- You define your own `fitness` function.
+    - Generally, your `fitness` function should accept a `Genome` and return an `Evaluation`.
+    - Your fitness function will necessarily create an object from your genome that it will test.
+    - `Evaluation` is just an interface that has the following properties
+        - `fitness`: `number`
+            - the relative `fitness` of the `Genome` being evaluated.
+        - `genome`: `Genome`
+            - the genome that is being evaluated.
+        - `result`: `T`
+            - the object that is created from your genome.
 
 What enome allows you to do:
- - write code that maps a `Genome` to whatever `object` you want to build.
- - Fefine your hyperparameters in your `options` object.
+ - write code that maps a `Genome` to whatever `object` you want to build by consuming nucleotides one at a time.
+ - Define your hyperparameters in your `options` object.
  - `mutate` and `evolve` that object by mutating and evolving the `Genome` that maps to that object.
  - do it very simply, by providing upper and lower bounds for each variable you want to evolve.
 
 
- # Example usage
+ # Example usage for Natural Selection
  say you want to evolve a list of three numbers between 1 and 100 that will add up to 256.
 
 ```
@@ -43,7 +65,7 @@ import {
     Population,
     PopulationOptions,
     replenish
-} from '../index';
+} from 'enome';
 
 // create an interface that adds your custom options to GenomeOptions
 interface ListOptions extends GenomeOptions {
@@ -54,12 +76,8 @@ interface ListOptions extends GenomeOptions {
 
 //define a function that will map a Genome to whatever kind of object you want.
 function createList(genome: Genome<ListOptions>): number[] {
-    return _.range(0, genome.options.length)
-        .map((i: number) => {
-            let n: Nucleotide = genome.nucleo;
-            i = n.int(genome.options.min, genome.options.max);
-            return genome.nucleo.int(genome.options.min, genome.options.max);
-        });
+    return _.range(genome.options.length)
+        .map(i => genome.nucleo.int(genome.options.min, genome.options.max));
 }
 
 //define a function that will determine the fitness of a Genome.
@@ -103,7 +121,7 @@ let pOptions: PopulationOptions = {
 };
 
 //create population
-let pop = new Population(
+let pop = new NaturalSelection(
     pOptions,
     gOptions,
     createList,
@@ -126,4 +144,3 @@ let ev = pop.evolve$(100)
     err => console.log(err))
 
 ```
-
