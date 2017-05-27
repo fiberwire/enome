@@ -1,3 +1,5 @@
+import { ArtificialPooledSelection } from './populations/artificial-pooled-selection';
+import { ArtificialPooledSelectionOptions } from './options/artificial-pooled-selection-options';
 import { ArtificialSelection } from './populations/artificial-selection';
 import { ArtificialSelectionOptions } from './options/artificial-selection-options';
 import { avg } from './operators/mutation/avg';
@@ -6,6 +8,7 @@ import { best } from './operators/best';
 import { bottom } from './operators/bottom';
 import { clone } from './operators/clone';
 import { concat } from './operators/concat';
+import { Evaluation } from './interfaces/evaluation';
 import { fill } from './operators/fill';
 import { fillRandom } from './operators/fill-random';
 import { fillWorst } from './operators/fill-worst';
@@ -18,6 +21,7 @@ import { MutateOptions } from './options/mutate-options';
 import { NaturalSelection } from './populations/natural-selection';
 import { NaturalSelectionOptions } from './options/natural-selection-options';
 import { Nucleotide } from './genotypes/nucleotide';
+import { Parent } from './interfaces/parent';
 import { replenish } from './operators/replenish';
 import { replenishMany } from './operators/replenish-many';
 import { reproduce } from './operators/reproduction/reproduce';
@@ -44,7 +48,6 @@ import { top } from './operators/top';
 import { value } from './operators/value';
 import { values } from './operators/values';
 import { worst } from './operators/worst';
-import { Evaluation } from "interfaces/evaluation";
 
 //options
 export {
@@ -52,7 +55,8 @@ export {
     MutateOptions,
     ReproduceOptions,
     NaturalSelectionOptions,
-    ArtificialSelectionOptions
+    ArtificialSelectionOptions,
+    ArtificialPooledSelectionOptions
 };
 
 //genotypes
@@ -69,11 +73,11 @@ export {
     clone,
     concat,
     fill,
-    fillWorst,
     fillRandom,
+    fillWorst,
     generateGenomes,
-    replenish,
     replenishMany,
+    replenish,
     top,
     value,
     values,
@@ -122,9 +126,15 @@ export {
     sampledReproduceManyToMany
 }
 
-//misc
+//interfaces
 export {
     Evaluation,
+    Parent
+}
+
+//populations
+export {
     NaturalSelection,
-    ArtificialSelection
+    ArtificialSelection,
+    ArtificialPooledSelection
 }

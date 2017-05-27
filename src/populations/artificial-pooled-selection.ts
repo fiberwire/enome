@@ -41,6 +41,10 @@ export class ArtificialPooledSelection<T extends GenomeOptions, U extends Artifi
     ) {
         this.genomes = generateGenomes(this.popOptions.initSize, this.genOptions);
         this._genomes$ = new BehaviorSubject(this.genomes);
+
+        this.parents = generateGenomes(this.popOptions.minParentPoolSize, this.genOptions)
+        .map(g => ({genome: g, age: 0}))
+        this._parents$ = new BehaviorSubject(this.parents);
     }
 
     get current(): Genome<T> {
@@ -152,7 +156,7 @@ export class ArtificialPooledSelection<T extends GenomeOptions, U extends Artifi
     //adds the current genome to parents
     keep() {
         this.addParent(this.dequeue());
-        this.refresh();
+        this.reproduce();
     }
 
     //removes the current genome, adds a new offspring

@@ -1,3 +1,5 @@
+import { ArtificialPooledSelectionOptions } from '../src/options/artificial-pooled-selection-options';
+import { ArtificialPooledSelection } from '../src/populations/artificial-pooled-selection';
 import { Parent } from '../src/interfaces/parent';
 import * as _ from 'lodash';
 import { ArtificialSelection } from '../src/populations/artificial-selection';
@@ -29,9 +31,10 @@ export interface Mock {
     artificial: ArtificialSelection<GenomeOptions, ArtificialSelectionOptions, string[]>;
     asCreate: (g: Genome<GenomeOptions>) => string[];
     parent: Parent<GenomeOptions>;
+    pooled: ArtificialPooledSelection<GenomeOptions, ArtificialPooledSelectionOptions, string[]>;
 }
 
-export function mockGenome(): Genome<GenomeOptions> {
+ function mockGenome(): Genome<GenomeOptions> {
     return new Genome({
         genomeLength: 50,
         nucleotideLength: 1,
@@ -39,19 +42,19 @@ export function mockGenome(): Genome<GenomeOptions> {
     });
 }
 
-export function mockGenomes(): Genome<GenomeOptions>[] {
+ function mockGenomes(): Genome<GenomeOptions>[] {
     return _.range(0, 10).map(i => mockGenome());
 }
 
-export function mockNSCreate(genome: Genome<GenomeOptions>): number[] {
+ function mockNSCreate(genome: Genome<GenomeOptions>): number[] {
     return genome.nuclei(10).map((n: Nucleotide) => n.float(0, 0.1));
 }
 
-export function mockASCreate(genome: Genome<GenomeOptions>): string[] {
+ function mockASCreate(genome: Genome<GenomeOptions>): string[] {
     return genome.nuclei(10).map((n: Nucleotide) => n.letter());
 }
 
-export function mockNSFitness(gen: Genome<GenomeOptions>) {
+ function mockNSFitness(gen: Genome<GenomeOptions>) {
     let list = mockNSCreate(replenish(gen));
 
     return {
@@ -61,15 +64,15 @@ export function mockNSFitness(gen: Genome<GenomeOptions>) {
     }
 }
 
-export function mockMutateChance(): number {
+ function mockMutateChance(): number {
     return 0.5;
 }
 
-export function mockWeights(): number[] {
+ function mockWeights(): number[] {
     return _.range(0, 10).map(i => value());
 }
 
-export function mockNSOptions(): NaturalSelectionOptions {
+ function mockNSOptions(): NaturalSelectionOptions {
     return {
         populationSize: 20,
         fillType: FillType.random, //either worst or random
@@ -88,7 +91,7 @@ export function mockNSOptions(): NaturalSelectionOptions {
     }
 }
 
-export function mockASOptions(): ArtificialSelectionOptions {
+function mockASOptions(): ArtificialSelectionOptions {
     return {
         initSize: 10,
         minSize: 5,
@@ -102,7 +105,23 @@ export function mockASOptions(): ArtificialSelectionOptions {
     }
 }
 
-export function mockGenomeOptions(): GenomeOptions {
+function mockAPSOptions(): ArtificialPooledSelectionOptions {
+    return {
+        initSize: 5,
+        minSize: 5,
+        maxSize: 10,
+        minParentPoolSize: 2,
+        maxParentPoolSize: 5,
+        mutateOptions: {
+            type: MutateType.normal,
+            sampleSize: 5,
+            mutateChance: 0.15,
+            mutateOp: MutateOp.avg
+        }
+    }
+}
+
+function mockGenomeOptions(): GenomeOptions {
     return {
         genomeLength: 50,
         nucleotideLength: 1,
@@ -110,7 +129,7 @@ export function mockGenomeOptions(): GenomeOptions {
     }
 }
 
-export function mockNS(): NaturalSelection<GenomeOptions, NaturalSelectionOptions, number[]> {
+function mockNS(): NaturalSelection<GenomeOptions, NaturalSelectionOptions, number[]> {
     return new NaturalSelection(
         mockNSOptions(),
         mockGenomeOptions(),
@@ -119,7 +138,7 @@ export function mockNS(): NaturalSelection<GenomeOptions, NaturalSelectionOption
     )
 }
 
-export function mockAS(): ArtificialSelection<GenomeOptions, ArtificialSelectionOptions, string[]> {
+function mockAS(): ArtificialSelection<GenomeOptions, ArtificialSelectionOptions, string[]> {
     return new ArtificialSelection(
         mockASOptions(),
         mockGenomeOptions(),
@@ -130,6 +149,15 @@ export function mockAS(): ArtificialSelection<GenomeOptions, ArtificialSelection
 function mockParent(): Parent<GenomeOptions> {
     return { genome: mockGenome(), age: 1 };
 }
+
+function mockPooled(): ArtificialPooledSelection<GenomeOptions, ArtificialPooledSelectionOptions, string[]> {
+    return new ArtificialPooledSelection(
+        mockAPSOptions(),
+        mockGenomeOptions(),
+        mockASCreate
+    )
+}
+
 export function mocks(): Mock {
     return {
         genome: mockGenome(),
@@ -143,6 +171,7 @@ export function mocks(): Mock {
         genomeOptions: mockGenomeOptions(),
         artificial: mockAS(),
         asCreate: mockASCreate,
-        parent: mockParent()
+        parent: mockParent(),
+        pooled: mockPooled()
     }
 }

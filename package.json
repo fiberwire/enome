@@ -2,12 +2,16 @@
   "name": "enome",
   "version": "1.0.0",
   "description": "A library that generates genomes for all of your genetic algorithm needs.",
-  "main": "lib/src/index.js",
+  "main": "out/src/index.js",
+  "typings": "out/src/index.d.ts",
   "scripts": {
     "test": "mocha --colors --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
     "watch": "mocha --colors --watch --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
     "sum": "ts-node src/examples/sum.ts",
-    "letters": "ts-node src/examples/letters.ts"
+    "letters": "ts-node src/examples/letters.ts",
+    "tsc": "tsc --watch",
+    "prepublish": "npm run compile",
+    "compile": "rimraf out && tsc"
   },
   "repository": {
     "type": "git",
@@ -23,7 +27,6 @@
   "license": "ISC",
   "dependencies": {
     "chance": "^1.0.8",
-    "core-js": "^2.4.1",
     "d3-interpolate": "^1.1.4",
     "lodash": "^4.17.4",
     "readline-sync": "^1.4.7",

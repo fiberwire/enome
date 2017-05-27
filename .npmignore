@@ -1,0 +1,14 @@
+node_modules
+*.log
+*.tgz
+
+src
+test
+out/test
+.vscode
+_config.yml
+tsconfig.json
+yarn.lock
+.travis.yml
+.gitignore
+
