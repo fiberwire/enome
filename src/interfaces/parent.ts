@@ -1,7 +1,7 @@
-import { Genome } from '../genotypes/genome';
-import { GenomeOptions } from '../options/genome-options';
+import { Genome } from "../genotypes/genome";
+import { IGenomeOptions } from "../options/genome-options";
 
-export interface Parent<T extends GenomeOptions> {
+export interface IParent<T extends IGenomeOptions> {
     genome: Genome<T>;
     age: number;
 }

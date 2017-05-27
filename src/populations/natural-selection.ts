@@ -1,15 +1,15 @@
-import { MutateType } from '../enums/mutate-type';
-import { ReproduceType } from '../enums/reproduce-type';
-import { FitnessObjective } from '../enums/fitness-objective';
-import { FillType } from '../enums/fill-type';
-import * as _ from 'lodash';
-import { BehaviorSubject, ControlledObservable, Observable } from 'rx';
+import * as _ from "lodash";
+import { BehaviorSubject, ControlledObservable, Observable } from "rx";
+import { FillType } from "../enums/fill-type";
+import { FitnessObjective } from "../enums/fitness-objective";
+import { MutateType } from "../enums/mutate-type";
+import { ReproduceType } from "../enums/reproduce-type";
 import {
     best,
-    Evaluation,
     generateGenomes,
     Genome,
-    GenomeOptions,
+    IEvaluation,
+    IGenomeOptions,
     mutateMany,
     NaturalSelectionOptions,
     reproduceManyToMany,
@@ -18,26 +18,26 @@ import {
     safeSampledMutateMany,
     safeSampledReproduceManyToMany,
     sampledMutateMany,
-    sampledReproduceManyToMany
-} from '../index';
-import { bottom } from '../operators/bottom';
-import { fillRandom } from '../operators/fill-random';
-import { fillWorst } from '../operators/fill-worst';
-import { worst } from '../operators/worst';
+    sampledReproduceManyToMany,
+} from "../index";
+import { bottom } from "../operators/bottom";
+import { fillRandom } from "../operators/fill-random";
+import { fillWorst } from "../operators/fill-worst";
+import { worst } from "../operators/worst";
 
-export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectionOptions, V> {
-    genomes: Genome<T>[];
+export class NaturalSelection<T extends IGenomeOptions, U extends NaturalSelectionOptions, V> {
+    public genomes: Array<Genome<T>>;
 
     constructor(
         public popOptions: U,
         public genOptions: T,
         public create: (gen: Genome<T>) => V,
-        public fitness: (gen: Genome<T>) => Evaluation<T, V>
+        public fitness: (gen: Genome<T>) => IEvaluation<T, V>,
     ) {
         this.genomes = generateGenomes(this.popOptions.populationSize, this.genOptions);
     }
 
-    reproduce(gens: Genome<T>[]): Genome<T>[] {
+    public reproduce(gens: Array<Genome<T>>): Array<Genome<T>> {
 
         switch (this.popOptions.reproduceOptions.type) {
             case ReproduceType.safeSampled:
@@ -46,7 +46,7 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
                     this.genomes.length,
                     this.fitness,
                     this.popOptions.objective,
-                    this.popOptions.reproduceOptions.sampleSize
+                    this.popOptions.reproduceOptions.sampleSize,
                 );
                 break;
 
@@ -55,7 +55,7 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
                     this.genomes,
                     this.genomes.length,
                     this.fitness,
-                    this.popOptions.objective
+                    this.popOptions.objective,
                 );
                 break;
 
@@ -64,14 +64,14 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
                     this.genomes,
                     this.genomes.length,
                     this.fitness,
-                    this.popOptions.reproduceOptions.sampleSize
+                    this.popOptions.reproduceOptions.sampleSize,
                 );
                 break;
 
             case ReproduceType.normal:
                 gens = reproduceManyToMany(
                     this.genomes,
-                    this.genomes.length
+                    this.genomes.length,
                 );
                 break;
 
@@ -80,14 +80,14 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
                     this.genomes,
                     this.genomes.length,
                     this.fitness,
-                    this.popOptions.objective
+                    this.popOptions.objective,
                 );
                 break;
         }
         return gens;
     }
 
-    mutate(gens: Genome<T>[]): Genome<T>[] {
+    public mutate(gens: Array<Genome<T>>): Array<Genome<T>> {
         switch (this.popOptions.mutateOptions.type) {
             case MutateType.safeSampled:
                 return safeSampledMutateMany(
@@ -96,7 +96,7 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
                     this.popOptions.objective,
                     this.popOptions.mutateOptions.mutateChance,
                     this.popOptions.mutateOptions.mutateOp,
-                    this.popOptions.mutateOptions.sampleSize
+                    this.popOptions.mutateOptions.sampleSize,
                 );
             case MutateType.safe:
                 return safeMutateMany(
@@ -104,7 +104,7 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
                     this.fitness,
                     this.popOptions.objective,
                     this.popOptions.mutateOptions.mutateChance,
-                    this.popOptions.mutateOptions.mutateOp
+                    this.popOptions.mutateOptions.mutateOp,
                 );
             case MutateType.sampled:
                 return sampledMutateMany(
@@ -113,25 +113,25 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
                     this.popOptions.objective,
                     this.popOptions.mutateOptions.mutateChance,
                     this.popOptions.mutateOptions.mutateOp,
-                    this.popOptions.mutateOptions.sampleSize
+                    this.popOptions.mutateOptions.sampleSize,
                 );
             case MutateType.normal:
                 return mutateMany(
                     this.genomes,
                     this.popOptions.mutateOptions.mutateChance,
-                    this.popOptions.mutateOptions.mutateOp
+                    this.popOptions.mutateOptions.mutateOp,
                 );
             default:
                 return safeMutateMany(
                     this.genomes,
                     this.fitness,
                     this.popOptions.mutateOptions.mutateChance,
-                    this.popOptions.mutateOptions.mutateOp
+                    this.popOptions.mutateOptions.mutateOp,
                 );
         }
     }
 
-    fill(gens: Genome<T>[]): Genome<T>[] {
+    public fill(gens: Array<Genome<T>>): Array<Genome<T>> {
         switch (this.popOptions.fillType) {
             case FillType.worst:
                 return fillWorst(gens, this.fitness, this.popOptions.fillPercent);
@@ -144,8 +144,8 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
         }
     }
 
-    evolveStep(): Genome<T>[] {
-        let gens: Genome<T>[];
+    public evolveStep(): Array<Genome<T>> {
+        let gens: Array<Genome<T>>;
 
         gens = this.reproduce(this.genomes);
         gens = this.mutate(gens);
@@ -154,26 +154,25 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
         return gens;
     }
 
-    evolve(generations: number): Evaluation<T, V> {
-        _.range(generations).forEach(i => {
+    public evolve(generations: number): IEvaluation<T, V> {
+        _.range(generations).forEach((i) => {
             this.genomes = this.evolveStep();
-        })
+        });
 
-        let b = best(this.genomes, this.fitness);
+        const b = best(this.genomes, this.fitness);
 
         return b;
     }
 
-    evolve$(generations: number = 1000, timeout: number = 3000): Observable<Evaluation<T, V>> {
+    public evolve$(generations: number = 1000, timeout: number = 3000): Observable<IEvaluation<T, V>> {
         return Observable
             .interval(1)
-            .do(i => console.log(`Generation: ${i + 1}`))
-            .map(i => this.genomes)
-            .map(gens => {
+            .map((i) => this.genomes)
+            .map((gens) => {
                 this.genomes = this.evolveStep();
                 return this.genomes;
             })
-            .map(gens => {
+            .map((gens) => {
                 switch (this.popOptions.objective) {
                     case FitnessObjective.maximize:
                         return best(gens, this.fitness);
@@ -182,6 +181,6 @@ export class NaturalSelection<T extends GenomeOptions, U extends NaturalSelectio
                         return worst(gens, this.fitness);
                 }
             })
-            .take(generations)
+            .take(generations);
     }
 }

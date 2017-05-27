@@ -1,7 +1,6 @@
-import { ArtificialSelectionOptions } from './artificial-selection-options';
+import { IArtificialSelectionOptions } from "./artificial-selection-options";
 
-
-export interface ArtificialPooledSelectionOptions extends ArtificialSelectionOptions {
+export interface IArtificialPooledSelectionOptions extends IArtificialSelectionOptions {
     minParentPoolSize: number;
     maxParentPoolSize: number;
 }

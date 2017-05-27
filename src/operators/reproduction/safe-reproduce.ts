@@ -1,21 +1,21 @@
-import { best } from '../best';
-import { Evaluation } from '../../interfaces/evaluation';
-import { FitnessObjective } from '../../enums/fitness-objective';
-import { Genome } from '../../genotypes/genome';
-import { GenomeOptions } from '../../options/genome-options';
-import { reproduce } from './reproduce';
-import { worst } from '../worst';
+import { FitnessObjective } from "../../enums/fitness-objective";
+import { Genome } from "../../genotypes/genome";
+import { IEvaluation } from "../../interfaces/evaluation";
+import { IGenomeOptions } from "../../options/genome-options";
+import { best } from "../best";
+import { worst } from "../worst";
+import { reproduce } from "./reproduce";
 
-export function safeReproduce<T extends GenomeOptions, U>(
+export function safeReproduce<T extends IGenomeOptions, U>(
     gen1: Genome<T>,
     gen2: Genome<T>,
-    fitness: (gen: Genome<T>) => Evaluation<T, U>,
+    fitness: (gen: Genome<T>) => IEvaluation<T, U>,
     objective: FitnessObjective = FitnessObjective.maximize,
     weight1: number = 1,
     weight2: number = 1,
-    mutateChance: number = 0.05
+    mutateChance: number = 0.05,
 ): Genome<T> {
-    let offspring = reproduce(gen1, gen2, weight1, weight2, mutateChance);
+    const offspring = reproduce(gen1, gen2, weight1, weight2, mutateChance);
 
     switch (objective) {
         case FitnessObjective.maximize:

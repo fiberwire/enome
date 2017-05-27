@@ -1,9 +1,8 @@
-import { GenomeOptions } from '../options/genome-options';
-import { Genome } from '../genotypes/genome';
+import { Genome } from "../genotypes/genome";
+import { IGenomeOptions } from "../options/genome-options";
 
-
-export interface Evaluation<T extends GenomeOptions, U> {
+export interface IEvaluation<T extends IGenomeOptions, U> {
     fitness: number;
     genome: Genome<T>;
-    result: U
+    result: U;
 }

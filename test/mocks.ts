@@ -1,177 +1,177 @@
-import { ArtificialPooledSelectionOptions } from '../src/options/artificial-pooled-selection-options';
-import { ArtificialPooledSelection } from '../src/populations/artificial-pooled-selection';
-import { Parent } from '../src/interfaces/parent';
-import * as _ from 'lodash';
-import { ArtificialSelection } from '../src/populations/artificial-selection';
-import { ArtificialSelectionOptions } from '../src/options/artificial-selection-options';
-import { Evaluation } from '../src/interfaces/evaluation';
-import { FillType } from '../src/enums/fill-type';
-import { FitnessObjective } from '../src/enums/fitness-objective';
-import { Genome } from '../src/genotypes/genome';
-import { GenomeOptions } from '../src/options/genome-options';
-import { MutateOp } from '../src/enums/mutate-op';
-import { MutateType } from '../src/enums/mutate-type';
-import { NaturalSelection } from '../src/populations/natural-selection';
-import { NaturalSelectionOptions } from '../src/options/natural-selection-options';
-import { Nucleotide } from '../src/genotypes/nucleotide';
-import { replenish } from '../src/operators/replenish';
-import { ReproduceType } from '../src/enums/reproduce-type';
-import { value } from '../src/operators/value';
+import * as _ from "lodash";
+import { FillType } from "../src/enums/fill-type";
+import { FitnessObjective } from "../src/enums/fitness-objective";
+import { MutateOp } from "../src/enums/mutate-op";
+import { MutateType } from "../src/enums/mutate-type";
+import { ReproduceType } from "../src/enums/reproduce-type";
+import { Genome } from "../src/genotypes/genome";
+import { Nucleotide } from "../src/genotypes/nucleotide";
+import { IEvaluation } from "../src/interfaces/evaluation";
+import { IParent } from "../src/interfaces/parent";
+import { replenish } from "../src/operators/replenish";
+import { value } from "../src/operators/value";
+import { IArtificialPooledSelectionOptions } from "../src/options/artificial-pooled-selection-options";
+import { IArtificialSelectionOptions } from "../src/options/artificial-selection-options";
+import { IGenomeOptions } from "../src/options/genome-options";
+import { NaturalSelectionOptions } from "../src/options/natural-selection-options";
+import { ArtificialPooledSelection } from "../src/populations/artificial-pooled-selection";
+import { ArtificialSelection } from "../src/populations/artificial-selection";
+import { NaturalSelection } from "../src/populations/natural-selection";
 
-export interface Mock {
-    genome: Genome<GenomeOptions>;
-    genomes: Genome<GenomeOptions>[];
-    nsFitness: (g: Genome<GenomeOptions>) => Evaluation<GenomeOptions, number[]>;
+export interface IMock {
+    genome: Genome<IGenomeOptions>;
+    genomes: Array<Genome<IGenomeOptions>>;
+    nsFitness: (g: Genome<IGenomeOptions>) => IEvaluation<IGenomeOptions, number[]>;
     mutateChance: number;
     weights: number[];
-    natural: NaturalSelection<GenomeOptions, NaturalSelectionOptions, number[]>;
-    nsCreate: (g: Genome<GenomeOptions>) => number[];
-    genomeOptions: GenomeOptions;
+    natural: NaturalSelection<IGenomeOptions, NaturalSelectionOptions, number[]>;
+    nsCreate: (g: Genome<IGenomeOptions>) => number[];
+    genomeOptions: IGenomeOptions;
     naturalOptions: NaturalSelectionOptions;
-    artificial: ArtificialSelection<GenomeOptions, ArtificialSelectionOptions, string[]>;
-    asCreate: (g: Genome<GenomeOptions>) => string[];
-    parent: Parent<GenomeOptions>;
-    pooled: ArtificialPooledSelection<GenomeOptions, ArtificialPooledSelectionOptions, string[]>;
+    artificial: ArtificialSelection<IGenomeOptions, IArtificialSelectionOptions, string[]>;
+    asCreate: (g: Genome<IGenomeOptions>) => string[];
+    parent: IParent<IGenomeOptions>;
+    pooled: ArtificialPooledSelection<IGenomeOptions, IArtificialPooledSelectionOptions, string[]>;
 }
 
- function mockGenome(): Genome<GenomeOptions> {
+function mockGenome(): Genome<IGenomeOptions> {
     return new Genome({
+        extendNucleotides: false,
         genomeLength: 50,
         nucleotideLength: 1,
-        extendNucleotides: false
     });
 }
 
- function mockGenomes(): Genome<GenomeOptions>[] {
-    return _.range(0, 10).map(i => mockGenome());
+function mockGenomes(): Array<Genome<IGenomeOptions>> {
+    return _.range(0, 10).map((i) => mockGenome());
 }
 
- function mockNSCreate(genome: Genome<GenomeOptions>): number[] {
+function mockNSCreate(genome: Genome<IGenomeOptions>): number[] {
     return genome.nuclei(10).map((n: Nucleotide) => n.float(0, 0.1));
 }
 
- function mockASCreate(genome: Genome<GenomeOptions>): string[] {
+function mockASCreate(genome: Genome<IGenomeOptions>): string[] {
     return genome.nuclei(10).map((n: Nucleotide) => n.letter());
 }
 
- function mockNSFitness(gen: Genome<GenomeOptions>) {
-    let list = mockNSCreate(replenish(gen));
+function mockNSFitness(gen: Genome<IGenomeOptions>) {
+    const list = mockNSCreate(replenish(gen));
 
     return {
         fitness: _.sum(list),
         genome: gen,
-        result: list
-    }
+        result: list,
+    };
 }
 
- function mockMutateChance(): number {
+function mockMutateChance(): number {
     return 0.5;
 }
 
- function mockWeights(): number[] {
-    return _.range(0, 10).map(i => value());
+function mockWeights(): number[] {
+    return _.range(0, 10).map((i) => value());
 }
 
- function mockNSOptions(): NaturalSelectionOptions {
+function mockNSOptions(): NaturalSelectionOptions {
     return {
-        populationSize: 20,
-        fillType: FillType.random, //either worst or random
         fillPercent: 0.15,
-        objective: FitnessObjective.maximize,
+        fillType: FillType.random,
         mutateOptions: {
-            type: MutateType.safeSampled,
-            sampleSize: 5,
             mutateChance: 0.15,
-            mutateOp: MutateOp.sub //either sub or avg
+            mutateOp: MutateOp.sub,
+            sampleSize: 5,
+            type: MutateType.safeSampled,
         },
+        objective: FitnessObjective.maximize,
+        populationSize: 20,
         reproduceOptions: {
+            sampleSize: 5,
             type: ReproduceType.safe,
-            sampleSize: 5
-        }
-    }
+        },
+    };
 }
 
-function mockASOptions(): ArtificialSelectionOptions {
+function mockASOptions(): IArtificialSelectionOptions {
     return {
         initSize: 10,
-        minSize: 5,
         maxSize: 15,
+        minSize: 5,
         mutateOptions: {
-            type: MutateType.normal,
-            sampleSize: 5,
             mutateChance: 0.15,
-            mutateOp: MutateOp.avg //either sub or avg
+            mutateOp: MutateOp.avg,
+            sampleSize: 5,
+            type: MutateType.normal,
         },
-    }
+    };
 }
 
-function mockAPSOptions(): ArtificialPooledSelectionOptions {
+function mockAPSOptions(): IArtificialPooledSelectionOptions {
     return {
         initSize: 5,
-        minSize: 5,
+        maxParentPoolSize: 5,
         maxSize: 10,
         minParentPoolSize: 2,
-        maxParentPoolSize: 5,
+        minSize: 5,
         mutateOptions: {
-            type: MutateType.normal,
-            sampleSize: 5,
             mutateChance: 0.15,
-            mutateOp: MutateOp.avg
-        }
-    }
+            mutateOp: MutateOp.avg,
+            sampleSize: 5,
+            type: MutateType.normal,
+        },
+    };
 }
 
-function mockGenomeOptions(): GenomeOptions {
+function mockGenomeOptions(): IGenomeOptions {
     return {
+        extendNucleotides: false,
         genomeLength: 50,
         nucleotideLength: 1,
-        extendNucleotides: false
-    }
+    };
 }
 
-function mockNS(): NaturalSelection<GenomeOptions, NaturalSelectionOptions, number[]> {
+function mockNS(): NaturalSelection<IGenomeOptions, NaturalSelectionOptions, number[]> {
     return new NaturalSelection(
         mockNSOptions(),
         mockGenomeOptions(),
         mockNSCreate,
-        mockNSFitness
-    )
+        mockNSFitness,
+    );
 }
 
-function mockAS(): ArtificialSelection<GenomeOptions, ArtificialSelectionOptions, string[]> {
+function mockAS(): ArtificialSelection<IGenomeOptions, IArtificialSelectionOptions, string[]> {
     return new ArtificialSelection(
         mockASOptions(),
         mockGenomeOptions(),
-        mockASCreate
-    )
+        mockASCreate,
+    );
 }
 
-function mockParent(): Parent<GenomeOptions> {
+function mockParent(): IParent<IGenomeOptions> {
     return { genome: mockGenome(), age: 1 };
 }
 
-function mockPooled(): ArtificialPooledSelection<GenomeOptions, ArtificialPooledSelectionOptions, string[]> {
+function mockPooled(): ArtificialPooledSelection<IGenomeOptions, IArtificialPooledSelectionOptions, string[]> {
     return new ArtificialPooledSelection(
         mockAPSOptions(),
         mockGenomeOptions(),
-        mockASCreate
-    )
+        mockASCreate,
+    );
 }
 
-export function mocks(): Mock {
+export function mocks(): IMock {
     return {
-        genome: mockGenome(),
-        genomes: mockGenomes(),
-        nsFitness: mockNSFitness,
-        mutateChance: mockMutateChance(),
-        weights: mockWeights(),
-        natural: mockNS(),
-        nsCreate: mockNSCreate,
-        naturalOptions: mockNSOptions(),
-        genomeOptions: mockGenomeOptions(),
         artificial: mockAS(),
         asCreate: mockASCreate,
+        genome: mockGenome(),
+        genomeOptions: mockGenomeOptions(),
+        genomes: mockGenomes(),
+        mutateChance: mockMutateChance(),
+        natural: mockNS(),
+        naturalOptions: mockNSOptions(),
+        nsCreate: mockNSCreate,
+        nsFitness: mockNSFitness,
         parent: mockParent(),
-        pooled: mockPooled()
-    }
+        pooled: mockPooled(),
+        weights: mockWeights(),
+    };
 }

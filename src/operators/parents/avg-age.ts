@@ -1,7 +1,7 @@
-import * as _ from 'lodash';
-import { GenomeOptions } from '../../options/genome-options';
-import { Parent } from '../../interfaces/parent';
+import * as _ from "lodash";
+import { IParent } from "../../interfaces/parent";
+import { IGenomeOptions } from "../../options/genome-options";
 
-export function avgAge<T extends GenomeOptions>(parents: Parent<T>[]): number {
-    return _.meanBy(parents, p => p.age);
+export function avgAge<T extends IGenomeOptions>(parents: Array<IParent<T>>): number {
+    return _.meanBy(parents, (p) => p.age);
 }

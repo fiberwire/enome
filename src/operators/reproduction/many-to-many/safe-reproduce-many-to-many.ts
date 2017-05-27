@@ -1,22 +1,22 @@
-import * as _ from 'lodash';
-import { avgFitness } from '../../avg-fitness';
-import { Evaluation } from '../../../interfaces/evaluation';
-import { FitnessObjective } from '../../../enums/fitness-objective';
-import { Genome } from '../../../genotypes/genome';
-import { GenomeOptions } from '../../../options/genome-options';
-import { reproduceManyToMany } from './reproduce-many-to-many';
-import { value } from '../../value';
+import * as _ from "lodash";
+import { FitnessObjective } from "../../../enums/fitness-objective";
+import { Genome } from "../../../genotypes/genome";
+import { IEvaluation } from "../../../interfaces/evaluation";
+import { IGenomeOptions } from "../../../options/genome-options";
+import { avgFitness } from "../../avg-fitness";
+import { value } from "../../value";
+import { reproduceManyToMany } from "./reproduce-many-to-many";
 
-export function safeReproduceManyToMany<T extends GenomeOptions, U>(
-    genomes: Genome<T>[],
+export function safeReproduceManyToMany<T extends IGenomeOptions, U>(
+    genomes: Array<Genome<T>>,
     n: number,
-    fitness: (gen: Genome<T>) => Evaluation<T, U>,
+    fitness: (gen: Genome<T>) => IEvaluation<T, U>,
     objective: FitnessObjective = FitnessObjective.maximize,
-    weights: number[] = _.range(0, genomes.length).map(i => value()),
-): Genome<T>[] {
+    weights: number[] = _.range(0, genomes.length).map((i) => value()),
+): Array<Genome<T>> {
 
-    let result: Genome<T>[] = [];
-    let avgFit = avgFitness(genomes, fitness);
+    let result: Array<Genome<T>> = [];
+    const avgFit = avgFitness(genomes, fitness);
 
     switch (objective) {
         case FitnessObjective.maximize:
@@ -24,8 +24,8 @@ export function safeReproduceManyToMany<T extends GenomeOptions, U>(
                 result = _.concat(
                     result,
                     reproduceManyToMany(genomes, n, weights)
-                        .filter(g => fitness(g).fitness > avgFit)
-                )
+                        .filter((g) => fitness(g).fitness > avgFit),
+                );
             }
             break;
 
@@ -34,8 +34,8 @@ export function safeReproduceManyToMany<T extends GenomeOptions, U>(
                 result = _.concat(
                     result,
                     reproduceManyToMany(genomes, n, weights)
-                        .filter(g => fitness(g).fitness < avgFit)
-                )
+                        .filter((g) => fitness(g).fitness < avgFit),
+                );
             }
             break;
     }

@@ -1,19 +1,21 @@
-import * as _ from 'lodash';
-import { Genome } from '../genotypes/genome';
-import { GenomeOptions } from '../options/genome-options';
-import { Nucleotide } from '../genotypes/nucleotide';
+import * as _ from "lodash";
+import { Genome } from "../genotypes/genome";
+import { Nucleotide } from "../genotypes/nucleotide";
+import { IGenomeOptions } from "../options/genome-options";
 
-//randomly replaces a percent of genomes (regardless of fitness) with random ones
-export function fillRandom<T extends GenomeOptions, U>(
-    genomes: Genome<T>[],
-    percent: number
-): Genome<T>[] {
-    if (percent > 1 || percent < 0) throw ('percent must be a number between 0 (inclusive) and 1 (inclusive)');
+// randomly replaces a percent of genomes (regardless of fitness) with random ones
+export function fillRandom<T extends IGenomeOptions, U>(
+    genomes: Array<Genome<T>>,
+    percent: number,
+): Array<Genome<T>> {
+    if (percent > 1 || percent < 0) {
+        throw new Error(("percent must be a number between 0 (inclusive) and 1 (inclusive)"));
+    }
 
-    let removed = new Nucleotide(percent).elements(_.shuffle(genomes));
-    let culled = genomes.filter(g => !_.includes(removed, g))
-    let random = _.range(removed.length).map(i => new Genome(genomes[0].options));
-    let filled = _.concat(culled, random);
+    const removed = new Nucleotide(percent).elements(_.shuffle(genomes));
+    const culled = genomes.filter((g) => !_.includes(removed, g));
+    const random = _.range(removed.length).map((i) => new Genome(genomes[0].options));
+    const filled = _.concat(culled, random);
 
     return filled;
 }

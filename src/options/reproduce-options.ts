@@ -1,4 +1,4 @@
-import { ReproduceType } from '../enums/reproduce-type';
+import { ReproduceType } from "../enums/reproduce-type";
 export interface ReproduceOptions {
     type: ReproduceType;
     sampleSize: number;

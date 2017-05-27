@@ -1,84 +1,82 @@
-import { MutateType } from '../enums/mutate-type';
-import { ReproduceType } from '../enums/reproduce-type';
-import { FillType } from '../enums/fill-type';
-import { FitnessObjective } from '../enums/fitness-objective';
-import { MutateOp } from '../enums/mutate-op';
-import * as _ from 'lodash';
+import * as _ from "lodash";
+import { FillType } from "../enums/fill-type";
+import { FitnessObjective } from "../enums/fitness-objective";
+import { MutateOp } from "../enums/mutate-op";
+import { MutateType } from "../enums/mutate-type";
+import { ReproduceType } from "../enums/reproduce-type";
 import {
     best,
-    Evaluation,
     Genome,
-    GenomeOptions,
+    IEvaluation,
+    IGenomeOptions,
     NaturalSelection,
     NaturalSelectionOptions,
     Nucleotide,
     replenish,
-    sampledReproduce
-} from '../index';
+    sampledReproduce,
+} from "../index";
 
-interface ListOptions extends GenomeOptions {
-    min: number,
-    max: number,
-    length: number
+interface IListOptions extends IGenomeOptions {
+    min: number;
+    max: number;
+    length: number;
 }
 
-function createList(genome: Genome<ListOptions>): number[] {
+function createList(genome: Genome<IListOptions>): number[] {
     return _.range(0, genome.options.length)
         .map((i: number) => {
-            let n: Nucleotide = genome.nucleo;
+            const n: Nucleotide = genome.nucleo;
             i = n.int(genome.options.min, genome.options.max);
             return genome.nucleo.int(genome.options.min, genome.options.max);
         });
 }
 
-function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]> {
-    let target = 100;
+function fitness(genome: Genome<IListOptions>): IEvaluation<IListOptions, number[]> {
+    const target = 100;
 
-    let list = createList(replenish(genome));
-    let sum = _.sum(list);
-    let fit = Math.abs(target - sum);
+    const list = createList(replenish(genome));
+    const sum = _.sum(list);
+    const fit = Math.abs(target - sum);
 
-    return { fitness: fit, genome: genome, result: list };
+    return { fitness: fit, genome, result: list };
 }
 
-let gOptions: ListOptions = {
+const gOptions: IListOptions = {
+    extendNucleotides: true,
     genomeLength: 3,
-    nucleotideLength: 5,
-    min: 1,
-    max: 100,
     length: 3,
-    extendNucleotides: true
-}
-
-let pOptions: NaturalSelectionOptions = {
-    populationSize: 20,
-    fillType: FillType.none,
-    fillPercent: 0.25,
-    objective: FitnessObjective.minimize,
-    mutateOptions: {
-        type: MutateType.safeSampled,
-        sampleSize: 5,
-        mutateChance: 0.15,
-        mutateOp: MutateOp.sub
-    },
-    reproduceOptions: {
-        type: ReproduceType.normal,
-        sampleSize: 5
-    }
+    max: 100,
+    min: 1,
+    nucleotideLength: 5,
 };
 
-let pop = new NaturalSelection(
+const pOptions: NaturalSelectionOptions = {
+    fillPercent: 0.25,
+    fillType: FillType.none,
+    mutateOptions: {
+        mutateChance: 0.15,
+        mutateOp: MutateOp.sub,
+        sampleSize: 5,
+        type: MutateType.safeSampled,
+    },
+    objective: FitnessObjective.minimize,
+    populationSize: 20,
+    reproduceOptions: {
+        sampleSize: 5,
+        type: ReproduceType.normal,
+    },
+};
+
+const pop = new NaturalSelection(
     pOptions,
     gOptions,
     createList,
-    fitness
+    fitness,
 );
 
-
-let ev = pop.evolve$()
-    .subscribe((e: Evaluation<ListOptions, number[]>) => {
-        let list = e.result;
-        let f = e.fitness;
-        console.log(`\t`, `list: ${list}, sum: ${_.sum(list)}, fitness: ${f}`);
-    },
-    err => console.log(err))
+const ev = pop.evolve$()
+    .subscribe((e: IEvaluation<IListOptions, number[]>) => {
+        const list = e.result;
+        const f = e.fitness;
+        // do something with list
+    });

@@ -1,5 +1,5 @@
-import { Genome, GenomeOptions, replenish } from "../index";
+import { Genome, IGenomeOptions, replenish } from "../index";
 
-export function replenishMany<T extends GenomeOptions>(genomes: Genome<T>[]): Genome<T>[] {
+export function replenishMany<T extends IGenomeOptions>(genomes: Array<Genome<T>>): Array<Genome<T>> {
     return genomes.map(replenish);
 }

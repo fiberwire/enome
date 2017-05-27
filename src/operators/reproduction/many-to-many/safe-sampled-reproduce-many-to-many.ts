@@ -1,25 +1,27 @@
-import { FitnessObjective } from '../../../enums/fitness-objective';
-import * as _ from 'lodash';
+import * as _ from "lodash";
+import { FitnessObjective } from "../../../enums/fitness-objective";
 import {
     avgFitness,
-    Evaluation,
     Genome,
-    GenomeOptions,
+    IEvaluation,
+    IGenomeOptions,
     sampledReproduceManyToMany,
-    value
-} from '../../../index';
+    value,
+} from "../../../index";
 
-//produces many offspring from many genomes, each group selected from a sample, then returns the best group of offspring
-export function safeSampledReproduceManyToMany<T extends GenomeOptions, U>(
-    genomes: Genome<T>[],
+// produces many offspring from many genomes,
+// each group selected from a sample,
+// then returns the best group of offspring
+export function safeSampledReproduceManyToMany<T extends IGenomeOptions, U>(
+    genomes: Array<Genome<T>>,
     n: number,
-    fitness: (gen: Genome<T>) => Evaluation<T, U>,
+    fitness: (gen: Genome<T>) => IEvaluation<T, U>,
     objective: FitnessObjective = FitnessObjective.maximize,
     sampleSize: number = 5,
-    weights: number[] = _.range(0, genomes.length).map(i => value()),
-): Genome<T>[] {
-    let result: Genome<T>[] = [];
-    let avgFit = avgFitness(genomes, fitness);
+    weights: number[] = _.range(0, genomes.length).map((i) => value()),
+): Array<Genome<T>> {
+    let result: Array<Genome<T>> = [];
+    const avgFit = avgFitness(genomes, fitness);
 
     switch (objective) {
         case FitnessObjective.maximize:
@@ -27,8 +29,8 @@ export function safeSampledReproduceManyToMany<T extends GenomeOptions, U>(
                 result = _.concat(
                     result,
                     sampledReproduceManyToMany(genomes, n, fitness, objective, sampleSize, weights)
-                        .filter(g => fitness(g).fitness > avgFit)
-                )
+                        .filter((g) => fitness(g).fitness > avgFit),
+                );
             }
             break;
 
@@ -37,8 +39,8 @@ export function safeSampledReproduceManyToMany<T extends GenomeOptions, U>(
                 result = _.concat(
                     result,
                     sampledReproduceManyToMany(genomes, n, fitness, objective, sampleSize, weights)
-                        .filter(g => fitness(g).fitness < avgFit)
-                )
+                        .filter((g) => fitness(g).fitness < avgFit),
+                );
             }
             break;
     }

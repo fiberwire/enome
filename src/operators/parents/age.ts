@@ -1,7 +1,7 @@
-import { GenomeOptions } from '../../options/genome-options';
-import { Parent } from '../../interfaces/parent';
+import { IParent } from "../../interfaces/parent";
+import { IGenomeOptions } from "../../options/genome-options";
 
-export function age<T extends GenomeOptions>(parent: Parent<T>, n: number = 1): Parent<T> {
+export function age<T extends IGenomeOptions>(parent: IParent<T>, n: number = 1): IParent<T> {
     parent.age += n;
     return parent;
 }

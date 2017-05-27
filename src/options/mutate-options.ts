@@ -1,5 +1,5 @@
-import { MutateType } from '../enums/mutate-type';
-import { MutateOp } from '../enums/mutate-op';
+import { MutateOp } from "../enums/mutate-op";
+import { MutateType } from "../enums/mutate-type";
 export interface MutateOptions {
     mutateChance: number;
     mutateOp: MutateOp;

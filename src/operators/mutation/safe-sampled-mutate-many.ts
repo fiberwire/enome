@@ -1,21 +1,21 @@
-import * as _ from 'lodash';
-import { avgFitness } from '../avg-fitness';
-import { Evaluation } from '../../interfaces/evaluation';
-import { FitnessObjective } from '../../enums/fitness-objective';
-import { Genome } from '../../genotypes/genome';
-import { GenomeOptions } from '../../options/genome-options';
-import { MutateOp } from '../../enums/mutate-op';
-import { sampledMutateMany } from './sampled-mutate-many';
+import * as _ from "lodash";
+import { FitnessObjective } from "../../enums/fitness-objective";
+import { MutateOp } from "../../enums/mutate-op";
+import { Genome } from "../../genotypes/genome";
+import { IEvaluation } from "../../interfaces/evaluation";
+import { IGenomeOptions } from "../../options/genome-options";
+import { avgFitness } from "../avg-fitness";
+import { sampledMutateMany } from "./sampled-mutate-many";
 
-export function safeSampledMutateMany<T extends GenomeOptions, U>(
-    genomes: Genome<T>[],
-    fitness: (gen: Genome<T>) => Evaluation<T, U>,
+export function safeSampledMutateMany<T extends IGenomeOptions, U>(
+    genomes: Array<Genome<T>>,
+    fitness: (gen: Genome<T>) => IEvaluation<T, U>,
     objective: FitnessObjective = FitnessObjective.maximize,
     mutateChance: number = 0.05,
     mutateType: MutateOp = MutateOp.sub,
-    sampleSize: number = 5
-): Genome<T>[] {
-    let result: Genome<T>[] = [];
+    sampleSize: number = 5,
+): Array<Genome<T>> {
+    let result: Array<Genome<T>> = [];
 
     switch (objective) {
         case FitnessObjective.maximize:
@@ -23,8 +23,8 @@ export function safeSampledMutateMany<T extends GenomeOptions, U>(
                 result = _.concat(
                     result,
                     sampledMutateMany(genomes, fitness, objective, mutateChance, mutateType, sampleSize)
-                        .filter(g => fitness(g).fitness > avgFitness(genomes, fitness))
-                )
+                        .filter((g) => fitness(g).fitness > avgFitness(genomes, fitness)),
+                );
             }
 
         case FitnessObjective.minimize:
@@ -32,8 +32,8 @@ export function safeSampledMutateMany<T extends GenomeOptions, U>(
                 result = _.concat(
                     result,
                     sampledMutateMany(genomes, fitness, objective, mutateChance, mutateType, sampleSize)
-                        .filter(g => fitness(g).fitness < avgFitness(genomes, fitness))
-                )
+                        .filter((g) => fitness(g).fitness < avgFitness(genomes, fitness)),
+                );
             }
 
     }

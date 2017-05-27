@@ -1,6 +1,6 @@
 import { MutateOptions } from "../index";
 
-export interface ArtificialSelectionOptions {
+export interface IArtificialSelectionOptions {
     initSize: number;
     minSize: number;
     maxSize: number;

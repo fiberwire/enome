@@ -1,7 +1,7 @@
-import { FillType } from '../enums/fill-type';
-import { FitnessObjective } from '../enums/fitness-objective';
-import { MutateOptions } from './mutate-options';
-import { ReproduceOptions } from './reproduce-options';
+import { FillType } from "../enums/fill-type";
+import { FitnessObjective } from "../enums/fitness-objective";
+import { MutateOptions } from "./mutate-options";
+import { ReproduceOptions } from "./reproduce-options";
 
 export interface NaturalSelectionOptions {
     populationSize: number;
@@ -9,5 +9,5 @@ export interface NaturalSelectionOptions {
     fillPercent: number;
     reproduceOptions: ReproduceOptions;
     mutateOptions: MutateOptions;
-    objective: FitnessObjective
+    objective: FitnessObjective;
 }

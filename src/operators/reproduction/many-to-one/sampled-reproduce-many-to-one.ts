@@ -1,30 +1,30 @@
-import * as _ from 'lodash';
+import * as _ from "lodash";
+import { FitnessObjective } from "../../../enums/fitness-objective";
 import {
     best,
-    Evaluation,
     Genome,
-    GenomeOptions,
+    IEvaluation,
+    IGenomeOptions,
     reproduceManyToOne,
-    value
-} from '../../../index';
-import { FitnessObjective } from '../../../enums/fitness-objective';
-import { worst } from '../../worst';
+    value,
+} from "../../../index";
+import { worst } from "../../worst";
 
-//produce one offspring from many provided genomes, each one selected from a sample
-export function sampledReproduceManyToOne<T extends GenomeOptions, U>(
-    genomes: Genome<T>[],
-    fitness: (gen: Genome<T>) => Evaluation<T, U>,
+// produce one offspring from many provided genomes, each one selected from a sample
+export function sampledReproduceManyToOne<T extends IGenomeOptions, U>(
+    genomes: Array<Genome<T>>,
+    fitness: (gen: Genome<T>) => IEvaluation<T, U>,
     objective: FitnessObjective = FitnessObjective.maximize,
-    weights: number[] = _.range(0, genomes.length).map(i => value()),
-    sampleSize: number = 5
+    weights: number[] = _.range(0, genomes.length).map((i) => value()),
+    sampleSize: number = 5,
 ): Genome<T> {
-    //produce offspring
-    let offspring = _.range(0, sampleSize)
-        .map(i => {
+    // produce offspring
+    const offspring = _.range(0, sampleSize)
+        .map((i) => {
             return reproduceManyToOne(genomes, weights);
-        })
-    
-    //return best genome
+        });
+
+    // return best genome
     switch (objective) {
         case FitnessObjective.maximize:
             return best(offspring, fitness).genome;
