@@ -23,12 +23,8 @@ interface IListOptions extends IGenomeOptions {
 }
 
 function createList(genome: Genome<IListOptions>): number[] {
-    return _.range(0, genome.options.length)
-        .map((i: number) => {
-            const n: Gene = genome.g;
-            i = n.int(genome.options.min, genome.options.max);
-            return genome.g.int(genome.options.min, genome.options.max);
-        });
+    return _.range(genome.options.length)
+        .map((i: number) => genome.g.int(genome.options.min, genome.options.max));
 }
 
 function fitness(genome: Genome<IListOptions>): IEvaluation<IListOptions, number[]> {

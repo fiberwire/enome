@@ -1,13 +1,12 @@
 # enome 
 ## [![Build Status](https://travis-ci.org/fiberwire/enome.svg?branch=master)](https://travis-ci.org/fiberwire/enome)
-## A Genome generation library
+## A Genome generation and evolution library
 
-## Note: This library is still in the early stages of active development, and should not be considered producion-ready by any means.
+## Note: This library is still in the early stages of development, and should not be considered producion-ready.
 
 ### This library is written in TypeScript, and I recommend using it with a TypeScript project.
 
 ### There are a few different ways you can use enome.
-
 1. `Natural Selection`
     -  Automatically evolves genomes based on their fitness.
 2. `Artificial Selection`
@@ -28,7 +27,7 @@ How enome generates `Genome`s:
   - This results in the `Genome` being less sensitive to `mutation`
   - The sensitivity is customizable by varying the number of `values` that go into each `Gene`
 - Groups those `Genes` into a `Genome`
-  - `Genome` exposes a property called `nucleo` that allows you to get the next `Gene` in the `Genome`.
+  - `Genome` exposes a property called `g` that allows you to get the next `Gene` in the `Genome`.
     - This allows you to pass the `Genome` around, consuming its `Gene`s as you need them.
 
 How enome determines the `fitness` of a `Genome`:
@@ -45,7 +44,7 @@ How enome determines the `fitness` of a `Genome`:
 
 What enome allows you to do:
 - write code that maps a `Genome` to whatever `object` you want to build by consuming genes one at a time.
-- Define your hyperparameters in your `options` object.
+- Define your "hyperparameters" in your `options` object.
 - `mutate` and `evolve` that object by mutating and evolving the `Genome` that maps to that object.
 - do it very simply, by providing upper and lower bounds for each variable you want to evolve.
 
@@ -75,21 +74,23 @@ import {
     ReproduceType,
 } from "enome";
 
+// create interface that extends IGenomeOptions and contains 
+// the options you'll need to create your object from your genome
 interface IListOptions extends IGenomeOptions {
     min: number;
     max: number;
     length: number;
 }
 
+// create the function that will turn a genome into whatever object you want
+// in this case, it will create an array of integers.
 function createList(genome: Genome<IListOptions>): number[] {
-    return _.range(0, genome.options.length)
-        .map((i: number) => {
-            const n: Gene = genome.g;
-            i = n.int(genome.options.min, genome.options.max);
-            return genome.g.int(genome.options.min, genome.options.max);
-        });
+    return _.range(genome.options.length)
+        .map((i: number) => genome.g.int(genome.options.min, genome.options.max));
 }
 
+// create the function that will evaluate your genome
+// in this case, it is finding the difference between the sum of the list and the target, 256
 function fitness(genome: Genome<IListOptions>): IEvaluation<IListOptions, number[]> {
     const target = 256;
 
@@ -100,6 +101,7 @@ function fitness(genome: Genome<IListOptions>): IEvaluation<IListOptions, number
     return { fitness: fit, genome, result: list };
 }
 
+// set up the options for your genome
 const gOptions: IListOptions = {
     geneLength: 5,
     genomeLength: 3,
@@ -109,6 +111,7 @@ const gOptions: IListOptions = {
     min: 1,
 };
 
+// set up the options for your population
 const pOptions: NaturalSelectionOptions = {
     fillPercent: 0.25,
     fillType: FillType.none,
@@ -126,6 +129,7 @@ const pOptions: NaturalSelectionOptions = {
     },
 };
 
+// create your population
 const pop = new NaturalSelection(
     pOptions,
     gOptions,
@@ -133,6 +137,7 @@ const pop = new NaturalSelection(
     fitness,
 );
 
+// evolve your population
 const ev = pop.evolve$()
     .subscribe((e: IEvaluation<IListOptions, number[]>) => {
         const list = e.result;
