@@ -44,103 +44,101 @@ How enome determines the `fitness` of a `Genome`:
             - the object that is created from your genome.
 
 What enome allows you to do:
- - write code that maps a `Genome` to whatever `object` you want to build by consuming genes one at a time.
- - Define your hyperparameters in your `options` object.
- - `mutate` and `evolve` that object by mutating and evolving the `Genome` that maps to that object.
- - do it very simply, by providing upper and lower bounds for each variable you want to evolve.
+- write code that maps a `Genome` to whatever `object` you want to build by consuming genes one at a time.
+- Define your hyperparameters in your `options` object.
+- `mutate` and `evolve` that object by mutating and evolving the `Genome` that maps to that object.
+- do it very simply, by providing upper and lower bounds for each variable you want to evolve.
 
 
- # Example usage for Natural Selection
- say you want to evolve a list of three numbers between 1 and 100 that will add up to 256.
+# Install instructions
+```
+npm install enome
+```
+
+# Example usage for Natural Selection
+say you want to evolve a list of three numbers between 1 and 100 that will add up to 256.
 
 ```
 import * as _ from 'lodash';
 import {
-    sampledReproduce,
-    best,
-    Evaluation,
-    Genome,
-    GenomeOptions,
     Gene,
-    Population,
-    PopulationOptions,
-    replenish
-} from 'enome';
+    Genome,
+    IEvaluation,
+    IGenomeOptions,
+    NaturalSelection,
+    NaturalSelectionOptions,
+    replenish,
+    FillType,
+    MutateOp,
+    MutateType,
+    FitnessObjective,
+    ReproduceType,
+} from "enome";
 
-// create an interface that adds your custom options to GenomeOptions
-interface ListOptions extends GenomeOptions {
-    min: number,
-    max: number,
-    length: number
+interface IListOptions extends IGenomeOptions {
+    min: number;
+    max: number;
+    length: number;
 }
 
-//define a function that will map a Genome to whatever kind of object you want.
-function createList(genome: Genome<ListOptions>): number[] {
-    return _.range(genome.options.length)
-        .map(i => genome.nucleo.int(genome.options.min, genome.options.max));
+function createList(genome: Genome<IListOptions>): number[] {
+    return _.range(0, genome.options.length)
+        .map((i: number) => {
+            const n: Gene = genome.g;
+            i = n.int(genome.options.min, genome.options.max);
+            return genome.g.int(genome.options.min, genome.options.max);
+        });
 }
 
-//define a function that will determine the fitness of a Genome.
-function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]> {
-    let target = 256;
+function fitness(genome: Genome<IListOptions>): IEvaluation<IListOptions, number[]> {
+    const target = 256;
 
-    let list = createList(replenish(genome));
-    let sum = _.sum(list);
-    let error = Math.abs(target - sum);
-    
-    return { fitness: 1/error, genome: genome, result: list };
+    const list = createList(replenish(genome));
+    const sum = _.sum(list);
+    const fit = Math.abs(target - sum);
+
+    return { fitness: fit, genome, result: list };
 }
 
-//set genome options
-let gOptions: ListOptions = {
-    genomeLength: 10,
-    geneLength: 1,
-    min: 1,
-    max: 100,
+const gOptions: IListOptions = {
+    geneLength: 5,
+    genomeLength: 3,
     length: 3,
-    loopGenes: false
-}
-
-//set population options
-let pOptions: PopulationOptions = {
-    populationSize: 20,
-    fillType: 'random', //can be either worst or random
-    fillPercent: 0.15,
-    mutateOptions: {
-        safe: false,
-        sampled: false,
-        sampleSize: 5,
-        mutateChance: 0.15,
-        mutateType: 'sub' //can be either sub or avg
-    },
-    reproduceOptions: {
-        safe: true,
-        sampled: false,
-        sampleSize: 5
-    }
+    loopGenes: true,
+    max: 100,
+    min: 1,
 };
 
-//create population
-let pop = new NaturalSelection(
+const pOptions: NaturalSelectionOptions = {
+    fillPercent: 0.25,
+    fillType: FillType.none,
+    mutateOptions: {
+        mutateChance: 0.15,
+        mutateOp: MutateOp.sub,
+        sampleSize: 5,
+        type: MutateType.safeSampled,
+    },
+    objective: FitnessObjective.minimize,
+    populationSize: 20,
+    reproduceOptions: {
+        sampleSize: 5,
+        type: ReproduceType.normal,
+    },
+};
+
+const pop = new NaturalSelection(
     pOptions,
     gOptions,
     createList,
-    fitness
+    fitness,
 );
 
-//evolve synchronously
-let evSync = pop.evolve(100);
-let list = evSync.result;
-let fit = evSync.fitness;
-console.log(`\t`, `list: ${list}, sum: ${_.sum(list)}, fitness: ${fit}`);
-
-//or reactively
-let ev = pop.evolve$(100)
-    .subscribe(e => {
-        let list = e.result;
-        let fit = e.fitness;
-        console.log(`\t`, `list: ${list}, sum: ${_.sum(list)}, fitness: ${fit}`);
-    },
-    err => console.log(err))
-
+const ev = pop.evolve$()
+    .subscribe((e: IEvaluation<IListOptions, number[]>) => {
+        const list = e.result;
+        const f = e.fitness;
+        const sum = _.sum(list);
+        // do something with list
+        console.log(`[${list}] -sum: ${sum} -error: ${f}`);
+    });
 ```
