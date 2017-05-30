@@ -1,3 +1,8 @@
+import { FillType } from './enums/fill-type';
+import { FitnessObjective } from './enums/fitness-objective';
+import { MutateOp } from './enums/mutate-op';
+import { MutateType } from './enums/mutate-type';
+import { ReproduceType } from './enums/reproduce-type';
 import { Genome } from "./genotypes/genome";
 
 import { Gene } from "genotypes/gene";
@@ -140,4 +145,13 @@ export {
     NaturalSelection,
     ArtificialSelection,
     ArtificialPooledSelection,
+};
+
+// enums
+export {
+    FillType,
+    FitnessObjective,
+    MutateOp,
+    MutateType,
+    ReproduceType,
 };
