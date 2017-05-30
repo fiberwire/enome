@@ -1,5 +1,5 @@
-import { Gene } from "genotypes/gene";
 import * as _ from "lodash";
+import { Gene } from "../genotypes/gene";
 import { Genome } from "../genotypes/genome";
 import { IGenomeOptions } from "../options/genome-options";
 
