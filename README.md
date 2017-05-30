@@ -98,7 +98,7 @@ let gOptions: ListOptions = {
     min: 1,
     max: 100,
     length: 3,
-    extendGenes: false
+    loopGenes: false
 }
 
 //set population options
