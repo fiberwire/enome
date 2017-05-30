@@ -1,6 +1,6 @@
 {
   "name": "enome",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A genome generation and evolution library.",
   "main": "out/src/index.js",
   "typings": "out/src/index.d.ts",
