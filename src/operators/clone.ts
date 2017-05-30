@@ -1,6 +1,7 @@
 import * as _ from "lodash";
-import { Genome, IGenomeOptions } from "../index";
+import { Genome } from "../genotypes/genome";
+import { IGenomeOptions } from "../options/genome-options";
 
 export function clone<T extends IGenomeOptions>(gen: Genome<T>): Genome<T> {
-    return _.clone(gen);
+    return _.cloneDeep(gen);
 }

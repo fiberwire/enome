@@ -7,15 +7,22 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "pooled",
+            "program": "${workspaceRoot}/out/src/examples/pooled.js",
+            "protocol": "inspector"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "sum",
-            "program": "${workspaceRoot}/lib/src/examples/sum.js",
+            "program": "${workspaceRoot}/out/src/examples/sum.js",
             "protocol": "inspector"
         },
         {
             "type": "node",
             "request": "launch",
             "name": "letters",
-            "program": "${workspaceRoot}/lib/src/examples/letters.js",
+            "program": "${workspaceRoot}/out/src/examples/letters.js",
             "protocol": "inspector"
         },
         {
@@ -29,7 +36,8 @@
                 "-r",
                 "tsconfig-paths/register",
                 "test/**/*.ts",
-                "--watch"
+                "--watch",
+                "--no-timeouts"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "protocol": "inspector"
