@@ -1,23 +1,21 @@
-import { replenish } from '../../src/operators/replenish';
-import 'mocha';
-import { expect } from 'chai';
+import { expect } from "chai";
+import "mocha";
+import { replenish } from "../../src/operators/replenish";
 import { mocks } from "../mocks";
 
-
-
-describe('operators', () => {
+describe("operators", () => {
 
     let { genome } = mocks();
 
-    describe('replenish', () => {
-        it('should return a new genome with replenished nucleos', () => {
-            let n = genome.nucleo;
+    describe("replenish", () => {
+        it("should return a new genome with replenished genes", () => {
+            const n = genome.g;
 
-            expect(genome.nucleos.length).to.eql(genome.nucleotides.length - 1);
-            
+            expect(genome.genes.length).to.eql(genome.freshGenes.length - 1);
+
             genome = replenish(genome);
 
-            expect(genome.nucleos.length).to.eql(genome.nucleotides.length);
-        })
-    })
-})
+            expect(genome.genes.length).to.eql(genome.freshGenes.length);
+        });
+    });
+});

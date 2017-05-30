@@ -14,10 +14,10 @@ export function fill<T extends IGenomeOptions>(
                 const g = new Genome(gens[0].options);
 
                 // select two random parents, and create an offspring using two random weights
-                const p1 = g.nucleo.element(gens);
-                const p2 = g.nucleo.element(gens);
-                const w1 = g.nucleo.float(0, 1);
-                const w2 = g.nucleo.float(0, 1);
+                const p1 = g.g.element(gens);
+                const p2 = g.g.element(gens);
+                const w1 = g.g.float(0, 1);
+                const w2 = g.g.float(0, 1);
                 return reproduce(p1, p2, w1, w2);
             });
 

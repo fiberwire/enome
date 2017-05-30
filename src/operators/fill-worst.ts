@@ -2,10 +2,10 @@ import * as _ from "lodash";
 import {
     best,
     bottom,
+    Gene,
     Genome,
     IEvaluation,
     IGenomeOptions,
-    Nucleotide,
     top,
 } from "../index";
 

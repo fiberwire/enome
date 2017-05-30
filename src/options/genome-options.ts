@@ -1,6 +1,6 @@
 
 export interface IGenomeOptions {
     genomeLength: number;
-    nucleotideLength: number;
-    extendNucleotides: boolean;
+    geneLength: number;
+    loopGenes: boolean;
 }

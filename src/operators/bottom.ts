@@ -1,9 +1,9 @@
 import * as _ from "lodash";
 import {
+    Gene,
     Genome,
     IEvaluation,
     IGenomeOptions,
-    Nucleotide,
 } from "../index";
 
 export function bottom<T extends IGenomeOptions, U>(
@@ -15,5 +15,5 @@ export function bottom<T extends IGenomeOptions, U>(
     const b = _.sortBy(genomes.map(fitness), (e) => e.fitness);
 
     // select just the ones that make the cut
-    return new Nucleotide(percent).elements(b);
+    return new Gene(percent).elements(b);
 }

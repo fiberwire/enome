@@ -13,23 +13,23 @@
 2. `Artificial Selection`
     - Allows you to select which genomes will reproduce to spawn future generations
         - Genomes are presented in a queue-like manner, where you review and take action on genomes one at a time. 
-3. Artificial Pooled Selection
+3. `Artificial Pooled Selection`
     - Allows you to select which genomes will be parents to future generations
         - Parents are not recycled back into the general population queue, and are instead part of a separate pool of genomes that are exclusively used for reproduction.
         - You can set the size of the parent pool, and when the capacity is reached, any new additions will remove the oldest parent from the pool.
 4. Go it on your own
-    - You can use enome primitives (genomes and nucleotides) however you want.
+    - You can use enome primitives (genomes and genes) however you want.
     - The premade population types are just there to make your life easier. If their functionality doesn't fit your needs, you're free to make your own, or not use one at all.
     - enome provides a host of operators for doing various things to/with genomes.
 
 How enome generates `Genome`s:
 - Generates a `sequence` of `values` between `zero` and `one`
-- Groups those `values` into `Nucleotides` by averaging them together
+- Groups those `values` into `Genes` by averaging them together
   - This results in the `Genome` being less sensitive to `mutation`
-  - The sensitivity is customizable by varying the number of `values` that go into each `Nucleotide`
-- Groups those `Nucleotides` into a `Genome`
-  - `Genome` exposes a property called `nucleo` that allows you to get the next `Nucleotide` in the `Genome`.
-    - This allows you to pass the `Genome` around, consuming its `Nucleotide`s as you need them.
+  - The sensitivity is customizable by varying the number of `values` that go into each `Gene`
+- Groups those `Genes` into a `Genome`
+  - `Genome` exposes a property called `nucleo` that allows you to get the next `Gene` in the `Genome`.
+    - This allows you to pass the `Genome` around, consuming its `Gene`s as you need them.
 
 How enome determines the `fitness` of a `Genome`:
 - You define your own `fitness` function.
@@ -44,7 +44,7 @@ How enome determines the `fitness` of a `Genome`:
             - the object that is created from your genome.
 
 What enome allows you to do:
- - write code that maps a `Genome` to whatever `object` you want to build by consuming nucleotides one at a time.
+ - write code that maps a `Genome` to whatever `object` you want to build by consuming genes one at a time.
  - Define your hyperparameters in your `options` object.
  - `mutate` and `evolve` that object by mutating and evolving the `Genome` that maps to that object.
  - do it very simply, by providing upper and lower bounds for each variable you want to evolve.
@@ -61,7 +61,7 @@ import {
     Evaluation,
     Genome,
     GenomeOptions,
-    Nucleotide,
+    Gene,
     Population,
     PopulationOptions,
     replenish
@@ -94,11 +94,11 @@ function fitness(genome: Genome<ListOptions>): Evaluation<ListOptions, number[]>
 //set genome options
 let gOptions: ListOptions = {
     genomeLength: 10,
-    nucleotideLength: 1,
+    geneLength: 1,
     min: 1,
     max: 100,
     length: 3,
-    extendNucleotides: false
+    extendGenes: false
 }
 
 //set population options

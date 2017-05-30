@@ -3,7 +3,7 @@ import * as d3 from "d3-interpolate";
 
 const chance = new Chance();
 
-export class Nucleotide {
+export class Gene {
     constructor(public value: number) {
     }
 

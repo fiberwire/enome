@@ -1,5 +1,6 @@
 import { Genome } from "./genotypes/genome";
-import { Nucleotide } from "./genotypes/nucleotide";
+
+import { Gene } from "genotypes/gene";
 import { IEvaluation } from "./interfaces/evaluation";
 import { IParent } from "./interfaces/parent";
 import { avgFitness } from "./operators/avg-fitness";
@@ -64,7 +65,7 @@ export {
 // genotypes
 export {
     Genome,
-    Nucleotide,
+    Gene,
 };
 
 // operators

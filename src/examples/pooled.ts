@@ -4,17 +4,17 @@ import { MutateType } from "../enums/mutate-type";
 import { Genome } from "../genotypes/genome";
 import { IArtificialPooledSelectionOptions } from "../options/artificial-pooled-selection-options";
 import { IGenomeOptions } from "../options/genome-options";
-import { ArtificialPooledSelection } from '../populations/artificial-pooled-selection';
+import { ArtificialPooledSelection } from "../populations/artificial-pooled-selection";
 
 interface IStringOptions extends IGenomeOptions {
     length: number;
 }
 
 const gOptions: IStringOptions = {
-    extendNucleotides: true,
+    geneLength: 1,
     genomeLength: 20,
     length: 6,
-    nucleotideLength: 1,
+    loopGenes: true,
 };
 
 const pOptions: IArtificialPooledSelectionOptions = {
@@ -34,7 +34,7 @@ const pOptions: IArtificialPooledSelectionOptions = {
 const create = (genome: Genome<IStringOptions>) => {
     return _.range(gOptions.length)
         .map((i) => {
-            return genome.nucleo.letter();
+            return genome.g.letter();
         });
 };
 

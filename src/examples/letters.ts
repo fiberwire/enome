@@ -17,17 +17,17 @@ interface ILettersOptions extends IGenomeOptions {
 const createLetters = (genome: Genome<ILettersOptions>) => {
     const letters = _.range(genome.options.length)
         .map((i) => {
-            return genome.nucleo.letter();
+            return genome.g.letter();
         })
         .join("");
     return letters;
 };
 
 const gOptions: ILettersOptions = {
-    extendNucleotides: true,
+    loopGenes: true,
     genomeLength: 10,
     length: 10,
-    nucleotideLength: 50,
+    geneLength: 50,
 };
 
 const pOptions: IArtificialSelectionOptions = {

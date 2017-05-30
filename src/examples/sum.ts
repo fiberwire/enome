@@ -6,12 +6,12 @@ import { MutateType } from "../enums/mutate-type";
 import { ReproduceType } from "../enums/reproduce-type";
 import {
     best,
+    Gene,
     Genome,
     IEvaluation,
     IGenomeOptions,
     NaturalSelection,
     NaturalSelectionOptions,
-    Nucleotide,
     replenish,
     sampledReproduce,
 } from "../index";
@@ -25,9 +25,9 @@ interface IListOptions extends IGenomeOptions {
 function createList(genome: Genome<IListOptions>): number[] {
     return _.range(0, genome.options.length)
         .map((i: number) => {
-            const n: Nucleotide = genome.nucleo;
+            const n: Gene = genome.g;
             i = n.int(genome.options.min, genome.options.max);
-            return genome.nucleo.int(genome.options.min, genome.options.max);
+            return genome.g.int(genome.options.min, genome.options.max);
         });
 }
 
@@ -42,12 +42,12 @@ function fitness(genome: Genome<IListOptions>): IEvaluation<IListOptions, number
 }
 
 const gOptions: IListOptions = {
-    extendNucleotides: true,
+    geneLength: 5,
     genomeLength: 3,
     length: 3,
+    loopGenes: true,
     max: 100,
     min: 1,
-    nucleotideLength: 5,
 };
 
 const pOptions: NaturalSelectionOptions = {

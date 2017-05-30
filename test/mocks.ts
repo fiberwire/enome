@@ -1,3 +1,4 @@
+import { Gene } from "genotypes/gene";
 import * as _ from "lodash";
 import { FillType } from "../src/enums/fill-type";
 import { FitnessObjective } from "../src/enums/fitness-objective";
@@ -5,7 +6,6 @@ import { MutateOp } from "../src/enums/mutate-op";
 import { MutateType } from "../src/enums/mutate-type";
 import { ReproduceType } from "../src/enums/reproduce-type";
 import { Genome } from "../src/genotypes/genome";
-import { Nucleotide } from "../src/genotypes/nucleotide";
 import { IEvaluation } from "../src/interfaces/evaluation";
 import { IParent } from "../src/interfaces/parent";
 import { replenish } from "../src/operators/replenish";
@@ -36,9 +36,9 @@ export interface IMock {
 
 function mockGenome(): Genome<IGenomeOptions> {
     return new Genome({
-        extendNucleotides: false,
+        geneLength: 1,
         genomeLength: 50,
-        nucleotideLength: 1,
+        loopGenes: false,
     });
 }
 
@@ -47,11 +47,11 @@ function mockGenomes(): Array<Genome<IGenomeOptions>> {
 }
 
 function mockNSCreate(genome: Genome<IGenomeOptions>): number[] {
-    return genome.nuclei(10).map((n: Nucleotide) => n.float(0, 0.1));
+    return genome.gs(10).map((n: Gene) => n.float(0, 0.1));
 }
 
 function mockASCreate(genome: Genome<IGenomeOptions>): string[] {
-    return genome.nuclei(10).map((n: Nucleotide) => n.letter());
+    return genome.gs(10).map((n: Gene) => n.letter());
 }
 
 function mockNSFitness(gen: Genome<IGenomeOptions>) {
@@ -123,9 +123,9 @@ function mockAPSOptions(): IArtificialPooledSelectionOptions {
 
 function mockGenomeOptions(): IGenomeOptions {
     return {
-        extendNucleotides: false,
+        geneLength: 1,
         genomeLength: 50,
-        nucleotideLength: 1,
+        loopGenes: false,
     };
 }
 

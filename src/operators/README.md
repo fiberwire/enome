@@ -1,5 +1,5 @@
 # Operators
-functions that operate on genomes, nucleotides, or populations.
+functions that operate on genomes, genes, or populations.
 
 ## Table of Contents
 - [avgFitness](#avg-fitness)
