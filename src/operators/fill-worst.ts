@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import { FitnessObjective } from "../../src/enums/fitness-objective";
 import {
     best,
     bottom,
@@ -13,6 +14,7 @@ import {
 export function fillWorst<T extends IGenomeOptions, U>(
     genomes: Array<Genome<T>>,
     fitness: (gen: Genome<T>) => IEvaluation<T, U>,
+    objective: FitnessObjective,
     percent: number,
 ): Array<Genome<T>> {
     if (percent > 1 || percent < 0) {

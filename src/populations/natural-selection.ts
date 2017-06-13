@@ -64,6 +64,7 @@ export class NaturalSelection<T extends IGenomeOptions, U extends NaturalSelecti
                     this.genomes,
                     this.genomes.length,
                     this.fitness,
+                    this.popOptions.objective,
                     this.popOptions.reproduceOptions.sampleSize,
                 );
                 break;
@@ -125,6 +126,7 @@ export class NaturalSelection<T extends IGenomeOptions, U extends NaturalSelecti
                 return safeMutateMany(
                     this.genomes,
                     this.fitness,
+                    this.popOptions.objective,
                     this.popOptions.mutateOptions.mutateChance,
                     this.popOptions.mutateOptions.mutateOp,
                 );
@@ -134,13 +136,20 @@ export class NaturalSelection<T extends IGenomeOptions, U extends NaturalSelecti
     public fill(gens: Array<Genome<T>>): Array<Genome<T>> {
         switch (this.popOptions.fillType) {
             case FillType.worst:
-                return fillWorst(gens, this.fitness, this.popOptions.fillPercent);
+                return fillWorst(
+                    gens,
+                    this.fitness,
+                    this.popOptions.objective,
+                    this.popOptions.fillPercent);
             case FillType.random:
                 return fillRandom(gens, this.popOptions.fillPercent);
             case FillType.none:
                 return gens;
             default:
-                return fillWorst(gens, this.fitness, this.popOptions.fillPercent);
+                return fillWorst(gens,
+                    this.fitness,
+                    this.popOptions.objective,
+                    this.popOptions.fillPercent);
         }
     }
 
@@ -164,9 +173,9 @@ export class NaturalSelection<T extends IGenomeOptions, U extends NaturalSelecti
         return b;
     }
 
-    public evolve$(generations: number = 1000, timeout: number = 3000): Observable<IEvaluation<T, V>> {
+    public evolve$(generations: number = 1000, interval: number = 1): Observable<IEvaluation<T, V>> {
         return Observable
-            .interval(1)
+            .interval(interval)
             .map((i) => this.genomes)
             .map((gens) => {
                 this.genomes = this.evolveStep();
