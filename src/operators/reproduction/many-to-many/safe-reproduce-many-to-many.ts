@@ -12,7 +12,7 @@ export function safeReproduceManyToMany<T extends IGenomeOptions, U>(
     n: number,
     fitness: (gen: Genome<T>) => IEvaluation<T, U>,
     objective: FitnessObjective = FitnessObjective.maximize,
-    weights: number[] = _.range(0, genomes.length).map((i) => value()),
+    weights: number[] = _.range(genomes.length).map((i) => value()),
 ): Array<Genome<T>> {
 
     let result: Array<Genome<T>> = [];
