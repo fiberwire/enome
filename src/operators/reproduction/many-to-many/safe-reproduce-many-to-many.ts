@@ -4,6 +4,8 @@ import { Genome } from "../../../genotypes/genome";
 import { IEvaluation } from "../../../interfaces/evaluation";
 import { IGenomeOptions } from "../../../options/genome-options";
 import { avgFitness } from "../../avg-fitness";
+import {bottom} from "../../bottom";
+import { top } from "../../top";
 import { value } from "../../value";
 import { reproduceManyToMany } from "./reproduce-many-to-many";
 
@@ -20,6 +22,7 @@ export function safeReproduceManyToMany<T extends IGenomeOptions, U>(
 
     switch (objective) {
         case FitnessObjective.maximize:
+            result = top(genomes, fitness).map((e) => e.genome);
             while (result.length < n) {
                 result = _.concat(
                     result,
@@ -30,6 +33,7 @@ export function safeReproduceManyToMany<T extends IGenomeOptions, U>(
             break;
 
         case FitnessObjective.minimize:
+            result = bottom(genomes, fitness).map((e) => e.genome);
             while (result.length < n) {
                 result = _.concat(
                     result,

@@ -2,10 +2,12 @@ import * as _ from "lodash";
 import { FitnessObjective } from "../../../enums/fitness-objective";
 import {
     avgFitness,
+    bottom,
     Genome,
     IEvaluation,
     IGenomeOptions,
     sampledReproduceManyToMany,
+    top,
     value,
 } from "../../../index";
 
@@ -25,6 +27,7 @@ export function safeSampledReproduceManyToMany<T extends IGenomeOptions, U>(
 
     switch (objective) {
         case FitnessObjective.maximize:
+            result = top(genomes, fitness).map((e) => e.genome);
             while (result.length < n) {
                 result = _.concat(
                     result,
@@ -35,6 +38,7 @@ export function safeSampledReproduceManyToMany<T extends IGenomeOptions, U>(
             break;
 
         case FitnessObjective.minimize:
+            result = bottom(genomes, fitness).map((e) => e.genome);
             while (result.length < n) {
                 result = _.concat(
                     result,

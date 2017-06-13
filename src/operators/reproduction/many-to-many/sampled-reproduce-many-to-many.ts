@@ -2,10 +2,12 @@ import * as _ from "lodash";
 import { FitnessObjective } from "../../../enums/fitness-objective";
 import {
     best,
+    bottom,
     Genome,
     IEvaluation,
     IGenomeOptions,
     reproduceManyToOne,
+    top,
     value,
 } from "../../../index";
 import { worst } from "../../worst";
@@ -20,22 +22,29 @@ export function sampledReproduceManyToMany<T extends IGenomeOptions, U>(
     weights: number[] = _.range(0, genomes.length).map((i) => value()),
 ): Array<Genome<T>> {
     // create many genomes (according to n)
-    return _.range(0, n)
-        .map((i) => {
-            // create sample of genomes (according to sampleSize)
-            const sample = _.range(0, sampleSize)
-                .map((j) => reproduceManyToOne(genomes, weights));
 
-            // return best genome from sample
-            switch (objective) {
-                case FitnessObjective.maximize:
-                    return best(sample, fitness).genome;
+    let result: Array<Genome<T>>;
 
-                case FitnessObjective.minimize:
-                    return worst(sample, fitness).genome;
+    switch (objective) {
+        case FitnessObjective.maximize:
+            result = top(genomes, fitness).map((e) => e.genome);
+            while (result.length < n) {
+                const sample = _.range(sampleSize)
+                    .map((j) => reproduceManyToOne(genomes, weights));
 
-                default:
-                    return best(sample, fitness).genome;
+                result = _.concat(result, best(sample, fitness).genome);
             }
-        });
+            break;
+        case FitnessObjective.minimize:
+            result = bottom(genomes, fitness).map((e) => e.genome);
+            while (result.length < n) {
+                const sample = _.range(sampleSize)
+                    .map((j) => reproduceManyToOne(genomes, weights));
+
+                result = _.concat(result, best(sample, fitness).genome);
+            }
+            break;
+    }
+
+    return result;
 }

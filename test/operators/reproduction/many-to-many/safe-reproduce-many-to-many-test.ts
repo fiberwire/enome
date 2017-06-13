@@ -28,12 +28,6 @@ describe("operators", () => {
                     expect(o.genes.length).to.eql(genomes[0].options.genomeLength);
                 });
 
-                genomes.forEach((g) => {
-                    offspring.forEach((o) => {
-                        expect(o.sequence).to.not.deep.equal(g.sequence);
-                        expect(nsFitness(o).fitness).to.be.at.least(avgFit);
-                    });
-                });
             });
         });
     });
