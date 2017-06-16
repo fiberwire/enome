@@ -54,7 +54,7 @@ export class Genome<T extends IGenomeOptions> {
             if (this.options.loopGenes) {
                 this.genes = this.freshGenes;
             } else {
-                throw new Error((`${this.id} ran out of nucleos`));
+                throw new Error((`${this.id} ran out of genes`));
             }
         }
 
@@ -67,7 +67,7 @@ export class Genome<T extends IGenomeOptions> {
             if (this.options.loopGenes) {
                 this.genes = this.freshGenes;
             } else {
-                throw new Error((`${this.id} ran out of nucleos`));
+                throw new Error((`${this.id} ran out of genes`));
             }
         }
 
