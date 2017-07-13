@@ -9,7 +9,7 @@ export class ReactiveProperty<T> {
         this.subject = new BehaviorSubject(value);
         this._value = value;
     }
-    
+
     public get value(): T {
         return this._value;
     }
