@@ -1,11 +1,11 @@
-import { BehaviorSubject, IDisposable, Observable } from "rx";
+import { BehaviorSubject, IDisposable, IScheduler, Observable } from "rx";
 
 export class ReactiveProperty<T> {
     // tslint:disable-next-line:variable-name
     private _value: T;
     private subject: BehaviorSubject<T>;
 
-    constructor(value: T) {
+    constructor(value?: T) {
         this.subject = new BehaviorSubject(value);
         this._value = value;
     }
@@ -29,6 +29,14 @@ export class ReactiveProperty<T> {
 
     public select<U>(selector: (value: T) => U) {
         return this.subject.select(selector);
+    }
+
+    public throttleWithTimeout(dueTime: number, scheduler?: IScheduler) {
+        return this.subject.throttleWithTimeout(dueTime, scheduler);
+    }
+
+    public throttleWithSelector<TTimeout>(selector: (value: T) => Observable<TTimeout>) {
+        return this.subject.debounceWithSelector(selector);
     }
 
 }
