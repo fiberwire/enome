@@ -34,7 +34,7 @@ function fitness(genome: Genome<IListOptions>): IEvaluation<IListOptions, number
     const sum = _.sum(list);
     const fit = Math.abs(target - sum);
 
-    return { fitness: fit, genome, result: list };
+    return { fitness: fit, genome, phenotype: list };
 }
 
 const gOptions: IListOptions = {
@@ -72,7 +72,7 @@ const pop = new NaturalSelection(
 
 const ev = pop.evolve$()
     .subscribe((e: IEvaluation<IListOptions, number[]>) => {
-        const list = e.result;
+        const list = e.phenotype;
         const f = e.fitness;
         // do something with list
     });
