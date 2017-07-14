@@ -1,8 +1,7 @@
 import { Genome } from "../genotypes/genome";
 import { IGenomeOptions } from "../options/genome-options";
 
-export interface IEvaluation<T extends IGenomeOptions, U> {
+export interface IEvaluation<OrganismType, PhenoType> {
     fitness: number;
-    genome: Genome<T>;
-    result: U;
+    organism: OrganismType;
 }
