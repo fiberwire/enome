@@ -42,7 +42,7 @@ export abstract class Population<
     ): IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>;
 
     // mutate the organism based on evaluation
-    public abstract mutateOrganism(
+    public abstract mutate(
         evaluation: IEvaluation<
             Organism<GenType, PopType, DataType, PhenoType, EnvStateType>,
             PhenoType>): Genome<GenType>;
@@ -68,7 +68,7 @@ export abstract class Population<
         return this.evaluations
             .subscribe((e) => {
                 this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
-                e.organism.genotype.value = this.mutateOrganism(e);
+                e.organism.genotype.value = this.mutate(e);
             });
     }
 }
