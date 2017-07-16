@@ -1,6 +1,6 @@
-import { GenomeRefill } from "enums/genome-refill";
 import { FillType } from "./enums/fill-type";
 import { FitnessObjective } from "./enums/fitness-objective";
+import { GenomeRefill } from "./enums/genome-refill";
 import { MutateOp } from "./enums/mutate-op";
 import { Environment } from "./environments/environment";
 import { Gene } from "./genotypes/gene";
