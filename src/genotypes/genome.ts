@@ -2,6 +2,7 @@ import * as Chance from "chance";
 import * as _ from "lodash";
 import {
     Gene,
+    GenomeRefill,
     IGenomeOptions,
     value,
     values,
@@ -14,6 +15,8 @@ export class Genome<T extends IGenomeOptions> {
     // the genes derived from the base values, consumed by gene property
     public genes: Gene[];
 
+    private extended: number = 0;
+
     constructor(
         public options: T,
         public sequence: number[] = values(options.genomeLength * options.geneLength),
@@ -24,11 +27,11 @@ export class Genome<T extends IGenomeOptions> {
 
     // returns a string of lower and upper case letters which are determined by the genome
     get id(): string {
-        const nucleos: Gene[] = this.freshGenes;
+        const genes: Gene[] = this.freshGenes;
         let letters: string[];
-        const numLetters: number = nucleos.length / this.idLength;
+        const numLetters: number = genes.length / this.idLength;
         letters = _
-            .chunk(nucleos, numLetters).slice(0, this.idLength) // group genes
+            .chunk(genes, numLetters).slice(0, this.idLength) // group genes
             .map((n: Gene[]) =>
                 n.reduce((a, b) => new Gene((a.value + b.value) / 2)), // average genes)
         )
@@ -41,20 +44,53 @@ export class Genome<T extends IGenomeOptions> {
     // chunks values in sequence together into genes, determined by options.geneLength
     // the longer the genes are, the less sensitive to mutation they are.
     get freshGenes(): Gene[] {
-        const nucleos = _
+        const genes = _
             .chunk(this.sequence, this.options.geneLength)
             .map((n) => _.reduce(n, (memo, num) => memo + num, 0) / n.length || 1)
             .map((n) => new Gene(n));
-        return nucleos;
+        return genes;
+    }
+
+    get extendedGenes(): Gene[] {
+        const fresh = this.freshGenes;
+        const c = new Chance(fresh[this.extended].value);
+
+        const ext = fresh.map((f) => {
+            const g = new Gene(_.mean(_
+                .range(this.options.geneLength)
+                .map((i) => c.floating({
+                    max: 1,
+                    min: 0,
+                })),
+            ));
+
+            return g;
+        });
+
+        // loop extended back to 0 if it passes genomeLength
+        if (this.extended + 1 < this.options.genomeLength) {
+            this.extended += 1;
+        } else {
+            this.extended = 0;
+        }
+
+        return ext;
     }
 
     // gets the next gene
     get g(): Gene {
         if (this.genes.length === 0) {
-            if (this.options.loopGenes) {
-                this.genes = this.freshGenes;
-            } else {
-                throw new Error((`${this.id} ran out of genes`));
+            switch (this.options.refill) {
+                case GenomeRefill.loop:
+                    this.genes = this.freshGenes;
+                    break;
+
+                case GenomeRefill.extend:
+                    this.genes = this.extendedGenes;
+
+                case GenomeRefill.none:
+                default:
+                    throw new Error((`${this.id} ran out of genes`));
             }
         }
 
@@ -64,10 +100,17 @@ export class Genome<T extends IGenomeOptions> {
     // gets the next n genes
     public gs(n: number): Gene[] {
         if (this.genes.length < n) {
-            if (this.options.loopGenes) {
-                this.genes = this.freshGenes;
-            } else {
-                throw new Error((`${this.id} ran out of genes`));
+            switch (this.options.refill) {
+                case GenomeRefill.loop:
+                    this.genes = this.freshGenes;
+                    break;
+
+                case GenomeRefill.extend:
+                    this.genes = this.extendedGenes;
+
+                case GenomeRefill.none:
+                default:
+                    throw new Error((`${this.id} ran out of genes`));
             }
         }
 
