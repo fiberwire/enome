@@ -19,9 +19,14 @@ export abstract class Environment<
 
     public pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>;
 
+    private subs: IDisposable[];
+
     constructor() {
         this.resetState();
-        this.initializeOrganisms(this.pop.popOptions.size);
+        this.subs = [
+            this.initializeOrganisms(this.pop.popOptions.size),
+        ];
+
     }
 
     // The beginning state of the Environment
@@ -31,10 +36,15 @@ export abstract class Environment<
     public abstract createOrganism(): Organism<GenType, PopType, DataType, PhenoType, EnvStateType>;
 
     // resets the environment back to a fresh state
-    public reset() {
+    public reset(): void {
         this.resetState();
         this.killOrganisms();
         this.initializeOrganisms(this.pop.popOptions.size);
+    }
+
+    // disposes all subscriptions
+    public dispose(): void {
+        this.subs.forEach((s) => s.dispose());
     }
 
     // initializes organisms and adds them to the environment
@@ -46,7 +56,7 @@ export abstract class Environment<
             .subscribe(this.newOrganisms);
     }
 
-    private killOrganisms() {
+    private killOrganisms(): void {
         this.pop.organisms = _.compact(this.pop.organisms);
 
         for (let i = 0; i < this.pop.organisms.length; i++) {
@@ -57,7 +67,7 @@ export abstract class Environment<
         this.pop.organisms = [];
     }
 
-    private resetState() {
+    private resetState(): void {
         this.state.value = this.initialState;
     }
 }
