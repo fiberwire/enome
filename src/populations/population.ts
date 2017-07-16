@@ -11,12 +11,16 @@ export abstract class Population<
     PopType extends IPopulationOptions,
     DataType, PhenoType, EnvStateType> {
 
-    public organisms: Array<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> = [];
     public toEvaluate: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
     public evaluations: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
     public avgFitness: ReactiveProperty<number>;
 
-    public env: Environment<GenType, PopType, DataType, PhenoType, EnvStateType>;
+    public envs: Array<Environment<GenType, PopType, DataType, PhenoType, EnvStateType>>;
+
+    public get organisms(): Array<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> {
+        return _.concat([], ...this.envs
+            .map((e) => e.organisms));
+    }
 
     constructor(
         public genOptions: GenType,
@@ -27,7 +31,7 @@ export abstract class Population<
         this.avgFitness = new ReactiveProperty<number>();
 
         // set up environment
-        this.env = this.createEnvironment();
+        this.setupEnvironments();
         this.updateGenotype();
         this.evaluateData();
     }
@@ -46,6 +50,11 @@ export abstract class Population<
     // set up environment
     public abstract createEnvironment(): Environment<GenType, PopType, DataType, PhenoType, EnvStateType>;
 
+    // set up all environments
+    private setupEnvironments() {
+        this.envs = _.range(this.popOptions.envs)
+            .map((i) => this.createEnvironment());
+    }
     // evaluate data as it comes in
     private evaluateData(): IDisposable {
         return this.toEvaluate
