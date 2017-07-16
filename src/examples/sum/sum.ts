@@ -3,6 +3,8 @@ import { ISumGenomeOptions } from "./sum-genome-options";
 import { ISumPopOptions } from "./sum-pop-options";
 import { SumPopulation } from "./sum-population";
 
+import * as _ from "lodash";
+
 const genOptions: ISumGenomeOptions = {
     geneLength: 1,
     genomeLength: 10,
@@ -32,3 +34,12 @@ const pop = new SumPopulation(
     genOptions,
     popOptions,
 );
+
+pop.best.subscribe((b) => {
+    const list = b.organism.phenotype.value;
+    const sum = _.sum(list);
+    const fit = b.fitness;
+
+    // tslint:disable-next-line:no-console
+    console.log(`List: ${list}, Sum: ${sum}, Fitness: ${fit}`);
+});
