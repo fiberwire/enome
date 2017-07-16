@@ -15,7 +15,7 @@ export class SumEnv extends Environment<ISumGenomeOptions, ISumPopOptions, ISumD
     }
 
     public createOrganism(): SumOrganism {
-        return new SumOrganism(this.pop, this, new Genome(this.pop.genOptions));
+        return new SumOrganism(this.pop, this, new Genome(this.pop.genOptions), 1);
     }
 
 }

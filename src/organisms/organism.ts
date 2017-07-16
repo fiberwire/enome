@@ -38,7 +38,7 @@ export abstract class Organism<
     constructor(public pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>,
                 public env: Environment<GenType, PopType, DataType, PhenoType, EnvStateType>,
                 genome: Genome<GenType>,
-                private iterations: number = 1000,
+                private iterations: number,
                 private duration: number = 30,
                 private interactionRate: number = 10) {
         this.genotype = new ReactiveProperty(genome);
