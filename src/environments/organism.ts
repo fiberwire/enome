@@ -47,7 +47,7 @@ export abstract class Organism<
                 private duration: number = 30,
                 private interactionRate: number = 10) {
         this.genotype = new ReactiveProperty(genome);
-        this.data = new ReactiveProperty();
+        this.data = new ReactiveProperty<DataType[]>([]);
 
         this.subs = [
             this.updatePhenotype(),
@@ -68,7 +68,7 @@ export abstract class Organism<
 
     private updatePhenotype(): IDisposable {
         return this.genotype
-            .select(this.createPhenotype)
+            .map(this.createPhenotype)
             .subscribe((phenotype) => this.phenotype.value = phenotype);
     }
 
