@@ -7,10 +7,13 @@ export abstract class Environment<
     GenType extends IGenomeOptions,
     PopType extends IPopulationOptions,
     DataType, PhenoType, EnvStateType>{
+
     public state: ReactiveProperty<EnvStateType>;
 
     public newOrganisms: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
     public newConnections: Subject<IDisposable>;
+
+    public organisms: Array<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> = [];
 
     public pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>;
 
@@ -21,7 +24,6 @@ export abstract class Environment<
         this.subs = [
             this.initializeOrganisms(this.pop.popOptions.size),
         ];
-
     }
 
     // The beginning state of the Environment
@@ -47,19 +49,19 @@ export abstract class Environment<
         return Observable
             .range(0, n)
             .select(this.createOrganism)
-            .do((org) => this.pop.organisms.push(org))
+            .do((org) => this.organisms.push(org))
             .subscribe(this.newOrganisms);
     }
 
     private killOrganisms(): void {
-        this.pop.organisms = _.compact(this.pop.organisms);
+        this.organisms = _.compact(this.organisms);
 
-        for (let i = 0; i < this.pop.organisms.length; i++) {
-            this.pop.organisms[i].dispose();
-            this.pop.organisms[i] = null;
+        for (let i = 0; i < this.organisms.length; i++) {
+            this.organisms[i].dispose();
+            this.organisms[i] = null;
         }
 
-        this.pop.organisms = [];
+        this.organisms = [];
     }
 
     private resetState(): void {
