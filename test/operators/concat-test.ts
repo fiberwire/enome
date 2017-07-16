@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as _ from "lodash";
 import "mocha";
 
-import { concat, refresh } from "../../src/index";
+import { concat, refill } from "../../src/index";
 import { mocks } from "../mocks";
 
 describe("operators", () => {
@@ -11,7 +11,7 @@ describe("operators", () => {
         let { genomes } = mocks();
 
         beforeEach(() => {
-            genomes = genomes.map(refresh);
+            genomes = genomes.map(refill);
         });
 
         it("should return a genome whose sequence is a concatenation of the provided genomes", () => {

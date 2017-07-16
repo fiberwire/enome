@@ -1,4 +1,4 @@
-import { fill, refresh } from "../../src/index";
+import { fill, refill } from "../../src/index";
 
 import { expect } from "chai";
 import "mocha";
@@ -12,13 +12,13 @@ describe("operators", () => {
         let { genomes } = mocks();
 
         beforeEach(() => {
-            genomes = genomes.map(refresh);
+            genomes = genomes.map(refill);
         });
 
         it("should return a new array of genomes filled with offspring of parents from original array",
-        () => {
-            const f = fill(genomes, 20);
-            expect(f.length).to.eql(20);
-        });
+            () => {
+                const f = fill(genomes, 20);
+                expect(f.length).to.eql(20);
+            });
     });
 });

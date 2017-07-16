@@ -1,8 +1,7 @@
+import { GenomeRefill } from "enums/genome-refill";
 import { FillType } from "./enums/fill-type";
 import { FitnessObjective } from "./enums/fitness-objective";
 import { MutateOp } from "./enums/mutate-op";
-import { MutateType } from "./enums/mutate-type";
-import { ReproduceType } from "./enums/reproduce-type";
 import { Environment } from "./environments/environment";
 import { Gene } from "./genotypes/gene";
 import { Genome } from "./genotypes/genome";
@@ -16,7 +15,7 @@ import { avg } from "./operators/mutation/avg";
 import { mutate } from "./operators/mutation/mutate";
 import { mutateMany } from "./operators/mutation/mutate-many";
 import { sub } from "./operators/mutation/sub";
-import { refresh } from "./operators/refresh";
+import { refill } from "./operators/refill";
 import { reproduceManyToMany } from "./operators/reproduction/many-to-many/reproduce-many-to-many";
 import { reproduceManyToOne } from "./operators/reproduction/many-to-one/reproduce-many-to-one";
 import { reproduce } from "./operators/reproduction/reproduce";
@@ -51,7 +50,7 @@ export {
     fill,
     fillRandom,
     generateGenomes,
-    refresh,
+    refill,
     value,
     values,
 };
@@ -87,9 +86,8 @@ export {
 export {
     FillType,
     FitnessObjective,
+    GenomeRefill,
     MutateOp,
-    MutateType,
-    ReproduceType,
 };
 
 // misc

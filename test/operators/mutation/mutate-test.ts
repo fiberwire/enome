@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { Genome, IGenomeOptions, mutate, refresh } from "../../../src/index";
+import { Genome, IGenomeOptions, mutate, refill } from "../../../src/index";
 import { mocks } from "../../mocks";
 
 describe("operators", () => {
@@ -10,7 +10,7 @@ describe("operators", () => {
             let { genome } = mocks();
 
             beforeEach(() => {
-                genome = refresh(genome);
+                genome = refill(genome);
             });
 
             it("should mutate the genome, given a certain mutation chance (per value in sequence)", () => {

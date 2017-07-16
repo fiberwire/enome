@@ -1,8 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { Genome } from "../../src/genotypes/genome";
-import { refresh } from "../../src/index";
-import { IGenomeOptions } from "../../src/options/genome-options";
+import { refill } from "../../src/index";
 import { mocks } from "../mocks";
 
 describe("genotypes", () => {
@@ -10,7 +8,7 @@ describe("genotypes", () => {
     const { genome } = mocks();
 
     beforeEach(() => {
-        refresh(genome);
+        refill(genome);
     });
 
     describe("nucleotide", () => {

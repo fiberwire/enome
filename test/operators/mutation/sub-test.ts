@@ -1,4 +1,4 @@
-import { refresh } from "../../../src/index";
+import { refill } from "../../../src/index";
 import { sub } from "../../../src/operators/mutation/sub";
 
 import { expect } from "chai";
@@ -10,7 +10,7 @@ describe("operators", () => {
         let { genome } = mocks();
 
         beforeEach(() => {
-            genome = refresh(genome);
+            genome = refill(genome);
         });
 
         describe("sub", () => {

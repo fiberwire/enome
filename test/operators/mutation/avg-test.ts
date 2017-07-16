@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { avg, refresh } from "../../../src/index";
+import { avg, refill } from "../../../src/index";
 import { mocks } from "../../mocks";
 
 describe("operators", () => {
@@ -9,7 +9,7 @@ describe("operators", () => {
         let { genome } = mocks();
 
         beforeEach(() => {
-            genome = refresh(genome);
+            genome = refill(genome);
         });
 
         describe("avg", () => {
