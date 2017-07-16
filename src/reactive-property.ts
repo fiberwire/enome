@@ -1,4 +1,4 @@
-import { BehaviorSubject, IDisposable, IScheduler, Observable } from "rx";
+import { BehaviorSubject, IDisposable, IScheduler, Observable, Observer, Subject } from "rx";
 
 export class ReactiveProperty<T> {
     // tslint:disable-next-line:variable-name
@@ -27,8 +27,8 @@ export class ReactiveProperty<T> {
         return this.subject.filter(selector);
     }
 
-    public select<U>(selector: (value: T) => U) {
-        return this.subject.select(selector);
+    public map<U>(selector: (value: T) => U) {
+        return this.subject.map(selector);
     }
 
     public throttleWithTimeout(dueTime: number, scheduler?: IScheduler) {
@@ -39,4 +39,19 @@ export class ReactiveProperty<T> {
         return this.subject.debounceWithSelector(selector);
     }
 
+    public toObservable(): Observable<T> {
+        return this.subject;
+    }
+
+    public toObserver(): Observer<T> {
+        return this.subject;
+    }
+
+    public toSubject(): Subject<T> {
+        return this.subject;
+    }
+
+    public toBehaviourSubject(): BehaviorSubject<T> {
+        return this.subject;
+    }
 }
