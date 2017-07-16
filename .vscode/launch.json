@@ -15,7 +15,7 @@
             "type": "node",
             "request": "launch",
             "name": "sum",
-            "program": "${workspaceRoot}/out/src/examples/sum.js",
+            "program": "${workspaceRoot}/out/src/examples/sum/sum.js",
             "protocol": "inspector"
         },
         {
