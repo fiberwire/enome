@@ -37,7 +37,7 @@ export class SumPopulation extends Population<
     }
 
     public createEnvironment(): SumEnv {
-        return new SumEnv();
+        return new SumEnv(this);
     }
 
 }
