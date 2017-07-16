@@ -43,6 +43,16 @@ export abstract class Population<
         public genOptions: GenType,
         public popOptions: PopType) {
         this.toEvaluate = new Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
+
+        this.toMutate =
+            new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+
+        this.toReproduce =
+            new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+
+        this.toRandomize =
+            new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+
         this.evaluations =
             new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
         this.avgFitness = new ReactiveProperty<number>();
@@ -115,7 +125,7 @@ export abstract class Population<
                         this.popOptions.weights.mutate,
                         this.popOptions.weights.reproduce,
                         this.popOptions.weights.randomize],
-                    )
+                )
                     .onNext(e);
             });
     }
