@@ -5,6 +5,8 @@ import { IPopulationOptions } from "../options/population-options";
 import { ReactiveProperty } from "../reactive-property";
 import { Organism } from "./organism";
 
+import * as _ from "lodash";
+
 export abstract class Environment<
     GenType extends IGenomeOptions,
     PopType extends IPopulationOptions,
@@ -26,11 +28,13 @@ export abstract class Environment<
     private connectOrganisms() {
         this.newConnections.subscribe((con) => {
             this.connections.push(con);
+            this.connections = _.compact(this.connections); // remove closed connections
         });
 
         this.newOrganisms.subscribe((org) => {
             org.env.value = this;
             this.organisms.push(org);
+            this.organisms = _.compact(this.organisms);
         });
     }
 
