@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { replenish } from "../../src/operators/replenish";
+import { refresh } from "../../src/operators/refresh";
 import { mocks } from "../mocks";
 
 describe("operators", () => {
@@ -13,7 +13,7 @@ describe("operators", () => {
 
             expect(genome.genes.length).to.eql(genome.freshGenes.length - 1);
 
-            genome = replenish(genome);
+            genome = refresh(genome);
 
             expect(genome.genes.length).to.eql(genome.freshGenes.length);
         });

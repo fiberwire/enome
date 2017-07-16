@@ -25,9 +25,10 @@ export abstract class Population<
     constructor(
         public genOptions: GenType,
         public popOptions: PopType) {
-        this.toEvaluate = new Subject();
-        this.evaluations = new Subject();
-        this.avgFitness = new ReactiveProperty();
+        this.toEvaluate = new Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
+        this.evaluations =
+            new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+        this.avgFitness = new ReactiveProperty<number>();
 
         // set up environment
         this.env = this.createEnvironment();

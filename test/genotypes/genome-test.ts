@@ -2,7 +2,7 @@ import { expect } from "chai";
 import * as _ from "lodash";
 import "mocha";
 import { Genome } from "../../src/genotypes/genome";
-import { Gene, replenish } from "../../src/index";
+import { Gene, refresh } from "../../src/index";
 import { IGenomeOptions } from "../../src/options/genome-options";
 import { mocks } from "../mocks";
 
@@ -13,7 +13,7 @@ describe("genotypes", () => {
         let { genome } = mocks();
 
         beforeEach(() => {
-            genome = replenish(genome);
+            genome = refresh(genome);
         });
 
         describe("constructor", () => {

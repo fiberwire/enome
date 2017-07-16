@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import * as _ from "lodash";
 import "mocha";
-import { clone } from "../../src/operators/clone";
-import { replenish } from "../../src/operators/replenish";
+
+import { clone, refresh } from "../../src/index";
 import { mocks } from "../mocks";
 
 describe("operators", () => {
@@ -11,7 +11,7 @@ describe("operators", () => {
         let { genome } = mocks();
 
         beforeEach(() => {
-            genome = replenish(genome);
+            genome = refresh(genome);
         });
 
         it("should return an exact copy of the provided genome", () => {

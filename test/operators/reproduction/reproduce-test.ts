@@ -2,7 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import { Genome } from "../../../src/genotypes/genome";
 import { mutate } from "../../../src/operators/mutation/mutate";
-import { replenish } from "../../../src/operators/replenish";
+import { refresh } from "../../../src/operators/refresh";
 import { reproduce } from "../../../src/operators/reproduction/reproduce";
 import { IGenomeOptions } from "../../../src/options/genome-options";
 import { mocks } from "../../mocks";
@@ -14,7 +14,7 @@ describe("operators", () => {
             const { mutateChance } = mocks();
 
             beforeEach(() => {
-                genome = replenish(genome);
+                genome = refresh(genome);
             });
 
             const mutated: Genome<IGenomeOptions> = mutate(genome, mutateChance);
