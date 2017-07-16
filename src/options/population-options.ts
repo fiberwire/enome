@@ -6,6 +6,10 @@ export interface IPopulationOptions {
     envs: number;
     size: number;
     mutate: IMutateOptions;
-    reproduce: IReproduceOptions;
     objective: FitnessObjective;
+    weights: {
+        mutate: number,
+        reproduce: number,
+        randomize: number,
+    };
 }

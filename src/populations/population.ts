@@ -1,7 +1,17 @@
+
 import { IDisposable, Subject } from "rx";
 
 import {
-    Environment, Genome, IEvaluation, IGenomeOptions, IPopulationOptions, Organism, ReactiveProperty,
+    Environment,
+    Gene,
+    Genome,
+    IEvaluation,
+    IGenomeOptions,
+    IPopulationOptions,
+    Organism,
+    ReactiveProperty,
+    reproduceManyToOne,
+    value,
 } from "../index";
 
 import * as _ from "lodash";
@@ -12,10 +22,17 @@ export abstract class Population<
     DataType, PhenoType, EnvStateType> {
 
     public toEvaluate: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
+    public toMutate: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
+    public toRandomize: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
+    public toReproduce: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
     public evaluations: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
     public avgFitness: ReactiveProperty<number>;
+    public best: ReactiveProperty<IEvaluation<
+    Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
 
     public envs: Array<Environment<GenType, PopType, DataType, PhenoType, EnvStateType>>;
+
+    private subs: IDisposable[];
 
     public get organisms(): Array<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> {
         return _.concat([], ...this.envs
@@ -29,11 +46,19 @@ export abstract class Population<
         this.evaluations =
             new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
         this.avgFitness = new ReactiveProperty<number>();
+        this.best = new ReactiveProperty<IEvaluation<
+            Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+
+        this.subs = [
+            this.updateGenotype(),
+            this.evaluateData(),
+            this.mutateGenotype(),
+            this.reproduceGenotype(),
+            this.randomizeGenotype(),
+        ];
 
         // set up environment
         this.setupEnvironments();
-        this.updateGenotype();
-        this.evaluateData();
     }
 
     // evaluate organism's performance based on the data it collected.
@@ -50,11 +75,15 @@ export abstract class Population<
     // set up environment
     public abstract createEnvironment(): Environment<GenType, PopType, DataType, PhenoType, EnvStateType>;
 
+    public dispose(): void {
+        this.subs.forEach((s) => s.dispose());
+    }
     // set up all environments
     private setupEnvironments() {
         this.envs = _.range(this.popOptions.envs)
             .map((i) => this.createEnvironment());
     }
+
     // evaluate data as it comes in
     private evaluateData(): IDisposable {
         return this.toEvaluate
@@ -68,7 +97,47 @@ export abstract class Population<
         return this.evaluations
             .subscribe((e) => {
                 this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
+
+                if (this.best.value == null || e.fitness > this.best.value.fitness) {
+                    this.best.value = e;
+                }
+
+                // randomly choose between mutating, reproducing, or randomizing
+                // mutation is twice as likely as reproduction
+                // reproduction is twice as likely as randomization
+                chance
+                    .weighted([
+                        this.toMutate,
+                        this.toReproduce,
+                        this.toRandomize,
+                    ],
+                    [
+                        this.popOptions.weights.mutate,
+                        this.popOptions.weights.reproduce,
+                        this.popOptions.weights.randomize],
+                    )
+                    .onNext(e);
+            });
+    }
+
+    private mutateGenotype(): IDisposable {
+        return this.toMutate
+            .subscribe((e) => {
                 e.organism.genotype.value = this.mutate(e);
+            });
+    }
+
+    private reproduceGenotype(): IDisposable {
+        return this.toReproduce
+            .subscribe((e) => {
+                e.organism.genotype.value = reproduceManyToOne(this.organisms.map((o) => o.genotype.value));
+            });
+    }
+
+    private randomizeGenotype(): IDisposable {
+        return this.toRandomize
+            .subscribe((e) => {
+                e.organism.genotype.value = new Genome(e.organism.genotype.value.options);
             });
     }
 }

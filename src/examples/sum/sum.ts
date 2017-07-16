@@ -19,12 +19,13 @@ const popOptions: ISumPopOptions = {
         mutateOp: MutateOp.avg,
     },
     objective: FitnessObjective.minimize,
-    reproduce: {
-        randomChance: .15,
-        reproduceChance: .15,
-    },
-    size: 10,
+    size: 1,
     target: 256,
+    weights: {
+        mutate: 65,
+        randomize: 10,
+        reproduce: 25,
+    },
 };
 
 const pop = new SumPopulation(
