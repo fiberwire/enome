@@ -3,6 +3,7 @@ import { FitnessObjective } from "./enums/fitness-objective";
 import { MutateOp } from "./enums/mutate-op";
 import { MutateType } from "./enums/mutate-type";
 import { ReproduceType } from "./enums/reproduce-type";
+import { Environment } from "./environments/environment";
 import { Gene } from "./genotypes/gene";
 import { Genome } from "./genotypes/genome";
 import { IEvaluation } from "./interfaces/evaluation";
@@ -23,13 +24,18 @@ import { value } from "./operators/value";
 import { values } from "./operators/values";
 import { IGenomeOptions } from "./options/genome-options";
 import { IMutateOptions } from "./options/mutate-options";
+import { IPopulationOptions } from "./options/population-options";
 import { IReproduceOptions } from "./options/reproduce-options";
+import { Organism } from "./organisms/organism";
+import { Population } from "./populations/population";
+import { ReactiveProperty } from "./reactive-property";
 
 // options
 export {
     IGenomeOptions,
     IMutateOptions,
     IReproduceOptions,
+    IPopulationOptions,
 };
 
 // genotypes
@@ -54,27 +60,15 @@ export {
 export {
     avg,
     mutate,
-    sub,
-};
-
-// mutate many operators
-export {
     mutateMany,
+    sub,
 };
 
 // reproduction operators
 export {
     reproduce,
-};
-
-// many-to-one reproduction operators
-export {
-    reproduceManyToOne,
-};
-
-// many-to-many reproduction operators
-export {
     reproduceManyToMany,
+    reproduceManyToOne,
 };
 
 // interfaces
@@ -82,9 +76,11 @@ export {
     IEvaluation,
 };
 
-// populations
+// evolution stuff
 export {
-
+    Environment,
+    Organism,
+    Population,
 };
 
 // enums
@@ -94,4 +90,9 @@ export {
     MutateOp,
     MutateType,
     ReproduceType,
+};
+
+// misc
+export {
+    ReactiveProperty,
 };

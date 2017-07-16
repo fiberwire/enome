@@ -1,12 +1,8 @@
 import { IDisposable, Subject } from "rx";
-import { Genome } from "../genotypes/genome";
-import { Environment } from "./environment";
 
-import { IEvaluation } from "../interfaces/evaluation";
-import { IGenomeOptions } from "../options/genome-options";
-import { IPopulationOptions } from "../options/population-options";
-import { ReactiveProperty } from "../reactive-property";
-import { Organism } from "./organism";
+import {
+    Environment, Genome, IEvaluation, IGenomeOptions, IPopulationOptions, Organism, ReactiveProperty,
+} from "../index";
 
 import * as _ from "lodash";
 

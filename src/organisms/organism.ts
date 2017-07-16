@@ -1,12 +1,7 @@
 import { IDisposable, Observable, Subject } from "rx";
-import { Environment } from "./environment";
 
 import * as _ from "lodash";
-import { Population } from "../environments/population";
-import { Genome } from "../genotypes/genome";
-import { IGenomeOptions } from "../options/genome-options";
-import { IPopulationOptions } from "../options/population-options";
-import { ReactiveProperty } from "../reactive-property";
+import { Environment, Genome, IGenomeOptions, IPopulationOptions, Population, ReactiveProperty } from "../index";
 
 export abstract class Organism<
     GenType extends IGenomeOptions,
@@ -21,9 +16,9 @@ export abstract class Organism<
 
     // updates to env.state throttled by interactionRate
     // (should stop the number of state updates from getting out of hand)
-    private get update(): Observable<EnvStateType>{
+    private get update(): Observable<EnvStateType> {
         return this.env.state
-                .throttleWithTimeout(1 / this.interactionRate);
+            .throttleWithTimeout(1 / this.interactionRate);
     }
 
     // creates a new environment state by interacting with it

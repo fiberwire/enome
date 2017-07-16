@@ -1,10 +1,5 @@
 import { IDisposable, Observable, Subject } from "rx";
-import { IEvaluation } from "../interfaces/evaluation";
-import { IGenomeOptions } from "../options/genome-options";
-import { IPopulationOptions } from "../options/population-options";
-import { ReactiveProperty } from "../reactive-property";
-import { Organism } from "./organism";
-import { Population } from "./population";
+import { IGenomeOptions, IPopulationOptions, Organism, Population, ReactiveProperty } from "../index";
 
 import * as _ from "lodash";
 
