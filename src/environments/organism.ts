@@ -27,11 +27,14 @@ export abstract class Organism<
                 genome: Genome<GenType>,
                 private iterations: number = 1000,
                 private duration: number = 30,
-                private frameRate: number = 10) {
+                private interactionRate: number = 10) {
         this.genotype = new ReactiveProperty(genome);
         this.update = new Subject();
         this.data = new ReactiveProperty();
         this.env = new ReactiveProperty();
+
+        this.updatePhenotype();
+        this.reset();
 
         this.connectToEnvironment();
         this.interactWithEnvironment();
@@ -62,7 +65,7 @@ export abstract class Organism<
     private connectToEnvironment() {
         this.env.subscribe((env) => {
             this.envConnection = env.state
-                .throttleWithTimeout(1 / this.frameRate)
+                .throttleWithTimeout(1 / this.interactionRate)
                 .subscribe(this.update);
 
             this.env.value.newConnections.onNext(this.envConnection);
