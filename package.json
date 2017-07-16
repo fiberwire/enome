@@ -8,7 +8,7 @@
     "test": "mocha --colors --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
     "watch": "mocha --colors --watch --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
     "lint": "tsconfig-lint .",
-    "sum": "ts-node src/examples/sum.ts",
+    "sum": "ts-node src/examples/sum/sum.ts",
     "letters": "ts-node src/examples/letters.ts",
     "tsc": "tsc --watch",
     "prepublish": "npm run compile",
