@@ -15,12 +15,10 @@ export abstract class Environment<
 
     public organisms: Array<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> = [];
 
-    public pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>;
-
     private subs: IDisposable[];
 
-    constructor() {
-        this.resetState();
+    constructor(public pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>) {
+        this.state = new ReactiveProperty(this.initialState);
         this.subs = [
             this.initializeOrganisms(this.pop.popOptions.size),
         ];
