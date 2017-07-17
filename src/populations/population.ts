@@ -14,7 +14,9 @@ import {
     value,
 } from "../index";
 
+import * as Chance from "chance";
 import * as _ from "lodash";
+const chance = new Chance();
 
 export abstract class Population<
     GenType extends IGenomeOptions,
