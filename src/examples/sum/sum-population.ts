@@ -13,8 +13,10 @@ export class SumPopulation extends Population<
     ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState> {
 
     public evaluate(organism: SumOrganism): IEvaluation<SumOrganism, number[]> {
+        const difference = this.popOptions.target - organism.data.value[0].sum;
+        const fitness = Math.abs(difference);
         return {
-            fitness: Math.abs(this.popOptions.target - organism.data.value[0].sum),
+            fitness,
             organism,
         };
     }
