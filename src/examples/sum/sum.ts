@@ -5,7 +5,6 @@ import { SumPopulation } from "./sum-population";
 
 import * as _ from "lodash";
 
-console.log("creating genOptions");
 const genOptions: ISumGenomeOptions = {
     geneLength: 1,
     genomeLength: 10,
@@ -15,7 +14,6 @@ const genOptions: ISumGenomeOptions = {
     refill: GenomeRefill.extend,
 };
 
-console.log("creating popOptions");
 const popOptions: ISumPopOptions = {
     envs: 10,
     mutate: {
@@ -31,18 +29,19 @@ const popOptions: ISumPopOptions = {
         reproduce: 25,
     },
 };
-console.log("creating pop");
+
 const pop = new SumPopulation(
     genOptions,
     popOptions,
 );
 
-console.log("subscribing to pop.best");
 pop.best
-    .filter((b) => b !== undefined)
+    .filter((b) => b !== undefined && b !== null)
+    .filter((b) => b.organism.data.value != null)
+    .filter((b) => b.organism.data.value.length > 0)
     .subscribe((b) => {
         const list = b.organism.phenotype.value;
-        const sum = _.sum(list);
+        const sum = b.organism.data.value[0].sum;
         const fit = b.fitness;
 
         // tslint:disable-next-line:no-console
