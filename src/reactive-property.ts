@@ -32,7 +32,7 @@ export class ReactiveProperty<T> {
     }
 
     public throttleWithTimeout(dueTime: number, scheduler?: IScheduler) {
-        return this.subject.throttleWithTimeout(dueTime, scheduler);
+        return this.subject.debounce(dueTime, scheduler);
     }
 
     public throttleWithSelector<TTimeout>(selector: (value: T) => Observable<TTimeout>) {
