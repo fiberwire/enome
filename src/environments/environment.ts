@@ -39,6 +39,7 @@ export abstract class Environment<
 
     // disposes all subscriptions
     public dispose(): void {
+        console.log("disposing environment");
         this.subs.forEach((s) => s.dispose());
     }
 
@@ -46,12 +47,13 @@ export abstract class Environment<
     private initializeOrganisms(n: number): IDisposable {
         return Observable
             .range(0, n)
-            .select(this.createOrganism)
+            .select((i) => this.createOrganism())
             .do((org) => this.organisms.push(org))
             .subscribe(this.newOrganisms);
     }
 
     private killOrganisms(): void {
+        console.log("Killing Organisms");
         this.organisms = _.compact(this.organisms);
 
         for (let i = 0; i < this.organisms.length; i++) {
@@ -63,6 +65,7 @@ export abstract class Environment<
     }
 
     private resetState(): void {
+        console.log("reseting state");
         this.state.value = this.initialState;
     }
 }
