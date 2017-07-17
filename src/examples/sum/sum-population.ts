@@ -1,3 +1,4 @@
+import { FitnessObjective } from "../../enums/fitness-objective";
 import { Genome, IEvaluation, mutate, Organism, Population } from "../../index";
 import { ISumData } from "./sum-data";
 import { ISumEnvState } from "./sum-env-state";
@@ -13,7 +14,7 @@ export class SumPopulation extends Population<
 
     public evaluate(organism: SumOrganism): IEvaluation<SumOrganism, number[]> {
         return {
-            fitness: Math.abs(this.popOptions.target - _.sum(organism.data.value)),
+            fitness: Math.abs(this.popOptions.target - organism.data.value[0].sum),
             organism,
         };
     }
@@ -21,18 +22,37 @@ export class SumPopulation extends Population<
     public mutate(
         evaluation: IEvaluation<SumOrganism, number[]>,
     ): Genome<ISumGenomeOptions> {
-        if (evaluation.fitness >= this.avgFitness.value) {
-            return mutate(
-                evaluation.organism.genotype.value,
-                this.popOptions.mutate.mutateChance * .5,
-                this.popOptions.mutate.mutateOp,
-            );
-        } else {
-            return mutate(
-                evaluation.organism.genotype.value,
-                this.popOptions.mutate.mutateChance * .5,
-                this.popOptions.mutate.mutateOp,
-            );
+        switch (this.popOptions.objective) {
+            case FitnessObjective.minimize:
+                if (evaluation.fitness <= this.avgFitness.value) {
+                    return mutate(
+                        evaluation.organism.genotype.value,
+                        this.popOptions.mutate.mutateChance * .5,
+                        this.popOptions.mutate.mutateOp,
+                    );
+                } else {
+                    return mutate(
+                        evaluation.organism.genotype.value,
+                        this.popOptions.mutate.mutateChance * .5,
+                        this.popOptions.mutate.mutateOp,
+                    );
+                }
+
+            default:
+            case FitnessObjective.maximize:
+                if (evaluation.fitness >= this.avgFitness.value) {
+                    return mutate(
+                        evaluation.organism.genotype.value,
+                        this.popOptions.mutate.mutateChance * .5,
+                        this.popOptions.mutate.mutateOp,
+                    );
+                } else {
+                    return mutate(
+                        evaluation.organism.genotype.value,
+                        this.popOptions.mutate.mutateChance * .5,
+                        this.popOptions.mutate.mutateOp,
+                    );
+                }
         }
     }
 
