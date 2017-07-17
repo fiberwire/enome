@@ -11,7 +11,6 @@ export abstract class Environment<
     public state: ReactiveProperty<EnvStateType>;
 
     public newOrganisms: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
-    public newConnections: Subject<IDisposable>;
 
     public organisms: Array<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> = [];
 
