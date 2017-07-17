@@ -7,6 +7,8 @@ import { Gene } from "./genotypes/gene";
 import { Genome } from "./genotypes/genome";
 import { IEvaluation } from "./interfaces/evaluation";
 import { clone } from "./operators/clone";
+import { cloneEvaluation } from "./operators/cloneEvaluation";
+import { cloneOrganism } from "./operators/cloneOrganism";
 import { concat } from "./operators/concat";
 import { fill } from "./operators/fill";
 import { fillRandom } from "./operators/fill-random";
@@ -46,6 +48,8 @@ export {
 // operators
 export {
     clone,
+    cloneEvaluation,
+    cloneOrganism,
     concat,
     fill,
     fillRandom,
