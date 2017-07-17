@@ -65,6 +65,7 @@ export abstract class Population<
 
         this.subs = [
             this.updateGenotype(),
+            this.updateAvgFitness(),
             this.updateBest(),
             this.evaluateData(),
             this.mutateGenotype(),
@@ -112,12 +113,6 @@ export abstract class Population<
     private updateGenotype(): IDisposable {
         return this.evaluations
             .subscribe((e) => {
-                this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
-
-                if (this.best.value == null || e.fitness > this.best.value.fitness) {
-                    this.best.value = e;
-                }
-
                 // randomly choose between mutating, reproducing, or randomizing
                 // mutation is twice as likely as reproduction
                 // reproduction is twice as likely as randomization
@@ -136,8 +131,21 @@ export abstract class Population<
             });
     }
 
+    private updateAvgFitness(): IDisposable {
+        return this.evaluations
+            .subscribe((e) => {
+                this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
+            });
+    }
+
     private updateBest(): IDisposable {
         return this.evaluations
+            .do((e) => { // set as best if there is no current best
+                if (this.best.value === undefined) {
+                    console.log(`No best, setting best to ${e.organism.genotype.value.id}`);
+                    this.best.value = e;
+                }
+            })
             .filter((e) => {
                 switch (this.popOptions.objective) {
                     case FitnessObjective.minimize:
@@ -148,9 +156,10 @@ export abstract class Population<
                         return e.fitness > this.best.value.fitness;
                 }
             })
+            .do((e) => console.log(`new best: ${e.fitness} (old best: ${this.best.value.fitness})`))
             .select(cloneEvaluation)
             .do((e) => e.organism.dispose())
-            .subscribe(this.best.toObserver());
+            .subscribe((e) => this.best.value = e);
     }
 
     private mutateGenotype(): IDisposable {
