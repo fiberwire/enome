@@ -1,8 +1,10 @@
-
 import { IDisposable, Subject } from "rx";
 
 import {
+    cloneEvaluation,
+    cloneOrganism,
     Environment,
+    FitnessObjective,
     Gene,
     Genome,
     IEvaluation,
@@ -63,6 +65,7 @@ export abstract class Population<
 
         this.subs = [
             this.updateGenotype(),
+            this.updateBest(),
             this.evaluateData(),
             this.mutateGenotype(),
             this.reproduceGenotype(),
@@ -99,6 +102,7 @@ export abstract class Population<
     // evaluate data as it comes in
     private evaluateData(): IDisposable {
         return this.toEvaluate
+            .filter((org) => org.data.value.length > 0)
             .subscribe((org) => {
                 this.evaluations.onNext(this.evaluate(org));
             });
@@ -130,6 +134,23 @@ export abstract class Population<
                 )
                     .onNext(e);
             });
+    }
+
+    private updateBest(): IDisposable {
+        return this.evaluations
+            .filter((e) => {
+                switch (this.popOptions.objective) {
+                    case FitnessObjective.minimize:
+                        return e.fitness < this.best.value.fitness;
+
+                    case FitnessObjective.maximize:
+                    default:
+                        return e.fitness > this.best.value.fitness;
+                }
+            })
+            .select(cloneEvaluation)
+            .do((e) => e.organism.dispose())
+            .subscribe(this.best.toObserver());
     }
 
     private mutateGenotype(): IDisposable {
