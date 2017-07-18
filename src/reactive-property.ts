@@ -19,7 +19,7 @@ export class ReactiveProperty<T> {
         this.subject.onNext(value);
     }
 
-    public subscribe(observer: (value: T) => void): IDisposable {
+    public subscribe(observer: (value: T) => void | Observer<T>): IDisposable {
         return this.subject.subscribe(observer);
     }
 
@@ -31,27 +31,27 @@ export class ReactiveProperty<T> {
         return this.subject.map(selector);
     }
 
-    public throttleWithTimeout(dueTime: number, scheduler?: IScheduler) {
+    public debounceWithTimeout(dueTime: number, scheduler?: IScheduler) {
         return this.subject.debounce(dueTime, scheduler);
     }
 
-    public throttleWithSelector<TTimeout>(selector: (value: T) => Observable<TTimeout>) {
+    public debounceWithSelector<TTimeout>(selector: (value: T) => Observable<TTimeout>) {
         return this.subject.debounceWithSelector(selector);
     }
 
-    public toObservable(): Observable<T> {
+    public asObservable(): Observable<T> {
         return this.subject;
     }
 
-    public toObserver(): Observer<T> {
+    public asObserver(): Observer<T> {
         return this.subject;
     }
 
-    public toSubject(): Subject<T> {
+    public asSubject(): Subject<T> {
         return this.subject;
     }
 
-    public toBehaviourSubject(): BehaviorSubject<T> {
+    public asBehaviourSubject(): BehaviorSubject<T> {
         return this.subject;
     }
 }
