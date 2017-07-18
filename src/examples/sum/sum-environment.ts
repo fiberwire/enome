@@ -5,22 +5,20 @@ import { SumOrganism } from "./sum-organism";
 import { ISumPopOptions } from "./sum-pop-options";
 import { SumPopulation } from "./sum-population";
 
-import { Environment, Genome, Organism } from "../../index";
+import { Environment, Genome, IEnvironmentOptions, IStateUpdate, Organism } from "../../index";
 
-export class SumEnv extends Environment<ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState> {
-    public get initialState(): ISumEnvState {
+export class SumEnv extends Environment<ISumEnvState> {
+    public get initialState(): IStateUpdate<ISumEnvState> {
         return {
-            list: [],
-            sum: 0,
+            interaction: 0,
+            state: {
+                list: [],
+                sum: 0,
+            },
         };
     }
 
-    constructor(public pop: SumPopulation) {
-        super(pop);
+    constructor(public options: IEnvironmentOptions) {
+        super(options);
     }
-
-    public createOrganism(): SumOrganism {
-        return new SumOrganism(this.pop, this, new Genome(this.pop.genOptions), 1);
-    }
-
 }

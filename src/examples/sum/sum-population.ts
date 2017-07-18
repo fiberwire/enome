@@ -1,5 +1,5 @@
 import { FitnessObjective } from "../../enums/fitness-objective";
-import { Genome, IEvaluation, mutate, Organism, Population } from "../../index";
+import { Environment, Genome, IEvaluation, IOrganismOptions, mutate, Organism, Population } from "../../index";
 import { ISumData } from "./sum-data";
 import { ISumEnvState } from "./sum-env-state";
 import { SumEnv } from "./sum-environment";
@@ -11,6 +11,13 @@ import * as _ from "lodash";
 
 export class SumPopulation extends Population<
     ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState> {
+    public createOrganism(
+        pop: Population<ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState>,
+        env: Environment<ISumEnvState>,
+        options: IOrganismOptions):
+        Organism<ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState> {
+            return new SumOrganism(pop, env, new Genome(pop.genOptions), options);
+    }
 
     public evaluate(organism: SumOrganism): IEvaluation<SumOrganism, number[]> {
         const difference = this.popOptions.target - organism.data.value[0].sum;
@@ -56,10 +63,6 @@ export class SumPopulation extends Population<
                     );
                 }
         }
-    }
-
-    public createEnvironment(): SumEnv {
-        return new SumEnv(this);
     }
 
 }

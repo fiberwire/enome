@@ -1,4 +1,5 @@
-import { FitnessObjective, GenomeRefill, MutateOp } from "../../index";
+import { FitnessObjective, GenomeRefill, IOrganismOptions, MutateOp } from "../../index";
+import { SumEnv } from "./sum-environment";
 import { ISumGenomeOptions } from "./sum-genome-options";
 import { ISumPopOptions } from "./sum-pop-options";
 import { SumPopulation } from "./sum-population";
@@ -15,13 +16,12 @@ const genOptions: ISumGenomeOptions = {
 };
 
 const popOptions: ISumPopOptions = {
-    envs: 10,
     mutate: {
         mutateChance: 0.15,
         mutateOp: MutateOp.avg,
     },
     objective: FitnessObjective.minimize,
-    size: 1,
+    size: 10,
     target: 256,
     weights: {
         mutate: 65,
@@ -30,9 +30,18 @@ const popOptions: ISumPopOptions = {
     },
 };
 
+const orgOptions: IOrganismOptions = {
+    interactions: 1,
+    lifeSpan: 10,
+};
+
+const env = new SumEnv({ interactionRate: 10 });
+
 const pop = new SumPopulation(
     genOptions,
     popOptions,
+    orgOptions,
+    env,
 );
 
 pop.best
@@ -40,7 +49,7 @@ pop.best
     .filter((b) => b.organism.data.value != null)
     .filter((b) => b.organism.data.value.length > 0)
     .subscribe((b) => {
-        const list = b.organism.phenotype.value;
+        const list = b.organism.phenotype;
         const sum = b.organism.data.value[0].sum;
         const fit = b.fitness;
 
