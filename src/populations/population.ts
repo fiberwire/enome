@@ -54,6 +54,8 @@ export abstract class Population<
     new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
 
     private subs: IDisposable[];
+
+    private generation: number = 0;
     private get nextEnv(): Environment<EnvStateType> {
         return _.sortBy(this.envs.value,
             (env) => this.organisms.filterCollection((o) => o.env === env).value.length)[0];
@@ -77,6 +79,12 @@ export abstract class Population<
             this.reproduceGenotype(),
             this.randomizeGenotype(),
         ];
+
+        this.toEvaluate
+            .skip(this.popOptions.generations * this.popOptions.size)
+            .take(1)
+            .subscribe((e) => this.dispose());
+
     }
 
     // evaluate organism's performance based on the data it collected.
@@ -94,10 +102,12 @@ export abstract class Population<
     public abstract createOrganism(
         pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>,
         env: Environment<EnvStateType>,
+        genome: Genome<GenType>,
         options: IOrganismOptions): Organism<GenType, PopType, DataType, PhenoType, EnvStateType>;
 
     public dispose(): void {
         this.subs.forEach((s) => s.dispose());
+        this.envs.forEach((env) => env.dispose());
     }
 
     // spawns and evenly distributes organisms across all envs
@@ -106,7 +116,8 @@ export abstract class Population<
             this.killOrganisms();
 
             while (this.organisms.value.length < this.popOptions.size) {
-                this.organisms.push(this.createOrganism(this, this.nextEnv, this.orgOptions));
+                this.organisms.push(
+                    this.createOrganism(this, this.nextEnv, new Genome(this.genOptions), this.orgOptions));
             }
         });
     }
@@ -184,22 +195,40 @@ export abstract class Population<
     private mutateGenotype(): IDisposable {
         return this.toMutate
             .subscribe((e) => {
-                e.organism.genotype.value = this.mutate(e);
+                const g = this.mutate(e);
+
+                if (this.organisms.value.length >= this.popOptions.size) {
+                    this.organisms.remove(e.organism);
+                }
+
+                this.organisms.push(this.createOrganism(this, this.nextEnv, g, this.orgOptions));
             });
     }
 
     private reproduceGenotype(): IDisposable {
         return this.toReproduce
             .subscribe((e) => {
-                e.organism.genotype.value = reproduceManyToOne(
+                const offspring = reproduceManyToOne(
                     this.organisms.mapCollection((o) => o.genotype.value).value);
+
+                if (this.organisms.value.length >= this.popOptions.size) {
+                    this.organisms.remove(e.organism);
+                }
+
+                this.organisms.push(this.createOrganism(this, this.nextEnv, offspring, this.orgOptions));
             });
     }
 
     private randomizeGenotype(): IDisposable {
         return this.toRandomize
             .subscribe((e) => {
-                e.organism.genotype.value = new Genome(e.organism.genotype.value.options);
+                const g = new Genome(this.genOptions);
+
+                if (this.organisms.value.length >= this.popOptions.size) {
+                    this.organisms.remove(e.organism);
+                }
+
+                this.organisms.push(this.createOrganism(this, this.nextEnv, g, this.orgOptions));
             });
     }
 }
