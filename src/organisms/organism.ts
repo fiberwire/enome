@@ -1,32 +1,33 @@
 import { IDisposable, Observable, Subject } from "rx";
 
 import * as _ from "lodash";
-import { Environment, Genome, IGenomeOptions, IPopulationOptions, Population, ReactiveProperty } from "../index";
+import {
+    Environment,
+    Genome,
+    IGenomeOptions,
+    IOrganismOptions,
+    IPopulationOptions,
+    IStateUpdate,
+    Population,
+    ReactiveCollection,
+    ReactiveProperty,
+} from "../index";
 
 export abstract class Organism<
     GenType extends IGenomeOptions,
     PopType extends IPopulationOptions,
     DataType, PhenoType, EnvStateType> {
-
-    public data: ReactiveProperty<DataType[]>;
+    public data: ReactiveCollection<DataType>;
     public genotype: ReactiveProperty<Genome<GenType>>;
-    public phenotype: ReactiveProperty<PhenoType>;
+    public phenotype: PhenoType;
 
     private subs: IDisposable[] = [];
 
-    // updates to env.state throttled by interactionRate
-    // (should stop the number of state updates from getting out of hand)
-    private get update(): Observable<EnvStateType> {
-        return this.env.state
-            .throttleWithTimeout(1 / this.interactionRate);
-    }
-
     // creates a new environment state by interacting with it
     // then updates environment state with the mutated state
-    private get interactions(): Observable<EnvStateType> {
-        return this.update
-            .select((state) => this.interact(state, this.phenotype.value))
-            .do((state) => this.env.state.value = state);
+    private get interactions(): Observable<IStateUpdate<EnvStateType>> {
+        return this.env.state
+            .map((state) => this.interact(state, this.phenotype));
     }
 
     // collects data from the environment state
@@ -36,25 +37,24 @@ export abstract class Organism<
     }
 
     constructor(public pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>,
-                public env: Environment<GenType, PopType, DataType, PhenoType, EnvStateType>,
+                public env: Environment<EnvStateType>,
                 genome: Genome<GenType>,
-                private iterations: number,
-                private duration: number = 30,
-                private interactionRate: number = 10) {
+                public options: IOrganismOptions) {
         this.genotype = new ReactiveProperty(genome);
-        this.phenotype = new ReactiveProperty(this.createPhenotype(this.genotype.value));
-        this.data = new ReactiveProperty<DataType[]>([]);
+        this.phenotype = this.createPhenotype(this.genotype.value);
+        this.data = new ReactiveCollection<DataType>();
 
         this.subs = [
-            this.updatePhenotype(),
-            this.reset(),
+            this.interactWithEnvironment(env),
+            this.collectData(),
             this.queueForEvaluation(),
         ];
     }
 
-    public abstract observe(env: EnvStateType): DataType;
+    public abstract observe(interaction: IStateUpdate<EnvStateType>): DataType;
 
-    public abstract interact(env: EnvStateType, phenotype: PhenoType): EnvStateType;
+    public abstract interact(state: IStateUpdate<EnvStateType>, phenotype: PhenoType):
+        IStateUpdate<EnvStateType>;
 
     public abstract createPhenotype(genome: Genome<GenType>): PhenoType;
 
@@ -62,27 +62,22 @@ export abstract class Organism<
         this.subs.forEach((s) => s.dispose());
     }
 
-    private updatePhenotype(): IDisposable {
-        return this.genotype
-            .map((g) => this.createPhenotype(g))
-            .subscribe((phenotype) => {
-                this.phenotype.value = phenotype;
-            });
+    private interactWithEnvironment(env: Environment<EnvStateType>): IDisposable {
+        return this.interactions
+            .subscribe(this.env.interactions);
     }
 
-    private reset(): IDisposable {
-        return this.phenotype
-            .subscribe((phenotype) => {
-                this.data.value = null;
-            });
+    // adds observations to this.data
+    private collectData(): IDisposable {
+        return this.observations
+            .subscribe((o) => this.data.push(o));
     }
 
-    // buffers collected data frames based on duration or iterations
+    // buffers collected data based on lifespan or iterations
     // queues self for evaluation by Population
     private queueForEvaluation(): IDisposable {
-        return this.observations
-            .bufferWithTimeOrCount(this.duration, this.iterations)
-            .do((data) => this.data.value = data)
+        return this.data
+            .bufferWithTimeOrCount(this.options.lifeSpan, this.options.interactions)
             .subscribe((data) => this.pop.toEvaluate.onNext(this));
     }
 }
