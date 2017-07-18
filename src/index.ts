@@ -1,3 +1,4 @@
+import { EnvType } from "./enums/env-type";
 import { FillType } from "./enums/fill-type";
 import { FitnessObjective } from "./enums/fitness-objective";
 import { GenomeRefill } from "./enums/genome-refill";
@@ -6,6 +7,8 @@ import { Environment } from "./environments/environment";
 import { Gene } from "./genotypes/gene";
 import { Genome } from "./genotypes/genome";
 import { IEvaluation } from "./interfaces/evaluation";
+import { Interaction } from "./interfaces/interaction";
+import { IStateUpdate } from "./interfaces/state-update";
 import { clone } from "./operators/clone";
 import { cloneEvaluation } from "./operators/cloneEvaluation";
 import { cloneOrganism } from "./operators/cloneOrganism";
@@ -23,6 +26,7 @@ import { reproduceManyToOne } from "./operators/reproduction/many-to-one/reprodu
 import { reproduce } from "./operators/reproduction/reproduce";
 import { value } from "./operators/value";
 import { values } from "./operators/values";
+import { IEnvironmentOptions } from "./options/environment-options";
 import { IGenomeOptions } from "./options/genome-options";
 import { IMutateOptions } from "./options/mutate-options";
 import { IPopulationOptions } from "./options/population-options";
@@ -37,6 +41,7 @@ export {
     IMutateOptions,
     IReproduceOptions,
     IPopulationOptions,
+    IEnvironmentOptions,
 };
 
 // genotypes
@@ -77,6 +82,8 @@ export {
 // interfaces
 export {
     IEvaluation,
+    Interaction,
+    IStateUpdate,
 };
 
 // evolution stuff
@@ -88,6 +95,7 @@ export {
 
 // enums
 export {
+    EnvType,
     FillType,
     FitnessObjective,
     GenomeRefill,
