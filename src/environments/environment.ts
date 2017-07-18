@@ -1,70 +1,55 @@
 import { IDisposable, Observable, Subject } from "rx";
-import { IGenomeOptions, IPopulationOptions, Organism, Population, ReactiveProperty } from "../index";
+import {
+    IEnvironmentOptions,
+    IGenomeOptions,
+    IPopulationOptions,
+    IStateUpdate,
+    Organism,
+    Population,
+    ReactiveProperty,
+} from "../index";
 
 import * as _ from "lodash";
 
-export abstract class Environment<
-    GenType extends IGenomeOptions,
-    PopType extends IPopulationOptions,
-    DataType, PhenoType, EnvStateType>{
+export abstract class Environment<EnvStateType>{
 
-    public state: ReactiveProperty<EnvStateType>;
+    public state: ReactiveProperty<IStateUpdate<EnvStateType>>;
 
-    public newOrganisms: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
-
-    public organisms: Array<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> = [];
+    public interactions: Subject<IStateUpdate<EnvStateType>>;
 
     private subs: IDisposable[];
 
-    constructor(public pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>) {
-        this.state = new ReactiveProperty(this.initialState);
+    constructor(public options: IEnvironmentOptions) {
+        this.interactions = new Subject<IStateUpdate<EnvStateType>>();
+
+        this.state = new ReactiveProperty<IStateUpdate<EnvStateType>>(this.initialState);
+
         this.subs = [
-            this.initializeOrganisms(this.pop.popOptions.size),
+            this.interaction(),
         ];
     }
 
     // The beginning state of the Environment
-    public abstract get initialState(): EnvStateType
-
-    // create an organism to inject into environment.
-    public abstract createOrganism(): Organism<GenType, PopType, DataType, PhenoType, EnvStateType>;
+    public abstract get initialState(): IStateUpdate<EnvStateType>
 
     // resets the environment back to a fresh state
     public reset(): void {
-        this.resetState();
-        this.killOrganisms();
-        this.initializeOrganisms(this.pop.popOptions.size);
+        this.state.value = this.initialState;
     }
 
     // disposes all subscriptions
     public dispose(): void {
-        console.log("disposing environment");
         this.subs.forEach((s) => s.dispose());
     }
 
-    // initializes organisms and adds them to the environment
-    private initializeOrganisms(n: number): IDisposable {
-        return Observable
-            .range(0, n)
-            .select((i) => this.createOrganism())
-            .do((org) => this.organisms.push(org))
-            .subscribe(this.newOrganisms);
-    }
-
-    private killOrganisms(): void {
-        console.log("Killing Organisms");
-        this.organisms = _.compact(this.organisms);
-
-        for (let i = 0; i < this.organisms.length; i++) {
-            this.organisms[i].dispose();
-            this.organisms[i] = null;
-        }
-
-        this.organisms = [];
-    }
-
-    private resetState(): void {
-        console.log("reseting state");
-        this.state.value = this.initialState;
+    // choose a random interaction to use as this.state
+    private interaction(): IDisposable {
+        return this.interactions
+            .filter((i) => i.interaction > this.state.value.interaction) // only accept new interactions
+            .bufferWithTime(1 / this.options.interactionRate) // buffer new interactions periodically
+            .map((interactions) => _.shuffle(interactions)[0]) // choose a random interaction from buffer
+            .subscribe((i) => {
+                this.state.value = i;
+            });
     }
 }
