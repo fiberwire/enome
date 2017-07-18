@@ -54,6 +54,10 @@ export abstract class Population<
     new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
 
     private subs: IDisposable[];
+    private get nextEnv(): Environment<EnvStateType> {
+        return _.sortBy(this.envs.value,
+            (env) => this.organisms.filterCollection((o) => o.env === env).value.length)[0];
+    }
 
     constructor(
         public genOptions: GenType,
@@ -101,13 +105,9 @@ export abstract class Population<
         return this.envs.subscribe((envs) => {
             this.killOrganisms();
 
-            envs.forEach((env) => {
-                const orgs = _
-                    .range(this.popOptions.size / this.envs.value.length)
-                    .map((i) => this.createOrganism(this, env, this.orgOptions));
-
-                orgs.forEach((org) => this.organisms.push(org));
-            });
+            while (this.organisms.value.length < this.popOptions.size) {
+                this.organisms.push(this.createOrganism(this, this.nextEnv, this.orgOptions));
+            }
         });
     }
 
@@ -124,6 +124,7 @@ export abstract class Population<
         return this.toEvaluate
             .filter((org) => org.data.value.length > 0)
             .subscribe((org) => {
+                org.dispose();
                 this.evaluations.onNext(this.evaluate(org));
             });
     }
