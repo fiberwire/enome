@@ -16,13 +16,14 @@ const genOptions: ISumGenomeOptions = {
 };
 
 const popOptions: ISumPopOptions = {
+    generations: 10,
     mutate: {
         mutateChance: 0.15,
         mutateOp: MutateOp.avg,
     },
     objective: FitnessObjective.minimize,
     size: 10,
-    target: 256,
+    target: 400,
     weights: {
         mutate: 65,
         randomize: 10,
