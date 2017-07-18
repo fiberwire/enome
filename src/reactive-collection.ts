@@ -8,6 +8,7 @@ export class ReactiveCollection<T> {
     private popped: ReplaySubject<T> = new ReplaySubject<T>(1);
     private shifted: ReplaySubject<T> = new ReplaySubject<T>(1);
     private unshifted: ReplaySubject<T> = new ReplaySubject<T>(1);
+    private removed: ReplaySubject<T> = new ReplaySubject<T>(1);
 
     private subs: IDisposable[];
 
@@ -58,6 +59,10 @@ export class ReactiveCollection<T> {
         return this.unshifted.subscribe(observer);
     }
 
+    public subscribeToRemove(observer: (value: T) => void | Observer<T>): IDisposable {
+        return this.removed.subscribe(observer);
+    }
+
     public push(value: T): ReactiveCollection<T> {
         this.pushed.onNext(value);
         return this;
@@ -81,6 +86,14 @@ export class ReactiveCollection<T> {
 
     public unshift(value: T): ReactiveCollection<T> {
         this.unshifted.onNext(value);
+        return this;
+    }
+
+    public remove(value: T): ReactiveCollection<T> {
+        const v = this.value;
+        const removed = v.splice(v.indexOf(value));
+        this.value = v;
+        this.removed.onNext(removed[0]);
         return this;
     }
 
