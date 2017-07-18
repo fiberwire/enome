@@ -14,6 +14,7 @@ export class SumPopulation extends Population<
     public createOrganism(
         pop: Population<ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState>,
         env: Environment<ISumEnvState>,
+        genome: Genome<ISumGenomeOptions>,
         options: IOrganismOptions):
         Organism<ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState> {
             return new SumOrganism(pop, env, new Genome(pop.genOptions), options);
