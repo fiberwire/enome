@@ -9,8 +9,10 @@ import {
     Genome,
     IEvaluation,
     IGenomeOptions,
+    IOrganismOptions,
     IPopulationOptions,
     Organism,
+    ReactiveCollection,
     ReactiveProperty,
     reproduceManyToOne,
     value,
@@ -25,45 +27,44 @@ export abstract class Population<
     PopType extends IPopulationOptions,
     DataType, PhenoType, EnvStateType> {
 
-    public toEvaluate: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
-    public toMutate: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
-    public toRandomize: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
-    public toReproduce: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
-    public evaluations: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
-    public avgFitness: ReactiveProperty<number>;
-    public best: ReactiveProperty<IEvaluation<
-    Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>;
+    public toEvaluate: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> =
+    new Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
 
-    public envs: Array<Environment<GenType, PopType, DataType, PhenoType, EnvStateType>>;
+    public toMutate: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
+    new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+
+    public toRandomize: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
+    new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+
+    public toReproduce: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
+    new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+
+    public avgFitness: ReactiveProperty<number> = new ReactiveProperty<number>();
+    public best: ReactiveProperty<IEvaluation<
+    Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
+    new ReactiveProperty<IEvaluation<
+        Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+
+    public envs: ReactiveCollection<Environment<EnvStateType>>;
+    public organisms: ReactiveCollection<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
+
+    private evaluations: Subject<
+    IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>,
+    PhenoType>> =
+    new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
 
     private subs: IDisposable[];
 
-    public get organisms(): Array<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> {
-        return _.concat([], ...this.envs
-            .map((e) => e.organisms));
-    }
-
     constructor(
         public genOptions: GenType,
-        public popOptions: PopType) {
-        this.toEvaluate = new Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
-
-        this.toMutate =
-            new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
-
-        this.toReproduce =
-            new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
-
-        this.toRandomize =
-            new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
-
-        this.evaluations =
-            new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
-        this.avgFitness = new ReactiveProperty<number>();
-        this.best = new ReactiveProperty<IEvaluation<
-            Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+        public popOptions: PopType,
+        public orgOptions: IOrganismOptions,
+        ...envs: Array<Environment<EnvStateType>>) {
+        this.envs = new ReactiveCollection<Environment<EnvStateType>>(envs);
+        this.organisms = new ReactiveCollection<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
 
         this.subs = [
+            this.populate(),
             this.updateGenotype(),
             this.updateAvgFitness(),
             this.updateBest(),
@@ -72,9 +73,6 @@ export abstract class Population<
             this.reproduceGenotype(),
             this.randomizeGenotype(),
         ];
-
-        // set up environment
-        this.setupEnvironments();
     }
 
     // evaluate organism's performance based on the data it collected.
@@ -88,19 +86,40 @@ export abstract class Population<
             Organism<GenType, PopType, DataType, PhenoType, EnvStateType>,
             PhenoType>): Genome<GenType>;
 
-    // set up environment
-    public abstract createEnvironment(): Environment<GenType, PopType, DataType, PhenoType, EnvStateType>;
+    // create an organism to inject into environment.
+    public abstract createOrganism(
+        pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>,
+        env: Environment<EnvStateType>,
+        options: IOrganismOptions): Organism<GenType, PopType, DataType, PhenoType, EnvStateType>;
 
     public dispose(): void {
         this.subs.forEach((s) => s.dispose());
     }
-    // set up all environments
-    private setupEnvironments() {
-        this.envs = _.range(this.popOptions.envs)
-            .map((i) => this.createEnvironment());
+
+    // spawns and evenly distributes organisms across all envs
+    public populate(): IDisposable {
+        return this.envs.subscribe((envs) => {
+            this.killOrganisms();
+
+            envs.forEach((env) => {
+                const orgs = _
+                    .range(this.popOptions.size / this.envs.value.length)
+                    .map((i) => this.createOrganism(this, env, this.orgOptions));
+
+                orgs.forEach((org) => this.organisms.push(org));
+            });
+        });
     }
 
-    // evaluate data as it comes in
+    private killOrganisms(): void {
+        this.organisms.forEach((o) => {
+            o.dispose();
+            o = null;
+        });
+        this.organisms.value = [];
+    }
+
+    // evaluate organism data as it comes in
     private evaluateData(): IDisposable {
         return this.toEvaluate
             .filter((org) => org.data.value.length > 0)
@@ -142,7 +161,6 @@ export abstract class Population<
         return this.evaluations
             .do((e) => { // set as best if there is no current best
                 if (this.best.value === undefined) {
-                    console.log(`No best, setting best to ${e.organism.genotype.value.id}`);
                     this.best.value = e;
                 }
             })
@@ -156,7 +174,7 @@ export abstract class Population<
                         return e.fitness > this.best.value.fitness;
                 }
             })
-            .do((e) => console.log(`new best: ${e.fitness} (old best: ${this.best.value.fitness})`))
+            // .do((e) => console.log(`new best: ${e.fitness} (old best: ${this.best.value.fitness})`))
             .select(cloneEvaluation)
             .do((e) => e.organism.dispose())
             .subscribe((e) => this.best.value = e);
@@ -172,7 +190,8 @@ export abstract class Population<
     private reproduceGenotype(): IDisposable {
         return this.toReproduce
             .subscribe((e) => {
-                e.organism.genotype.value = reproduceManyToOne(this.organisms.map((o) => o.genotype.value));
+                e.organism.genotype.value = reproduceManyToOne(
+                    this.organisms.mapCollection((o) => o.genotype.value).value);
             });
     }
 
