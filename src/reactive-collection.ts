@@ -27,7 +27,7 @@ export class ReactiveCollection<T> extends ReactiveProperty<T[]> {
         ];
     }
 
-    public dispose() {
+    public dispose(): void {
         this.subs.forEach((sub) => sub.dispose());
     }
 
