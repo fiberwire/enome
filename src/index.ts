@@ -1,4 +1,3 @@
-import { EnvType } from "./enums/env-type";
 import { FillType } from "./enums/fill-type";
 import { FitnessObjective } from "./enums/fitness-objective";
 import { GenomeRefill } from "./enums/genome-refill";
@@ -7,7 +6,6 @@ import { Environment } from "./environments/environment";
 import { Gene } from "./genotypes/gene";
 import { Genome } from "./genotypes/genome";
 import { IEvaluation } from "./interfaces/evaluation";
-import { Interaction } from "./interfaces/interaction";
 import { IStateUpdate } from "./interfaces/state-update";
 import { clone } from "./operators/clone";
 import { cloneEvaluation } from "./operators/cloneEvaluation";
@@ -29,10 +27,12 @@ import { values } from "./operators/values";
 import { IEnvironmentOptions } from "./options/environment-options";
 import { IGenomeOptions } from "./options/genome-options";
 import { IMutateOptions } from "./options/mutate-options";
+import { IOrganismOptions } from "./options/organism-options";
 import { IPopulationOptions } from "./options/population-options";
 import { IReproduceOptions } from "./options/reproduce-options";
 import { Organism } from "./organisms/organism";
 import { Population } from "./populations/population";
+import { ReactiveCollection } from "./reactive-collection";
 import { ReactiveProperty } from "./reactive-property";
 
 // options
@@ -42,6 +42,7 @@ export {
     IReproduceOptions,
     IPopulationOptions,
     IEnvironmentOptions,
+    IOrganismOptions,
 };
 
 // genotypes
@@ -82,7 +83,6 @@ export {
 // interfaces
 export {
     IEvaluation,
-    Interaction,
     IStateUpdate,
 };
 
@@ -95,7 +95,6 @@ export {
 
 // enums
 export {
-    EnvType,
     FillType,
     FitnessObjective,
     GenomeRefill,
@@ -105,4 +104,5 @@ export {
 // misc
 export {
     ReactiveProperty,
+    ReactiveCollection,
 };
