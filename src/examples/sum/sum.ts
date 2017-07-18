@@ -7,23 +7,23 @@ import { SumPopulation } from "./sum-population";
 import * as _ from "lodash";
 
 const genOptions: ISumGenomeOptions = {
-    geneLength: 1,
-    genomeLength: 10,
-    length: 5,
-    max: 100,
+    geneLength: 5,
+    genomeLength: 20,
+    length: 10,
+    max: 1000,
     min: 1,
     refill: GenomeRefill.extend,
 };
 
 const popOptions: ISumPopOptions = {
-    generations: 10,
+    generations: 2000,
     mutate: {
-        mutateChance: 0.15,
+        mutateChance: 0.1,
         mutateOp: MutateOp.avg,
     },
     objective: FitnessObjective.minimize,
     size: 10,
-    target: 400,
+    target: 1500,
     weights: {
         mutate: 65,
         randomize: 10,
