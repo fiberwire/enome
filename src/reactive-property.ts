@@ -31,12 +31,24 @@ export class ReactiveProperty<T> {
         return this.subject.map(selector);
     }
 
-    public debounceWithTimeout(dueTime: number, scheduler?: IScheduler) {
+    public debounce(dueTime: number, scheduler?: IScheduler) {
         return this.subject.debounce(dueTime, scheduler);
     }
 
     public debounceWithSelector<TTimeout>(selector: (value: T) => Observable<TTimeout>) {
         return this.subject.debounceWithSelector(selector);
+    }
+
+    public bufferWithTime(timeSpan: number, scheduler?: IScheduler): Observable<T[]> {
+        return this.subject.bufferWithTime(timeSpan, scheduler);
+    }
+
+    public bufferWithCount(count: number, skip?: number): Observable<T[]> {
+        return this.subject.bufferWithCount(count, skip);
+    }
+
+    public bufferWithTimeOrCount(timeSpan: number, count: number, scheduler?: IScheduler): Observable<T[]> {
+        return this.subject.bufferWithTimeOrCount(timeSpan, count, scheduler);
     }
 
     public asObservable(): Observable<T> {
