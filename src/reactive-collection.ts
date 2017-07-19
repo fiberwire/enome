@@ -1,5 +1,6 @@
 
-import { BehaviorSubject, IDisposable, IScheduler, Observable, Observer, ReplaySubject, Subject } from "rx";
+import { BehaviorSubject, Observable, Observer, ReplaySubject, Subject, Subscription } from "rxjs";
+import { IScheduler } from "rxjs/Scheduler";
 import { ReactiveProperty } from "./index";
 
 export class ReactiveCollection<T> {
@@ -10,7 +11,7 @@ export class ReactiveCollection<T> {
     private unshifted: ReplaySubject<T> = new ReplaySubject<T>(1);
     private removed: ReplaySubject<T> = new ReplaySubject<T>(1);
 
-    private subs: IDisposable[];
+    private subs: Subscription[];
 
     private array: ReactiveProperty<T[]>;
 
@@ -40,38 +41,38 @@ export class ReactiveCollection<T> {
     }
 
     public dispose(): void {
-        this.subs.forEach((sub) => sub.dispose());
+        this.subs.forEach((sub) => sub.unsubscribe());
     }
 
-    public subscribeToPush(observer: (value: T) => void | Observer<T>): IDisposable {
+    public subscribeToPush(observer: (value: T) => void | Observer<T>): Subscription {
         return this.pushed.subscribe(observer);
     }
 
-    public subscribeToPop(observer: (value: T) => void | Observer<T>): IDisposable {
+    public subscribeToPop(observer: (value: T) => void | Observer<T>): Subscription {
         return this.popped.subscribe(observer);
     }
 
-    public subscribeToShift(observer: (value: T) => void | Observer<T>): IDisposable {
+    public subscribeToShift(observer: (value: T) => void | Observer<T>): Subscription {
         return this.shifted.subscribe(observer);
     }
 
-    public subscribeToUnshift(observer: (value: T) => void | Observer<T>): IDisposable {
+    public subscribeToUnshift(observer: (value: T) => void | Observer<T>): Subscription {
         return this.unshifted.subscribe(observer);
     }
 
-    public subscribeToRemove(observer: (value: T) => void | Observer<T>): IDisposable {
+    public subscribeToRemove(observer: (value: T) => void | Observer<T>): Subscription {
         return this.removed.subscribe(observer);
     }
 
     public push(value: T): ReactiveCollection<T> {
-        this.pushed.onNext(value);
+        this.pushed.next(value);
         return this;
     }
 
     public pop(value: T): T {
         const v = this.value;
         const popped = v.pop();
-        this.popped.onNext(popped);
+        this.popped.next(popped);
         this.value = v;
         return popped;
     }
@@ -79,13 +80,13 @@ export class ReactiveCollection<T> {
     public shift(): T {
         const v = this.value;
         const shifted = v.shift();
-        this.shifted.onNext(shifted);
+        this.shifted.next(shifted);
         this.value = v;
         return shifted;
     }
 
     public unshift(value: T): ReactiveCollection<T> {
-        this.unshifted.onNext(value);
+        this.unshifted.next(value);
         return this;
     }
 
@@ -93,7 +94,7 @@ export class ReactiveCollection<T> {
         const v = this.value;
         const removed = v.splice(v.indexOf(value));
         this.value = v;
-        this.removed.onNext(removed[0]);
+        this.removed.next(removed[0]);
         return this;
     }
 
@@ -110,7 +111,7 @@ export class ReactiveCollection<T> {
         return this;
     }
 
-    public subscribe(observer: (value: T[]) => void | Observer<T[]>): IDisposable {
+    public subscribe(observer: (value: T[]) => void | Observer<T[]>): Subscription {
         return this.array.subscribe(observer);
     }
 
@@ -123,23 +124,23 @@ export class ReactiveCollection<T> {
     }
 
     public debounceWithTimeout(dueTime: number, scheduler?: IScheduler) {
-        return this.array.debounce(dueTime, scheduler);
+        return this.array.throttleTime(dueTime, scheduler);
     }
 
     public debounceWithSelector<TTimeout>(selector: (value: T[]) => Observable<TTimeout>) {
-        return this.array.debounceWithSelector(selector);
+        return this.array.throttle(selector);
     }
 
-    public bufferWithTime(timeSpan: number, scheduler?: IScheduler): Observable<T[][]> {
-        return this.array.bufferWithTime(timeSpan, scheduler);
+    public bufferTime(timeSpan: number, scheduler?: IScheduler): Observable<T[][]> {
+        return this.array.bufferTime(timeSpan, scheduler);
     }
 
-    public bufferWithCount(count: number, skip?: number): Observable<T[][]> {
-        return this.array.bufferWithCount(count, skip);
+    public bufferCount(count: number, skip?: number): Observable<T[][]> {
+        return this.array.bufferCount(count, skip);
     }
 
-    public bufferWithTimeOrCount(timeSpan: number, count: number, scheduler?: IScheduler): Observable<T[][]> {
-        return this.array.bufferWithTimeOrCount(timeSpan, count, scheduler);
+    public bufferTimeCount(timeSpan: number, count: number, skip?: number, scheduler?: IScheduler) {
+        return this.array.bufferTimeCount(timeSpan, count, skip, scheduler);
     }
 
     public asObservable(): Observable<T[]> {

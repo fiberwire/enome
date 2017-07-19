@@ -1,4 +1,5 @@
-import { BehaviorSubject, IDisposable, IScheduler, Observable, Observer, Subject } from "rx";
+import { BehaviorSubject, Observable, Observer, Subject, Subscription } from "rxjs";
+import { IScheduler } from "rxjs/Scheduler";
 
 export class ReactiveProperty<T> {
     // tslint:disable-next-line:variable-name
@@ -16,14 +17,14 @@ export class ReactiveProperty<T> {
 
     public set value(value: T) {
         this._value = value;
-        this.subject.onNext(value);
+        this.subject.next(value);
     }
 
-    public subscribe(observer: (value: T) => void | Observer<T>): IDisposable {
+    public subscribe(observer: (value: T) => void | Observer<T>): Subscription {
         return this.subject.subscribe(observer);
     }
 
-    public filter(selector: (value: T) => boolean) {
+    public filter(selector: (value: T) => boolean): Observable<T> {
         return this.subject.filter(selector);
     }
 
@@ -31,24 +32,27 @@ export class ReactiveProperty<T> {
         return this.subject.map(selector);
     }
 
-    public debounce(dueTime: number, scheduler?: IScheduler) {
-        return this.subject.debounce(dueTime, scheduler);
+    public throttleTime(dueTime: number, scheduler?: IScheduler) {
+        return this.subject.throttleTime(dueTime, scheduler);
     }
 
-    public debounceWithSelector<TTimeout>(selector: (value: T) => Observable<TTimeout>) {
-        return this.subject.debounceWithSelector(selector);
+    public throttle<TTimeout>(selector: (value: T) => Observable<TTimeout>) {
+        return this.subject.throttle(selector);
     }
 
-    public bufferWithTime(timeSpan: number, scheduler?: IScheduler): Observable<T[]> {
-        return this.subject.bufferWithTime(timeSpan, scheduler);
+    public bufferTime(timeSpan: number, scheduler?: IScheduler): Observable<T[]> {
+        return this.subject.bufferTime(timeSpan, scheduler);
     }
 
-    public bufferWithCount(count: number, skip?: number): Observable<T[]> {
-        return this.subject.bufferWithCount(count, skip);
+    public bufferCount(count: number, skip?: number): Observable<T[]> {
+        return this.subject.bufferCount(count, skip);
     }
 
-    public bufferWithTimeOrCount(timeSpan: number, count: number, scheduler?: IScheduler): Observable<T[]> {
-        return this.subject.bufferWithTimeOrCount(timeSpan, count, scheduler);
+    public bufferTimeCount(timeSpan: number, count: number, skip?: number, scheduler?: IScheduler): Observable<T[]> {
+        const timeBuffer = this.subject.bufferTime(timeSpan, scheduler);
+        const countBuffer = this.subject.bufferCount(count, skip);
+
+        return timeBuffer.race(countBuffer);
     }
 
     public asObservable(): Observable<T> {
