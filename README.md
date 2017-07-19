@@ -6,47 +6,114 @@
 
 ### This library is written in TypeScript, and I recommend using it with a TypeScript project.
 
-### There are a few different ways you can use enome.
-1. `Natural Selection`
-    -  Automatically evolves genomes based on their fitness.
-2. `Artificial Selection`
-    - Allows you to select which genomes will reproduce to spawn future generations
-        - Genomes are presented in a queue-like manner, where you review and take action on genomes one at a time. 
-3. `Artificial Pooled Selection`
-    - Allows you to select which genomes will be parents to future generations
-        - Parents are not recycled back into the general population queue, and are instead part of a separate pool of genomes that are exclusively used for reproduction.
-        - You can set the size of the parent pool, and when the capacity is reached, any new additions will remove the oldest parent from the pool.
-4. Go it on your own
-    - You can use enome primitives (genomes and genes) however you want.
-    - The premade population types are just there to make your life easier. If their functionality doesn't fit your needs, you're free to make your own, or not use one at all.
-    - enome provides a host of operators for doing various things to/with genomes.
+## What is enome?
+enome is a javascript/typescript library that allows you to asynchronously (using rxjs) evolve any kind of object you can think of.
+
+## enome has three main parts to its evolution system.
+
+* ### `Organism`:
+    * an `Organism` is just an object that contains a `genotype` and a `phenotype` and has the ability to interact with an `Environment`.
+        * a `genotype`, in this case, is a `Genome`, which contains genetic information that you use to create the `phenotype`.
+        * a `phenotype`, in this case, is whatever kind of object you would like to evolve.
+    * `Organisms` record data as they are interacting with the `Environment`.
+        * Once the `Organism` has done a specified number of `interactions` or has reached its specified `lifeSpan`, it queues itself up for evaluation by its `Population`.
+    
+* ### `Environment`:
+    * an `Environment` is essentially just an asynchronous state container.
+    * You interact with an `Environment` by sending `IStateUpdates` to its `state` `Subject`.
+    * an `Environment` may have multiple `Organisms` interacting with it at a time.
+    * `Environments` have an `interactionRate` property which you can set that limits how often it accepts `IStateUpdates` (think of it like a frame rate).
+        * `Environments` deal with multiple asynchronous sources of incoming `IStateUpdates` by buffering them over time based on the `interactionRate` and then randomly choosing between ones that were based on the current `state`, otherwise state updates could happen out of order (think of it like an asynchronous way of having a shared order of events even though everything is happening out of order, technically).
+
+* ### `Population`
+    * `Populations` create `Organisms` and tell them which environments to interact with.
+    * `Populations` are also in charge of determining how `Organisms` evolve.
+        * when a `Population` receives an `Organism` to evaluate, it looks at the data that the `Organism` collected to determine its `fitness`.
+            * You specify the function that determines the `fitness` of the `Organism` based on its data.
+        * when a `Population` finishes evaluating an `Organism`, it then determines what it wants to do with the `genotype` of the `Organism` between three options:
+            1. `mutate`
+                * mutates the `genotype` based on options that you set
+                * creates a new `Organism` with the mutated `genotype`. 
+            2. `reproduce`
+                * produces an offspring `genotype` by mixing the `genotypes` of all the other `Organisms` in the `Population`. 
+                * creates a new `Organism` with the offspring `genotype`. 
+            3. `randomize`
+                * creates a new `Organism` with a randomly generated `Genome`.
+                * this is good for introducing genetic variety into the population so it doesn't hit a local minimum
+        * The way it determines what to do with the `genotype` is by randomly choosing based on relative weights that you give it.
+            * for instance, you could give it
+            
+            ```  
+            {
+                mutate: .15,
+                reproduce: .75,
+                randomize: .1
+            }
+            ```
+
+            which would give mutation a 15% chance, reproduction a 75% chance, and randomization a 10% chance.
+                
+
+## Underlying the evolution system are `Genomes` and `Genes`:
+* ### `Genome`:
+    * A `Genome` is just a container for genetic information, or a `sequence`.
+    * At its heart, a `sequence` is just an array of numbers between 0 and 1.
+    * When created, the `Genome` takes that `sequence` and produces `Genes` from it.
+    * `Genome` provides the `g` property which allows you to get the next `Gene` in the list, so you can consume them one by one in a queue-like manner.
+* ### `Gene`:
+    * A `Gene` is just a container for a `value` between 0 and 1.
+    * `Genes` give you methods that interpolate their value into a value that it useful when creating the `phenotype`.
+        * for instance, say your phenotype is a first and last name:
+        ```
+        interface Name {
+            first: string;
+            last: string;
+        }
+
+        interface NameOptions extends IGenomeOptions {
+            firstMinLength: number;
+            firstMaxLength: number;
+            lastMinLength: number;
+            lastMaxLength: number;
+        }
+
+        public createPhenotype(genome: Genome<NameOptions>): Name {
+
+            // determine length of first name
+            const firstLength = genome.g.int(
+                genome.options.firstMinLength, 
+                genome.options.firstMaxLength
+            );
+
+            // determine length of last name
+            const lastLength = genome.g.int(
+                genome.options.lastMinLength, 
+                genome.options.lastMaxLength
+            );
+
+            //create first name
+            const first = _.range(firstLength)
+                .map(i => genome.g.letter())
+                .reduce((first, letter) => `${first}${letter}`)
+
+            // create last name
+            const last = _.range(lastLength)
+                .map(i => genome.g.letter())
+                .reduce((last, letter) => `${last}${letter}`)
+
+            return { first, last };
+        }
+        
+        ```
 
 How enome generates `Genome`s:
-- Generates a `sequence` of `values` between `zero` and `one`
+- Generates a `sequence` of `values` between 0 and 1.
 - Groups those `values` into `Genes` by averaging them together
   - This results in the `Genome` being less sensitive to `mutation`
   - The sensitivity is customizable by varying the number of `values` that go into each `Gene`
 - Groups those `Genes` into a `Genome`
   - `Genome` exposes a property called `g` that allows you to get the next `Gene` in the `Genome`.
-    - This allows you to pass the `Genome` around, consuming its `Gene`s as you need them.
-
-How enome determines the `fitness` of a `Genome`:
-- You define your own `fitness` function.
-    - Generally, your `fitness` function should accept a `Genome` and return an `Evaluation`.
-    - Your fitness function will necessarily create an object from your genome that it will test.
-    - `Evaluation` is just an interface that has the following properties
-        - `fitness`: `number`
-            - the relative `fitness` of the `Genome` being evaluated.
-        - `genome`: `Genome`
-            - the genome that is being evaluated.
-        - `result`: `T`
-            - the object that is created from your genome.
-
-What enome allows you to do:
-- write code that maps a `Genome` to whatever `object` you want to build by consuming genes one at a time.
-- Define your "hyperparameters" in your `options` object.
-- `mutate` and `evolve` that object by mutating and evolving the `Genome` that maps to that object.
-- do it very simply, by providing upper and lower bounds for each variable you want to evolve.
+    - This allows you to pass the `Genome` around, consuming its `Genes` as you need them.
 
 
 # Install instructions
@@ -54,96 +121,4 @@ What enome allows you to do:
 npm install enome
 ```
 
-# Example usage for Natural Selection
-say you want to evolve a list of three numbers between 1 and 100 that will add up to 256.
-
-```
-import * as _ from 'lodash';
-import {
-    Gene,
-    Genome,
-    IEvaluation,
-    IGenomeOptions,
-    NaturalSelection,
-    NaturalSelectionOptions,
-    replenish,
-    FillType,
-    MutateOp,
-    MutateType,
-    FitnessObjective,
-    ReproduceType,
-} from "enome";
-
-// create interface that extends IGenomeOptions and contains 
-// the options you'll need to create your object from your genome
-interface IListOptions extends IGenomeOptions {
-    min: number;
-    max: number;
-    length: number;
-}
-
-// create the function that will turn a genome into whatever object you want
-// in this case, it will create an array of integers.
-function createList(genome: Genome<IListOptions>): number[] {
-    return _.range(genome.options.length)
-        .map((i: number) => genome.g.int(genome.options.min, genome.options.max));
-}
-
-// create the function that will evaluate your genome
-// in this case, it is finding the difference between the sum of the list and the target, 256
-function fitness(genome: Genome<IListOptions>): IEvaluation<IListOptions, number[]> {
-    const target = 256;
-
-    const list = createList(replenish(genome));
-    const sum = _.sum(list);
-    const fit = Math.abs(target - sum);
-
-    return { fitness: fit, genome, result: list };
-}
-
-// set up the options for your genome
-const gOptions: IListOptions = {
-    geneLength: 5,
-    genomeLength: 3,
-    length: 3,
-    loopGenes: true,
-    max: 100,
-    min: 1,
-};
-
-// set up the options for your population
-const pOptions: NaturalSelectionOptions = {
-    fillPercent: 0.25,
-    fillType: FillType.none,
-    mutateOptions: {
-        mutateChance: 0.15,
-        mutateOp: MutateOp.sub,
-        sampleSize: 5,
-        type: MutateType.safeSampled,
-    },
-    objective: FitnessObjective.minimize,
-    populationSize: 20,
-    reproduceOptions: {
-        sampleSize: 5,
-        type: ReproduceType.normal,
-    },
-};
-
-// create your population
-const pop = new NaturalSelection(
-    pOptions,
-    gOptions,
-    createList,
-    fitness,
-);
-
-// evolve your population
-const ev = pop.evolve$()
-    .subscribe((e: IEvaluation<IListOptions, number[]>) => {
-        const list = e.result;
-        const f = e.fitness;
-        const sum = _.sum(list);
-        // do something with list
-        console.log(`[${list}] -sum: ${sum} -error: ${f}`);
-    });
-```
+# Example usage
