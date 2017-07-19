@@ -1,4 +1,4 @@
-import { IDisposable, Subject } from "rx";
+import { Subject, Subscription } from "rxjs";
 
 import {
     cloneEvaluation,
@@ -58,12 +58,12 @@ export abstract class Population<
     PhenoType>> =
     new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
 
-    private subs: IDisposable[];
+    private subs: Subscription = new Subscription();
 
     private generation: number = 0;
     private get nextEnv(): Environment<EnvStateType> {
         return _.sortBy(this.envs.value,
-            (env) => this.organisms.filterCollection((o) => o.env === env).value.length)[0];
+            (env) => this.envs.filterCollection((e) => env === e).value.length)[0];
     }
 
     constructor(
@@ -74,17 +74,15 @@ export abstract class Population<
         this.envs = new ReactiveCollection<Environment<EnvStateType>>(envs);
         this.organisms = new ReactiveCollection<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
 
-        this.subs = [
-            this.populate(),
-            this.updateGenotype(),
-            this.updateAvgFitness(),
-            this.updateBest(),
-            this.updateTop(),
-            this.evaluateData(),
-            this.mutateGenotype(),
-            this.reproduceGenotype(),
-            this.randomizeGenotype(),
-        ];
+        this.subs.add(this.populate());
+        this.subs.add(this.updateGenotype());
+        this.subs.add(this.updateAvgFitness());
+        this.subs.add(this.updateBest());
+        this.subs.add(this.updateTop());
+        this.subs.add(this.evaluateData());
+        this.subs.add(this.mutateGenotype());
+        this.subs.add(this.reproduceGenotype());
+        this.subs.add(this.randomizeGenotype());
 
         this.toEvaluate
             .do((e) => this.generation += 1)
@@ -107,7 +105,7 @@ export abstract class Population<
                 }
 
             })
-            .subscribe((e) => this.dispose());
+            .subscribe((e) => this.subs.unsubscribe());
 
     }
 
@@ -129,13 +127,8 @@ export abstract class Population<
         genome: Genome<GenType>,
         options: IOrganismOptions): Organism<GenType, PopType, DataType, PhenoType, EnvStateType>;
 
-    public dispose(): void {
-        this.subs.forEach((s) => s.dispose());
-        this.envs.forEach((env) => env.dispose());
-    }
-
     // spawns and evenly distributes organisms across all envs
-    public populate(): IDisposable {
+    public populate(): Subscription {
         return this.envs.subscribe((envs) => {
             this.killOrganisms();
 
@@ -148,26 +141,28 @@ export abstract class Population<
 
     private killOrganisms(): void {
         this.organisms.forEach((o) => {
-            o.dispose();
+            o.unsubscribe();
             o = null;
         });
         this.organisms.value = [];
     }
 
     // evaluate organism data as it comes in
-    private evaluateData(): IDisposable {
+    private evaluateData(): Subscription {
         return this.toEvaluate
             .filter((org) => org.data.value.length > 0)
             .subscribe((org) => {
-                org.dispose();
-                this.evaluations.onNext(this.evaluate(org));
+                // org.unsubscribe();
+                this.evaluations.next(this.evaluate(org));
             });
     }
 
     // update genotypes as they are evaluated
-    private updateGenotype(): IDisposable {
+    private updateGenotype(): Subscription {
         return this.evaluations
             .subscribe((e) => {
+                this.isCyclic(e);
+
                 // randomly choose between mutating, reproducing, or randomizing
                 // mutation is twice as likely as reproduction
                 // reproduction is twice as likely as randomization
@@ -182,18 +177,57 @@ export abstract class Population<
                         this.popOptions.weights.reproduce,
                         this.popOptions.weights.randomize],
                 )
-                    .onNext(e);
+                    .next(e);
             });
     }
 
-    private updateAvgFitness(): IDisposable {
+    private isCyclic(obj: any) {
+        const keys: any[] = [];
+        const stack: any[] = [];
+        const stackSet: Set<any> = new Set();
+        let detected = false;
+
+        function detect(ob: any, key: any) {
+            if (!(ob instanceof Object)) { return; } // Now works with other
+            // kinds of object.
+
+            if (stackSet.has(ob)) { // it's cyclic! Print the object and its locations.
+                const oldindex = stack.indexOf(ob);
+                const l1 = keys.join(".") + "." + key;
+                const l2 = keys.slice(0, oldindex + 1).join(".");
+                // tslint:disable-next-line:no-console
+                console.log("CIRCULAR: " + l1 + " = " + l2 + " = " + ob);
+                // tslint:disable-next-line:no-console
+                console.log(ob);
+                detected = true;
+                return;
+            }
+
+            keys.push(key);
+            stack.push(ob);
+            stackSet.add(ob);
+            for (const k in ob) { // dive on the object's children
+                if (ob.hasOwnProperty(k)) { detect(ob[k], k); }
+            }
+
+            keys.pop();
+            stack.pop();
+            stackSet.delete(ob);
+            return;
+        }
+
+        detect(obj, "obj");
+        return detected;
+    }
+
+    private updateAvgFitness(): Subscription {
         return this.evaluations
             .subscribe((e) => {
                 this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
             });
     }
 
-    private updateBest(): IDisposable {
+    private updateBest(): Subscription {
         return this.evaluations
             .do((e) => { // set as best if there is no current best
                 if (this.best.value === undefined) {
@@ -211,12 +245,12 @@ export abstract class Population<
                 }
             })
             // .do((e) => console.log(`new best: ${e.fitness} (old best: ${this.best.value.fitness})`))
-            .select(cloneEvaluation)
-            .do((e) => e.organism.dispose())
+            .map(cloneEvaluation)
+            .do((e) => e.organism.unsubscribe())
             .subscribe((e) => this.best.value = e);
     }
 
-    private updateTop(): IDisposable {
+    private updateTop(): Subscription {
         return this.evaluations
             .filter((e) => this.best.value != null && this.best.value !== undefined)
             .filter((e) => {
@@ -229,7 +263,7 @@ export abstract class Population<
                         return e.fitness > this.best.value.fitness;
                 }
             })
-            .select(cloneEvaluation)
+            .map(cloneEvaluation)
             .subscribe((e) => {
                 let top = this.top.value;
                 top.push(e);
@@ -239,7 +273,7 @@ export abstract class Population<
             });
     }
 
-    private mutateGenotype(): IDisposable {
+    private mutateGenotype(): Subscription {
         return this.toMutate
             .subscribe((e) => {
                 const g = this.mutate(e);
@@ -252,7 +286,7 @@ export abstract class Population<
             });
     }
 
-    private reproduceGenotype(): IDisposable {
+    private reproduceGenotype(): Subscription {
         return this.toReproduce
             .filter((e) => this.organisms.value.length > 0)
             .subscribe((e) => {
@@ -275,7 +309,7 @@ export abstract class Population<
             });
     }
 
-    private randomizeGenotype(): IDisposable {
+    private randomizeGenotype(): Subscription {
         return this.toRandomize
             .subscribe((e) => {
                 const g = new Genome(this.genOptions);

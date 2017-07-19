@@ -23,7 +23,7 @@ const popOptions: ISumPopOptions = {
     },
     objective: FitnessObjective.minimize,
     progress: true,
-    size: 10,
+    size: 1,
     target: 150,
     topPercent: .25,
     weights: {

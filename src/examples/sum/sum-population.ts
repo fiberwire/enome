@@ -17,7 +17,12 @@ export class SumPopulation extends Population<
         genome: Genome<ISumGenomeOptions>,
         options: IOrganismOptions):
         Organism<ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState> {
-            return new SumOrganism(pop, env, new Genome(pop.genOptions), options);
+            return new SumOrganism(
+                pop.toEvaluate,
+                env.state.asObservable(),
+                env.interactions,
+                new Genome(pop.genOptions),
+                options);
     }
 
     public evaluate(organism: SumOrganism): IEvaluation<SumOrganism, number[]> {
