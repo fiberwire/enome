@@ -45,6 +45,11 @@ export abstract class Population<
     new ReactiveProperty<IEvaluation<
         Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
 
+    public top: ReactiveCollection<IEvaluation<
+    Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
+    new ReactiveCollection<IEvaluation<
+        Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+
     public envs: ReactiveCollection<Environment<EnvStateType>>;
     public organisms: ReactiveCollection<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
 
@@ -74,6 +79,7 @@ export abstract class Population<
             this.updateGenotype(),
             this.updateAvgFitness(),
             this.updateBest(),
+            this.updateTop(),
             this.evaluateData(),
             this.mutateGenotype(),
             this.reproduceGenotype(),
@@ -81,8 +87,26 @@ export abstract class Population<
         ];
 
         this.toEvaluate
-            .skip(this.popOptions.generations * this.popOptions.size)
+            .do((e) => this.generation += 1)
+            .do((e) => {
+                if (this.popOptions.progress &&
+                    this.generation % (this.popOptions.generations / 10) === 0) {
+                    // tslint:disable-next-line:no-console
+                    console.log(`
+(${this.generation / this.popOptions.generations * 100}%) Generation: ${this.generation}
+        best: ${this.best.value.fitness}
+`);
+                }
+            })
+            .skip(this.popOptions.generations)
             .take(1)
+            .do((e) => {
+                if (this.popOptions.progress) {
+                    // tslint:disable-next-line:no-console
+                    console.log(`Evolution completed after ${this.generation - 1} generations`);
+                }
+
+            })
             .subscribe((e) => this.dispose());
 
     }
@@ -192,6 +216,29 @@ export abstract class Population<
             .subscribe((e) => this.best.value = e);
     }
 
+    private updateTop(): IDisposable {
+        return this.evaluations
+            .filter((e) => this.best.value != null && this.best.value !== undefined)
+            .filter((e) => {
+                switch (this.popOptions.objective) {
+                    case FitnessObjective.minimize:
+                        return e.fitness < this.best.value.fitness;
+
+                    case FitnessObjective.maximize:
+                    default:
+                        return e.fitness > this.best.value.fitness;
+                }
+            })
+            .select(cloneEvaluation)
+            .subscribe((e) => {
+                let top = this.top.value;
+                top.push(e);
+                top = _.sortBy(top, (t) => t.fitness);
+                top = new Gene(this.popOptions.topPercent).elements(top);
+                this.top.value = top;
+            });
+    }
+
     private mutateGenotype(): IDisposable {
         return this.toMutate
             .subscribe((e) => {
@@ -207,9 +254,18 @@ export abstract class Population<
 
     private reproduceGenotype(): IDisposable {
         return this.toReproduce
+            .filter((e) => this.organisms.value.length > 0)
             .subscribe((e) => {
-                const offspring = reproduceManyToOne(
-                    this.organisms.mapCollection((o) => o.genotype.value).value);
+
+                let offspring: Genome<GenType>;
+
+                if (this.top.value.length <= 0) {
+                    offspring = reproduceManyToOne(
+                        this.organisms.mapCollection((t) => t.genotype.value).value);
+                } else {
+                    offspring = reproduceManyToOne(
+                        this.top.mapCollection((t) => t.organism.genotype.value).value);
+                }
 
                 if (this.organisms.value.length >= this.popOptions.size) {
                     this.organisms.remove(e.organism);
