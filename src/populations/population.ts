@@ -80,31 +80,8 @@ export abstract class Population<
             this.reproduceGenotype(),
             this.randomizeGenotype(),
             this.killOrganisms(),
+            this.shutdown(),
         ].reduce((sub, s) => sub.add(s));
-
-        this.evaluations
-            .do((e) => this.generation += 1)
-            .do((e) => {
-                if (this.popOptions.progress &&
-                    this.generation % (this.popOptions.generations / 10) === 0) {
-                    // tslint:disable-next-line:no-console
-                    console.log(`
-(${this.generation / this.popOptions.generations * 100}%) Generation: ${this.generation}
-        best: ${this.best.value.fitness}
-`);
-                }
-            })
-            .skip(this.popOptions.generations)
-            .take(1)
-            .do((e) => {
-                if (this.popOptions.progress) {
-                    // tslint:disable-next-line:no-console
-                    console.log(`Evolution completed after ${this.generation - 1} generations`);
-                }
-
-            })
-            .subscribe((e) => this.subs.unsubscribe());
-
     }
 
     // mutate the organism based on evaluation
@@ -127,6 +104,31 @@ export abstract class Population<
                     this.createOrganism(new Genome(this.genOptions), this.orgOptions));
             }
         });
+    }
+
+    public shutdown(): Subscription {
+        return this.evaluations
+            .do((e) => this.generation += 1)
+            .do((e) => {
+                if (this.popOptions.progress &&
+                    this.generation % (this.popOptions.generations / 10) === 0) {
+                    // tslint:disable-next-line:no-console
+                    console.log(`
+                        (${this.generation / this.popOptions.generations * 100}%) Generation: ${this.generation}
+                            best: ${this.best.value.fitness}
+                    `);
+                }
+            })
+            .skip(this.popOptions.generations)
+            .take(1)
+            .do((e) => {
+                if (this.popOptions.progress) {
+                    // tslint:disable-next-line:no-console
+                    console.log(`Evolution completed after ${this.generation - 1} generations`);
+                }
+
+            })
+            .subscribe((e) => this.subs.unsubscribe());
     }
 
     private killAllOrganisms(): void {
