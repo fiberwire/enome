@@ -57,4 +57,11 @@ pop.best
         const list = b.phenotype;
         const sum = b.data[0].sum;
         const fit = b.fitness;
+
+        // tslint:disable-next-line:no-console
+        console.log(`new best: {
+             list: ${list},
+             sum: ${sum},
+             fitness: ${fit}
+            }`);
     });
