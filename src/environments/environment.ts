@@ -37,8 +37,9 @@ export abstract class Environment<EnvStateType>{
 
     // choose a random interaction to use as this.state
     private interaction(): Subscription {
-        return this.interactions
+        return this.interactions.asObservable()
             .filter((i) => i.interaction > this.state.value.interaction) // only accept new interactions
+            .filter((i) => i.interaction !== undefined)
             .bufferTime(1 / this.options.interactionRate) // buffer new interactions periodically
             .map((interactions) => _.shuffle(interactions)[0]) // choose a random interaction from buffer
             .subscribe((i) => {
