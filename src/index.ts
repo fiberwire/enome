@@ -5,6 +5,7 @@ import { MutateOp } from "./enums/mutate-op";
 import { Environment } from "./environments/environment";
 import { Gene } from "./genotypes/gene";
 import { Genome } from "./genotypes/genome";
+import { IAgentUpdate } from "./interfaces/agent-update";
 import { IEvaluation } from "./interfaces/evaluation";
 import { IStateUpdate } from "./interfaces/state-update";
 import { clone } from "./operators/clone";
@@ -84,6 +85,7 @@ export {
 export {
     IEvaluation,
     IStateUpdate,
+    IAgentUpdate,
 };
 
 // evolution stuff
