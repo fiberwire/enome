@@ -102,14 +102,24 @@ export abstract class Population<
 
     // spawns and evenly distributes organisms across all envs
     public populate(): Subscription {
-        return this.envs.subscribe((envs) => {
-            this.killAllOrganisms();
 
-            while (this.organisms.value.length < this.popOptions.size) {
-                this.organisms.push(
-                    this.createOrganism(new Genome(this.genOptions), this.orgOptions));
-            }
-        });
+        const interact = this.organisms
+            .subscribeToPush((org) => {
+                const env = this.nextEnv;
+                org.interactWithEnvironment(env.state.asObservable(), env.interactions, this.evaluations);
+            });
+
+        const populate = this.envs
+            .subscribe((envs) => {
+                this.killAllOrganisms();
+
+                while (this.organisms.value.length < this.popOptions.size) {
+                    this.organisms.push(
+                        this.createOrganism(new Genome(this.genOptions), this.orgOptions));
+                }
+            });
+
+        return interact.add(populate);
     }
 
     public shutdown(): Subscription {
@@ -173,8 +183,8 @@ export abstract class Population<
                     [
                         this.popOptions.weights.mutate,
                         this.popOptions.weights.reproduce,
-                        this.popOptions.weights.randomize],
-                )
+                        this.popOptions.weights.randomize,
+                    ])
                     .next(e);
             });
     }
