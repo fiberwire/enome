@@ -1,5 +1,5 @@
 
-export interface IStateUpdate<EnvStateType> {
+export interface IStateUpdate<StateType> {
     interaction: number;
-    state: EnvStateType;
+    state: StateType;
 }
