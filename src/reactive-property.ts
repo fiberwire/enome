@@ -25,38 +25,38 @@ export class ReactiveProperty<T> {
     }
 
     public filter(selector: (value: T) => boolean): Observable<T> {
-        return this.subject.filter(selector);
+        return this.subject.asObservable().filter(selector);
     }
 
     public map<U>(selector: (value: T) => U) {
-        return this.subject.map(selector);
+        return this.subject.asObservable().map(selector);
     }
 
     public throttleTime(dueTime: number, scheduler?: IScheduler) {
-        return this.subject.throttleTime(dueTime, scheduler);
+        return this.subject.asObservable().throttleTime(dueTime, scheduler);
     }
 
     public throttle<TTimeout>(selector: (value: T) => Observable<TTimeout>) {
-        return this.subject.throttle(selector);
+        return this.subject.asObservable().throttle(selector);
     }
 
     public bufferTime(timeSpan: number, scheduler?: IScheduler): Observable<T[]> {
-        return this.subject.bufferTime(timeSpan, scheduler);
+        return this.subject.asObservable().bufferTime(timeSpan, scheduler);
     }
 
     public bufferCount(count: number, skip?: number): Observable<T[]> {
-        return this.subject.bufferCount(count, skip);
+        return this.subject.asObservable().bufferCount(count, skip);
     }
 
     public bufferTimeCount(timeSpan: number, count: number, skip?: number, scheduler?: IScheduler): Observable<T[]> {
-        const timeBuffer = this.subject.bufferTime(timeSpan, scheduler);
-        const countBuffer = this.subject.bufferCount(count, skip);
+        const timeBuffer = this.subject.asObservable().bufferTime(timeSpan, scheduler);
+        const countBuffer = this.subject.asObservable().bufferCount(count, skip);
 
         return timeBuffer.race(countBuffer);
     }
 
     public asObservable(): Observable<T> {
-        return this.subject;
+        return this.subject.asObservable();
     }
 
     public asObserver(): Observer<T> {
