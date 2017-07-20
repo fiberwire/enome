@@ -5,35 +5,20 @@ import { ISumEnvState } from "./sum-env-state";
 import { SumEnv } from "./sum-environment";
 import { ISumGenomeOptions } from "./sum-genome-options";
 import { SumOrganism } from "./sum-organism";
+import { ISumOrganismOptions } from "./sum-organism-options";
 import { ISumPopOptions } from "./sum-pop-options";
 
 import * as _ from "lodash";
 
 export class SumPopulation extends Population<
-    ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState> {
+    ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumEnvState> {
     public createOrganism(
-        pop: Population<ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState>,
+        pop: Population<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumEnvState>,
         env: Environment<ISumEnvState>,
         genome: Genome<ISumGenomeOptions>,
-        options: IOrganismOptions):
-        Organism<ISumGenomeOptions, ISumPopOptions, ISumData, number[], ISumEnvState> {
-            return new SumOrganism(
-                pop.toEvaluate,
-                env.state.asObservable(),
-                env.interactions,
-                new Genome(pop.genOptions),
-                options);
-    }
-
-    public evaluate(organism: SumOrganism): IEvaluation<ISumGenomeOptions, ISumData, number[]> {
-        const difference = this.popOptions.target - organism.data.value[0].sum;
-        const fitness = Math.abs(difference);
-        return {
-            data: organism.data.value,
-            fitness,
-            genotype: organism.genotype.value,
-            phenotype: organism.phenotype,
-        };
+        options: ISumOrganismOptions):
+        Organism<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumEnvState> {
+        return new SumOrganism(new Genome(pop.genOptions), options);
     }
 
     public mutate(

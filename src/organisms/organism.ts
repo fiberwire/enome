@@ -1,6 +1,7 @@
-import { Observable, Subject, Subscription } from "rxjs";
+import { Observable, Observer, Subject, Subscription } from "rxjs";
 
 import * as _ from "lodash";
+import { IScheduler, Scheduler } from "rxjs/Scheduler";
 import {
     Environment,
     Genome,
@@ -17,81 +18,59 @@ import {
 export abstract class Organism<
     GenType extends IGenomeOptions,
     PopType extends IPopulationOptions,
+    OrgOptions extends IOrganismOptions,
     DataType, PhenoType, EnvStateType> {
-
-    public data: ReactiveCollection<DataType> = new ReactiveCollection<DataType>();
-    public genotype: ReactiveProperty<Genome<GenType>>;
     public phenotype: PhenoType;
 
-    private subs: Subscription = new Subscription();
-
-    // creates a new environment state by interacting with it
-    // then updates environment state with the mutated state
-    private interactions: Subject<IStateUpdate<EnvStateType>> = new Subject();
-
-    private interaction: ReactiveProperty<number> = new ReactiveProperty<number>(0);
-
-    // collects data from the environment state
-    private get observations(): Observable<DataType> {
-        return this.interactions.asObservable()
-            .map(this.observe);
-    }
-
-    constructor(toEvaluate: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>,
-                state: Observable<IStateUpdate<EnvStateType>>,
-                env: Subject<IStateUpdate<EnvStateType>>,
-                genome: Genome<GenType>,
-                public options: IOrganismOptions) {
-        this.genotype = new ReactiveProperty(genome);
-        this.phenotype = this.createPhenotype(this.genotype.value);
-
-        this.subs.add(this.interactWithState(state));
-        this.subs.add(this.interactWithEnvironment(env));
-        this.subs.add(this.collectData());
-        this.subs.add(this.queueForEvaluation(toEvaluate));
+    constructor(public genotype: Genome<GenType>,
+                public options: OrgOptions) {
+        this.phenotype = this.createPhenotype(this.genotype);
     }
 
     public abstract observe(interaction: IStateUpdate<EnvStateType>): DataType;
 
-    public abstract interact(state: IStateUpdate<EnvStateType>, phenotype: PhenoType):
-        IStateUpdate<EnvStateType>;
+    public abstract interact(
+        state: IStateUpdate<EnvStateType>, phenotype: PhenoType): IStateUpdate<EnvStateType>;
+
+    public abstract evaluate(
+        data: DataType[], genotype: Genome<GenType>, phenotype: PhenoType): IEvaluation<GenType, DataType, PhenoType>;
 
     public abstract createPhenotype(genome: Genome<GenType>): PhenoType;
 
-    public unsubscribe() {
-        this.subs.unsubscribe();
+    public interactWithEnvironment(
+        state: Observable<IStateUpdate<EnvStateType>>,
+        env: Observer<IStateUpdate<EnvStateType>>,
+        evaluate: Observer<IEvaluation<GenType, DataType, PhenoType>>): Subscription {
+        const interactions = this.interactWithState(state);
+        const observations = this.observeInteractions(interactions);
+        const evaluations = this.evaluateObservations(observations);
+
+        return [
+            interactions.subscribe(env), // send interactions to environment
+            evaluations.subscribe(evaluate), // send evaluations to population
+        ].reduce((sub, s) => sub.add(s));
     }
 
-    private interactWithEnvironment(
-        env: Subject<IStateUpdate<EnvStateType>>,
-    ): Subscription {
-        return this.interactions
-            .subscribe((i) => {
-                env.next(i);
-            });
-    }
-
-    private interactWithState(state: Observable<IStateUpdate<EnvStateType>>): Subscription {
+    private interactWithState(state: Observable<IStateUpdate<EnvStateType>>): Observable<IStateUpdate<EnvStateType>> {
         return state
-            .map((s) => this.interact(s, this.phenotype))
-            .do((i) => this.interaction.value += 1)
-            .subscribe((i) => {
-                this.interactions.next(i);
-            });
+            .map((s) => this.interact(s, this.phenotype));
     }
 
     // adds observations to this.data
-    private collectData(): Subscription {
-        return this.observations
-            .subscribe((o) => this.data.push(o));
+    private observeInteractions(interactions: Observable<IStateUpdate<EnvStateType>>): Observable<DataType> {
+        return interactions
+            .map((s) => this.observe(s));
     }
 
-    // buffers collected data based on lifespan or iterations
-    // queues self for evaluation by Population
-    private queueForEvaluation(
-        toEvaluate: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>): Subscription {
-        return this.data
-            .bufferTimeCount(this.options.lifeSpan, this.options.interactions)
-            .subscribe((data) => toEvaluate.next(this));
+    private evaluateObservations(
+        observations: Observable<DataType>,
+    ): Observable<IEvaluation<GenType, DataType, PhenoType>> {
+        const time: Observable<DataType[]> = observations.bufferTime(this.options.lifeSpan);
+        const count: Observable<DataType[]> = observations.bufferCount(this.options.interactions);
+        const timeCount: Observable<DataType[]> = time.race(count);
+
+        return timeCount
+            .map((data: DataType[]) => this.evaluate(data, this.genotype, this.phenotype))
+            .take(1);
     }
 }

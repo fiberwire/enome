@@ -25,10 +25,8 @@ const chance = new Chance();
 export abstract class Population<
     GenType extends IGenomeOptions,
     PopType extends IPopulationOptions,
+    OrgType extends IOrganismOptions,
     DataType, PhenoType, EnvStateType> {
-
-    public toEvaluate: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> =
-    new Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
 
     public toMutate: Subject<IEvaluation<GenType, DataType, PhenoType>> =
     new Subject<IEvaluation<GenType, DataType, PhenoType>>();
@@ -39,8 +37,8 @@ export abstract class Population<
     public toReproduce: Subject<IEvaluation<GenType, DataType, PhenoType>> =
     new Subject<IEvaluation<GenType, DataType, PhenoType>>();
 
-    public toKill: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> =
-    new Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
+    public toKill: Subject<Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>> =
+    new Subject<Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>>();
 
     public avgFitness: ReactiveProperty<number> = new ReactiveProperty<number>();
     public best: ReactiveProperty<IEvaluation<GenType, DataType, PhenoType>> =
@@ -50,7 +48,7 @@ export abstract class Population<
     new ReactiveCollection<IEvaluation<GenType, DataType, PhenoType>>();
 
     public envs: ReactiveCollection<Environment<EnvStateType>>;
-    public organisms: ReactiveCollection<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
+    public organisms: ReactiveCollection<Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>>;
 
     private evaluations: Subject<IEvaluation<GenType, DataType, PhenoType>> =
     new Subject<IEvaluation<GenType, DataType, PhenoType>>();
@@ -66,23 +64,25 @@ export abstract class Population<
     constructor(
         public genOptions: GenType,
         public popOptions: PopType,
-        public orgOptions: IOrganismOptions,
+        public orgOptions: OrgType,
         ...envs: Array<Environment<EnvStateType>>) {
         this.envs = new ReactiveCollection<Environment<EnvStateType>>(envs);
-        this.organisms = new ReactiveCollection<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
+        this.organisms =
+            new ReactiveCollection<Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>>();
 
-        this.subs.add(this.populate());
-        this.subs.add(this.updateGenotype());
-        this.subs.add(this.updateAvgFitness());
-        this.subs.add(this.updateBest());
-        this.subs.add(this.updateTop());
-        this.subs.add(this.evaluateData());
-        this.subs.add(this.mutateGenotype());
-        this.subs.add(this.reproduceGenotype());
-        this.subs.add(this.randomizeGenotype());
-        this.subs.add(this.killOrganisms());
+        this.subs = [
+            this.populate(),
+            this.updateGenotype(),
+            this.updateAvgFitness(),
+            this.updateBest(),
+            this.updateTop(),
+            this.mutateGenotype(),
+            this.reproduceGenotype(),
+            this.randomizeGenotype(),
+            this.killOrganisms(),
+        ].reduce((sub, s) => sub.add(s));
 
-        this.toEvaluate.asObservable()
+        this.evaluations
             .do((e) => this.generation += 1)
             .do((e) => {
                 if (this.popOptions.progress &&
@@ -107,21 +107,16 @@ export abstract class Population<
 
     }
 
-    // evaluate organism's performance based on the data it collected.
-    public abstract evaluate(
-        organism: Organism<GenType, PopType, DataType, PhenoType, EnvStateType>,
-    ): IEvaluation<GenType, DataType, PhenoType>;
-
     // mutate the organism based on evaluation
     public abstract mutate(
         evaluation: IEvaluation<GenType, DataType, PhenoType>): Genome<GenType>;
 
     // create an organism to inject into environment.
     public abstract createOrganism(
-        pop: Population<GenType, PopType, DataType, PhenoType, EnvStateType>,
+        pop: Population<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>,
         env: Environment<EnvStateType>,
         genome: Genome<GenType>,
-        options: IOrganismOptions): Organism<GenType, PopType, DataType, PhenoType, EnvStateType>;
+        options: IOrganismOptions): Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>;
 
     // spawns and evenly distributes organisms across all envs
     public populate(): Subscription {
@@ -137,8 +132,7 @@ export abstract class Population<
 
     private killAllOrganisms(): void {
         this.organisms.forEach((o) => {
-            o.unsubscribe();
-            o = null;
+            this.killOrganism(o);
         });
         this.organisms.value = [];
     }
@@ -148,20 +142,9 @@ export abstract class Population<
             .subscribe((o) => this.killOrganism(o));
     }
 
-    private killOrganism(org: Organism<GenType, PopType, DataType, PhenoType, EnvStateType>): void {
+    private killOrganism(org: Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>): void {
         this.organisms.remove(org);
-        org.unsubscribe();
         org = null;
-    }
-
-    // evaluate organism data as it comes in
-    private evaluateData(): Subscription {
-        return this.toEvaluate.asObservable()
-            .filter((org) => org.data.value.length > 0)
-            .subscribe((org) => {
-                this.evaluations.next(this.evaluate(org));
-                this.toKill.next(org);
-            });
     }
 
     // update genotypes as they are evaluated
@@ -299,7 +282,7 @@ export abstract class Population<
                         this.top.mapCollection((t) => t.genotype).value);
                 } else {
                     offspring = reproduceManyToOne(
-                        this.organisms.mapCollection((t) => t.genotype.value).value);
+                        this.organisms.mapCollection((t) => t.genotype).value);
                 }
 
                 this.organisms.push(this.createOrganism(this, this.nextEnv, offspring, this.orgOptions));

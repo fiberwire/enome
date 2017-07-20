@@ -1,6 +1,7 @@
 import { FitnessObjective, GenomeRefill, IOrganismOptions, MutateOp } from "../../index";
 import { SumEnv } from "./sum-environment";
 import { ISumGenomeOptions } from "./sum-genome-options";
+import { ISumOrganismOptions } from "./sum-organism-options";
 import { ISumPopOptions } from "./sum-pop-options";
 import { SumPopulation } from "./sum-population";
 
@@ -24,7 +25,6 @@ const popOptions: ISumPopOptions = {
     objective: FitnessObjective.minimize,
     progress: true,
     size: 1,
-    target: 150,
     topPercent: .25,
     weights: {
         mutate: 15,
@@ -33,9 +33,10 @@ const popOptions: ISumPopOptions = {
     },
 };
 
-const orgOptions: IOrganismOptions = {
+const orgOptions: ISumOrganismOptions = {
     interactions: 1,
     lifeSpan: 10,
+    target: 150,
 };
 
 const envs = _.range(popOptions.size)
