@@ -13,12 +13,10 @@ import * as _ from "lodash";
 export class SumPopulation extends Population<
     ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumEnvState> {
     public createOrganism(
-        pop: Population<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumEnvState>,
-        env: Environment<ISumEnvState>,
         genome: Genome<ISumGenomeOptions>,
         options: ISumOrganismOptions):
         Organism<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumEnvState> {
-        return new SumOrganism(new Genome(pop.genOptions), options);
+        return new SumOrganism(genome, options);
     }
 
     public mutate(

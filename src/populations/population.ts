@@ -113,10 +113,9 @@ export abstract class Population<
 
     // create an organism to inject into environment.
     public abstract createOrganism(
-        pop: Population<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>,
-        env: Environment<EnvStateType>,
         genome: Genome<GenType>,
-        options: IOrganismOptions): Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>;
+        options: IOrganismOptions,
+    ): Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>;
 
     // spawns and evenly distributes organisms across all envs
     public populate(): Subscription {
@@ -125,7 +124,7 @@ export abstract class Population<
 
             while (this.organisms.value.length < this.popOptions.size) {
                 this.organisms.push(
-                    this.createOrganism(this, this.nextEnv, new Genome(this.genOptions), this.orgOptions));
+                    this.createOrganism(new Genome(this.genOptions), this.orgOptions));
             }
         });
     }
@@ -266,7 +265,7 @@ export abstract class Population<
         return this.toMutate
             .subscribe((e) => {
                 const g = this.mutate(e);
-                this.organisms.push(this.createOrganism(this, this.nextEnv, g, this.orgOptions));
+                this.organisms.push(this.createOrganism(g, this.orgOptions));
             });
     }
 
@@ -285,7 +284,7 @@ export abstract class Population<
                         this.organisms.mapCollection((t) => t.genotype).value);
                 }
 
-                this.organisms.push(this.createOrganism(this, this.nextEnv, offspring, this.orgOptions));
+                this.organisms.push(this.createOrganism(offspring, this.orgOptions));
             });
     }
 
@@ -293,7 +292,7 @@ export abstract class Population<
         return this.toRandomize
             .subscribe((e) => {
                 const g = new Genome(this.genOptions);
-                this.organisms.push(this.createOrganism(this, this.nextEnv, g, this.orgOptions));
+                this.organisms.push(this.createOrganism(g, this.orgOptions));
             });
     }
 }
