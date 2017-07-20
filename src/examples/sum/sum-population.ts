@@ -25,29 +25,31 @@ export class SumPopulation extends Population<
                 options);
     }
 
-    public evaluate(organism: SumOrganism): IEvaluation<SumOrganism, number[]> {
+    public evaluate(organism: SumOrganism): IEvaluation<ISumGenomeOptions, ISumData, number[]> {
         const difference = this.popOptions.target - organism.data.value[0].sum;
         const fitness = Math.abs(difference);
         return {
+            data: organism.data.value,
             fitness,
-            organism,
+            genotype: organism.genotype.value,
+            phenotype: organism.phenotype,
         };
     }
 
     public mutate(
-        evaluation: IEvaluation<SumOrganism, number[]>,
+        evaluation: IEvaluation<ISumGenomeOptions, ISumData, number[]>,
     ): Genome<ISumGenomeOptions> {
         switch (this.popOptions.objective) {
             case FitnessObjective.minimize:
                 if (evaluation.fitness <= this.avgFitness.value) {
                     return mutate(
-                        evaluation.organism.genotype.value,
+                        evaluation.genotype,
                         this.popOptions.mutate.mutateChance * .5,
                         this.popOptions.mutate.mutateOp,
                     );
                 } else {
                     return mutate(
-                        evaluation.organism.genotype.value,
+                        evaluation.genotype,
                         this.popOptions.mutate.mutateChance * .5,
                         this.popOptions.mutate.mutateOp,
                     );
@@ -57,13 +59,13 @@ export class SumPopulation extends Population<
             case FitnessObjective.maximize:
                 if (evaluation.fitness >= this.avgFitness.value) {
                     return mutate(
-                        evaluation.organism.genotype.value,
+                        evaluation.genotype,
                         this.popOptions.mutate.mutateChance * .5,
                         this.popOptions.mutate.mutateOp,
                     );
                 } else {
                     return mutate(
-                        evaluation.organism.genotype.value,
+                        evaluation.genotype,
                         this.popOptions.mutate.mutateChance * .5,
                         this.popOptions.mutate.mutateOp,
                     );

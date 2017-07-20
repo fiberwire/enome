@@ -50,10 +50,10 @@ const pop = new SumPopulation(
 
 pop.best
     .filter((b) => b !== undefined && b !== null)
-    .filter((b) => b.organism.data.value != null)
-    .filter((b) => b.organism.data.value.length > 0)
+    .filter((b) => b.data != null)
+    .filter((b) => b.data.length > 0)
     .subscribe((b) => {
-        const list = b.organism.phenotype;
-        const sum = b.organism.data.value[0].sum;
+        const list = b.phenotype;
+        const sum = b.data[0].sum;
         const fit = b.fitness;
     });

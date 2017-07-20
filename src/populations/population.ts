@@ -30,33 +30,30 @@ export abstract class Population<
     public toEvaluate: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> =
     new Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
 
-    public toMutate: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
-    new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+    public toMutate: Subject<IEvaluation<GenType, DataType, PhenoType>> =
+    new Subject<IEvaluation<GenType, DataType, PhenoType>>();
 
-    public toRandomize: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
-    new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+    public toRandomize: Subject<IEvaluation<GenType, DataType, PhenoType>> =
+    new Subject<IEvaluation<GenType, DataType, PhenoType>>();
 
-    public toReproduce: Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
-    new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+    public toReproduce: Subject<IEvaluation<GenType, DataType, PhenoType>> =
+    new Subject<IEvaluation<GenType, DataType, PhenoType>>();
+
+    public toKill: Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>> =
+    new Subject<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>();
 
     public avgFitness: ReactiveProperty<number> = new ReactiveProperty<number>();
-    public best: ReactiveProperty<IEvaluation<
-    Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
-    new ReactiveProperty<IEvaluation<
-        Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+    public best: ReactiveProperty<IEvaluation<GenType, DataType, PhenoType>> =
+    new ReactiveProperty<IEvaluation<GenType, DataType, PhenoType>>();
 
-    public top: ReactiveCollection<IEvaluation<
-    Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>> =
-    new ReactiveCollection<IEvaluation<
-        Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+    public top: ReactiveCollection<IEvaluation<GenType, DataType, PhenoType>> =
+    new ReactiveCollection<IEvaluation<GenType, DataType, PhenoType>>();
 
     public envs: ReactiveCollection<Environment<EnvStateType>>;
     public organisms: ReactiveCollection<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>>;
 
-    private evaluations: Subject<
-    IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>,
-    PhenoType>> =
-    new Subject<IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>>();
+    private evaluations: Subject<IEvaluation<GenType, DataType, PhenoType>> =
+    new Subject<IEvaluation<GenType, DataType, PhenoType>>();
 
     private subs: Subscription = new Subscription();
 
@@ -83,8 +80,9 @@ export abstract class Population<
         this.subs.add(this.mutateGenotype());
         this.subs.add(this.reproduceGenotype());
         this.subs.add(this.randomizeGenotype());
+        this.subs.add(this.killOrganisms());
 
-        this.toEvaluate
+        this.toEvaluate.asObservable()
             .do((e) => this.generation += 1)
             .do((e) => {
                 if (this.popOptions.progress &&
@@ -112,13 +110,11 @@ export abstract class Population<
     // evaluate organism's performance based on the data it collected.
     public abstract evaluate(
         organism: Organism<GenType, PopType, DataType, PhenoType, EnvStateType>,
-    ): IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>;
+    ): IEvaluation<GenType, DataType, PhenoType>;
 
     // mutate the organism based on evaluation
     public abstract mutate(
-        evaluation: IEvaluation<
-            Organism<GenType, PopType, DataType, PhenoType, EnvStateType>,
-            PhenoType>): Genome<GenType>;
+        evaluation: IEvaluation<GenType, DataType, PhenoType>): Genome<GenType>;
 
     // create an organism to inject into environment.
     public abstract createOrganism(
@@ -130,7 +126,7 @@ export abstract class Population<
     // spawns and evenly distributes organisms across all envs
     public populate(): Subscription {
         return this.envs.subscribe((envs) => {
-            this.killOrganisms();
+            this.killAllOrganisms();
 
             while (this.organisms.value.length < this.popOptions.size) {
                 this.organisms.push(
@@ -139,7 +135,7 @@ export abstract class Population<
         });
     }
 
-    private killOrganisms(): void {
+    private killAllOrganisms(): void {
         this.organisms.forEach((o) => {
             o.unsubscribe();
             o = null;
@@ -147,13 +143,24 @@ export abstract class Population<
         this.organisms.value = [];
     }
 
+    private killOrganisms(): Subscription {
+        return this.toKill
+            .subscribe((o) => this.killOrganism(o));
+    }
+
+    private killOrganism(org: Organism<GenType, PopType, DataType, PhenoType, EnvStateType>): void {
+        this.organisms.remove(org);
+        org.unsubscribe();
+        org = null;
+    }
+
     // evaluate organism data as it comes in
     private evaluateData(): Subscription {
-        return this.toEvaluate
+        return this.toEvaluate.asObservable()
             .filter((org) => org.data.value.length > 0)
             .subscribe((org) => {
-                // org.unsubscribe();
                 this.evaluations.next(this.evaluate(org));
+                this.toKill.next(org);
             });
     }
 
@@ -228,7 +235,7 @@ export abstract class Population<
     }
 
     private updateBest(): Subscription {
-        return this.evaluations
+        return this.evaluations.asObservable()
             .do((e) => { // set as best if there is no current best
                 if (this.best.value === undefined) {
                     this.best.value = e;
@@ -245,13 +252,12 @@ export abstract class Population<
                 }
             })
             // .do((e) => console.log(`new best: ${e.fitness} (old best: ${this.best.value.fitness})`))
-            .map(cloneEvaluation)
-            .do((e) => e.organism.unsubscribe())
+            .map((e) => cloneEvaluation(e))
             .subscribe((e) => this.best.value = e);
     }
 
     private updateTop(): Subscription {
-        return this.evaluations
+        return this.evaluations.asObservable()
             .filter((e) => this.best.value != null && this.best.value !== undefined)
             .filter((e) => {
                 switch (this.popOptions.objective) {
@@ -277,32 +283,23 @@ export abstract class Population<
         return this.toMutate
             .subscribe((e) => {
                 const g = this.mutate(e);
-
-                if (this.organisms.value.length >= this.popOptions.size) {
-                    this.organisms.remove(e.organism);
-                }
-
                 this.organisms.push(this.createOrganism(this, this.nextEnv, g, this.orgOptions));
             });
     }
 
     private reproduceGenotype(): Subscription {
-        return this.toReproduce
+        return this.toReproduce.asObservable()
             .filter((e) => this.organisms.value.length > 0)
             .subscribe((e) => {
 
                 let offspring: Genome<GenType>;
 
-                if (this.top.value.length <= 0) {
+                if (this.top.value.length > 0) {
                     offspring = reproduceManyToOne(
-                        this.organisms.mapCollection((t) => t.genotype.value).value);
+                        this.top.mapCollection((t) => t.genotype).value);
                 } else {
                     offspring = reproduceManyToOne(
-                        this.top.mapCollection((t) => t.organism.genotype.value).value);
-                }
-
-                if (this.organisms.value.length >= this.popOptions.size) {
-                    this.organisms.remove(e.organism);
+                        this.organisms.mapCollection((t) => t.genotype.value).value);
                 }
 
                 this.organisms.push(this.createOrganism(this, this.nextEnv, offspring, this.orgOptions));
@@ -313,11 +310,6 @@ export abstract class Population<
         return this.toRandomize
             .subscribe((e) => {
                 const g = new Genome(this.genOptions);
-
-                if (this.organisms.value.length >= this.popOptions.size) {
-                    this.organisms.remove(e.organism);
-                }
-
                 this.organisms.push(this.createOrganism(this, this.nextEnv, g, this.orgOptions));
             });
     }

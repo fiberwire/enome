@@ -4,7 +4,7 @@ import { IEvaluation, IGenomeOptions, IPopulationOptions, Organism } from "../in
 
 export function cloneEvaluation<
 GenType extends IGenomeOptions, PopType extends IPopulationOptions, DataType, PhenoType, EnvStateType>(
-    evaluation: IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType>):
-    IEvaluation<Organism<GenType, PopType, DataType, PhenoType, EnvStateType>, PhenoType> {
+    evaluation: IEvaluation<GenType, DataType, PhenoType>):
+    IEvaluation<GenType, DataType, PhenoType> {
     return _.cloneDeep(evaluation);
 }

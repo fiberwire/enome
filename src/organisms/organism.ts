@@ -18,7 +18,8 @@ export abstract class Organism<
     GenType extends IGenomeOptions,
     PopType extends IPopulationOptions,
     DataType, PhenoType, EnvStateType> {
-    public data: ReactiveCollection<DataType>;
+
+    public data: ReactiveCollection<DataType> = new ReactiveCollection<DataType>();
     public genotype: ReactiveProperty<Genome<GenType>>;
     public phenotype: PhenoType;
 
@@ -32,7 +33,7 @@ export abstract class Organism<
 
     // collects data from the environment state
     private get observations(): Observable<DataType> {
-        return this.interactions
+        return this.interactions.asObservable()
             .map(this.observe);
     }
 
@@ -43,13 +44,11 @@ export abstract class Organism<
                 public options: IOrganismOptions) {
         this.genotype = new ReactiveProperty(genome);
         this.phenotype = this.createPhenotype(this.genotype.value);
-        this.data = new ReactiveCollection<DataType>();
 
         this.subs.add(this.interactWithState(state));
         this.subs.add(this.interactWithEnvironment(env));
         this.subs.add(this.collectData());
         this.subs.add(this.queueForEvaluation(toEvaluate));
-
     }
 
     public abstract observe(interaction: IStateUpdate<EnvStateType>): DataType;
