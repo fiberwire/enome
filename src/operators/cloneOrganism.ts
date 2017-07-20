@@ -5,8 +5,8 @@ export function cloneOrganism<
     GenType extends IGenomeOptions,
     PopType extends IPopulationOptions,
     OrgType extends IOrganismOptions,
-    DataType, PhenoType, EnvStateType>(
-    org: Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>):
-    Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType> {
+    DataType, PhenoType, AgentStateType, EnvStateType>(
+    org: Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>):
+    Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType> {
     return _.cloneDeep(org);
 }

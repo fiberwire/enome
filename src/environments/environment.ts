@@ -1,5 +1,6 @@
 import { Observable, Subject, Subscription } from "rxjs";
 import {
+    IAgentUpdate,
     IEnvironmentOptions,
     IGenomeOptions,
     IPopulationOptions,
@@ -11,24 +12,24 @@ import {
 
 import * as _ from "lodash";
 
-export abstract class Environment<EnvStateType>{
+export abstract class Environment<StateType>{
 
-    public state: ReactiveProperty<IStateUpdate<EnvStateType>>;
+    public state: ReactiveProperty<IStateUpdate<StateType>>;
 
-    public interactions: Subject<IStateUpdate<EnvStateType>>;
+    public interactions: Subject<IAgentUpdate<StateType>>;
 
     private subs: Subscription = new Subscription();
 
     constructor(public options: IEnvironmentOptions) {
-        this.interactions = new Subject<IStateUpdate<EnvStateType>>();
+        this.interactions = new Subject<IAgentUpdate<StateType>>();
 
-        this.state = new ReactiveProperty<IStateUpdate<EnvStateType>>(this.initialState);
+        this.state = new ReactiveProperty<IStateUpdate<StateType>>(this.initialState);
 
         this.subs.add(this.interaction());
     }
 
     // The beginning state of the Environment
-    public abstract get initialState(): IStateUpdate<EnvStateType>
+    public abstract get initialState(): IStateUpdate<StateType>
 
     // resets the environment back to a fresh state
     public reset(): void {

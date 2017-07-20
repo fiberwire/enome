@@ -26,7 +26,7 @@ export abstract class Population<
     GenType extends IGenomeOptions,
     PopType extends IPopulationOptions,
     OrgType extends IOrganismOptions,
-    DataType, PhenoType, EnvStateType> {
+    DataType, PhenoType, AgentStateType, EnvStateType> {
 
     public toMutate: Subject<IEvaluation<GenType, DataType, PhenoType>> =
     new Subject<IEvaluation<GenType, DataType, PhenoType>>();
@@ -37,10 +37,11 @@ export abstract class Population<
     public toReproduce: Subject<IEvaluation<GenType, DataType, PhenoType>> =
     new Subject<IEvaluation<GenType, DataType, PhenoType>>();
 
-    public toKill: Subject<Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>> =
-    new Subject<Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>>();
+    public toKill: Subject<Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>> =
+    new Subject<Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>>();
 
     public avgFitness: ReactiveProperty<number> = new ReactiveProperty<number>();
+
     public best: ReactiveProperty<IEvaluation<GenType, DataType, PhenoType>> =
     new ReactiveProperty<IEvaluation<GenType, DataType, PhenoType>>();
 
@@ -48,7 +49,10 @@ export abstract class Population<
     new ReactiveCollection<IEvaluation<GenType, DataType, PhenoType>>();
 
     public envs: ReactiveCollection<Environment<EnvStateType>>;
-    public organisms: ReactiveCollection<Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>>;
+
+    public organisms: ReactiveCollection<
+    Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>
+    >;
 
     private evaluations: Subject<IEvaluation<GenType, DataType, PhenoType>> =
     new Subject<IEvaluation<GenType, DataType, PhenoType>>();
@@ -68,7 +72,9 @@ export abstract class Population<
         ...envs: Array<Environment<EnvStateType>>) {
         this.envs = new ReactiveCollection<Environment<EnvStateType>>(envs);
         this.organisms =
-            new ReactiveCollection<Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>>();
+            new ReactiveCollection<
+                Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>
+                >();
 
         this.subs = [
             this.populate(),
@@ -92,7 +98,7 @@ export abstract class Population<
     public abstract createOrganism(
         genome: Genome<GenType>,
         options: IOrganismOptions,
-    ): Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>;
+    ): Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>;
 
     // spawns and evenly distributes organisms across all envs
     public populate(): Subscription {
@@ -143,7 +149,8 @@ export abstract class Population<
             .subscribe((o) => this.killOrganism(o));
     }
 
-    private killOrganism(org: Organism<GenType, PopType, OrgType, DataType, PhenoType, EnvStateType>): void {
+    private killOrganism(
+        org: Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>): void {
         this.organisms.remove(org);
         org = null;
     }

@@ -1,5 +1,6 @@
 import { FitnessObjective } from "../../enums/fitness-objective";
 import { Environment, Genome, IEvaluation, IOrganismOptions, mutate, Organism, Population } from "../../index";
+import { ISumAgentState } from "./sum-agent-state";
 import { ISumData } from "./sum-data";
 import { ISumEnvState } from "./sum-env-state";
 import { SumEnv } from "./sum-environment";
@@ -11,11 +12,12 @@ import { ISumPopOptions } from "./sum-pop-options";
 import * as _ from "lodash";
 
 export class SumPopulation extends Population<
-    ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumEnvState> {
+    ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumAgentState, ISumEnvState> {
     public createOrganism(
         genome: Genome<ISumGenomeOptions>,
         options: ISumOrganismOptions):
-        Organism<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumEnvState> {
+        Organism<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions,
+        ISumData, number[], ISumAgentState, ISumEnvState> {
         return new SumOrganism(genome, options);
     }
 

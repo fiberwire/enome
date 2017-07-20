@@ -1,4 +1,5 @@
-import { Genome, IEvaluation, IStateUpdate, Organism } from "../../index";
+import { Genome, IAgentUpdate, IEvaluation, IStateUpdate, Organism } from "../../index";
+import { ISumAgentState } from "./sum-agent-state";
 import { ISumData } from "./sum-data";
 import { ISumEnvState } from "./sum-env-state";
 import { ISumGenomeOptions } from "./sum-genome-options";
@@ -8,15 +9,24 @@ import { ISumPopOptions } from "./sum-pop-options";
 import * as _ from "lodash";
 
 export class SumOrganism extends
-    Organism<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumEnvState> {
+    Organism<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumAgentState, ISumEnvState> {
+
+    public perceive(state: IStateUpdate<ISumEnvState>): IStateUpdate<ISumAgentState> {
+        return state;
+    }
 
     public createPhenotype(genome: Genome<ISumGenomeOptions>): number[] {
         return _.range(genome.options.length)
             .map((i) => genome.g.int(genome.options.min, genome.options.max));
     }
 
-    public interact(state: IStateUpdate<ISumEnvState>, phenotype: number[]): IStateUpdate<ISumEnvState> {
+    public interact(
+        state: IStateUpdate<ISumEnvState>,
+        phenotype: number[],
+        agentID: string = this.genotype.id,
+    ): IAgentUpdate<ISumEnvState> {
         return {
+            agentID,
             interaction: state.interaction + 1,
             state:
             {

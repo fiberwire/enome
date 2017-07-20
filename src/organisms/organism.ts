@@ -5,6 +5,7 @@ import { IScheduler, Scheduler } from "rxjs/Scheduler";
 import {
     Environment,
     Genome,
+    IAgentUpdate,
     IEvaluation,
     IGenomeOptions,
     IOrganismOptions,
@@ -18,30 +19,37 @@ import {
 export abstract class Organism<
     GenType extends IGenomeOptions,
     PopType extends IPopulationOptions,
-    OrgOptions extends IOrganismOptions,
-    DataType, PhenoType, EnvStateType> {
+    OrgType extends IOrganismOptions,
+    DataType, PhenoType, AgentStateType, EnvStateType> {
     public phenotype: PhenoType;
 
     constructor(public genotype: Genome<GenType>,
-                public options: OrgOptions) {
+                public options: OrgType) {
         this.phenotype = this.createPhenotype(this.genotype);
     }
 
-    public abstract observe(interaction: IStateUpdate<EnvStateType>): DataType;
+    public abstract perceive(state: IStateUpdate<EnvStateType>): IStateUpdate<AgentStateType>;
 
     public abstract interact(
-        state: IStateUpdate<EnvStateType>, phenotype: PhenoType): IStateUpdate<EnvStateType>;
+        state: IStateUpdate<AgentStateType>, phenotype: PhenoType): IStateUpdate<EnvStateType>;
+
+    public abstract observe(interaction: IStateUpdate<EnvStateType>): DataType;
 
     public abstract evaluate(
         data: DataType[], genotype: Genome<GenType>, phenotype: PhenoType): IEvaluation<GenType, DataType, PhenoType>;
 
     public abstract createPhenotype(genome: Genome<GenType>): PhenoType;
 
+    // perceive environment
+    // interact with environment state
+    // observe interactions
+    // evaluate observations
     public interactWithEnvironment(
         state: Observable<IStateUpdate<EnvStateType>>,
         env: Observer<IStateUpdate<EnvStateType>>,
         evaluate: Observer<IEvaluation<GenType, DataType, PhenoType>>): Subscription {
-        const interactions = this.interactWithState(state);
+        const perception = this.perceiveEnvironment(state);
+        const interactions = this.interactWithState(perception);
         const observations = this.observeInteractions(interactions);
         const evaluations = this.evaluateObservations(observations);
 
@@ -51,9 +59,22 @@ export abstract class Organism<
         ].reduce((sub, s) => sub.add(s));
     }
 
-    private interactWithState(state: Observable<IStateUpdate<EnvStateType>>): Observable<IStateUpdate<EnvStateType>> {
+    // turn env state into perception of env state
+    // perception is just the information that is relevant to this particular organism
+    private perceiveEnvironment(
+        state: Observable<IStateUpdate<EnvStateType>>): Observable<IStateUpdate<AgentStateType>> {
         return state
-            .map((s) => this.interact(s, this.phenotype));
+            .map((s) => this.perceive(s));
+    }
+
+    // turn perception of env state into interacted state
+    private interactWithState(state: Observable<IStateUpdate<AgentStateType>>): Observable<IAgentUpdate<EnvStateType>> {
+        return state
+            .map((s) => this.interact(s, this.phenotype))
+            .map((i) => {
+                // add agentID to interaction
+                return { agentID: this.genotype.id, ...i };
+            });
     }
 
     // adds observations to this.data
