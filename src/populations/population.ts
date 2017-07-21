@@ -101,7 +101,7 @@ export abstract class Population<
     ): Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>;
 
     // spawns and evenly distributes organisms across all envs
-    public populate(): Subscription {
+    public populate(environments: ReactiveCollection<Environment<EnvStateType>>): Subscription {
 
         const interact = this.organisms
             .subscribeToPush((org) => {
@@ -109,7 +109,7 @@ export abstract class Population<
                 org.interactWithEnvironment(env.state.asObservable(), env.interactions, this.evaluations);
             });
 
-        const populate = this.envs
+        const populate = environments
             .subscribe((envs) => {
                 this.killAllOrganisms();
 
