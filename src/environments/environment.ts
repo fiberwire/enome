@@ -16,13 +16,12 @@ export abstract class Environment<StateType>{
 
     public state: ReactiveProperty<IStateUpdate<StateType>>;
 
-    public interactions: Subject<IAgentUpdate<StateType>>;
+    public interactions: Subject<IAgentUpdate<StateType>> =
+    new Subject<IAgentUpdate<StateType>>();
 
     private subs: Subscription = new Subscription();
 
     constructor(public options: IEnvironmentOptions) {
-        this.interactions = new Subject<IAgentUpdate<StateType>>();
-
         this.state = new ReactiveProperty<IStateUpdate<StateType>>(this.initialState);
 
         this.subs.add(this.interaction());
