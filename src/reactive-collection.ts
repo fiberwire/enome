@@ -3,6 +3,8 @@ import { BehaviorSubject, Observable, Observer, ReplaySubject, Subject, Subscrip
 import { IScheduler } from "rxjs/Scheduler";
 import { ReactiveProperty } from "./index";
 
+import * as _ from "lodash";
+
 export class ReactiveCollection<T> {
 
     private pushed: ReplaySubject<T> = new ReplaySubject<T>(1);
@@ -10,6 +12,7 @@ export class ReactiveCollection<T> {
     private shifted: ReplaySubject<T> = new ReplaySubject<T>(1);
     private unshifted: ReplaySubject<T> = new ReplaySubject<T>(1);
     private removed: ReplaySubject<T> = new ReplaySubject<T>(1);
+    private rotated: ReplaySubject<T> = new ReplaySubject<T>(1);
 
     private subs: Subscription[];
 
@@ -64,6 +67,10 @@ export class ReactiveCollection<T> {
         return this.removed.subscribe(observer);
     }
 
+    public subscribeToRotate(observer: (value: T) => void | Observer<T>): Subscription {
+        return this.rotated.subscribe(observer);
+    }
+
     public push(value: T): ReactiveCollection<T> {
         this.pushed.next(value);
         return this;
@@ -96,6 +103,30 @@ export class ReactiveCollection<T> {
         this.value = v;
         this.removed.next(removed[0]);
         return this;
+    }
+
+    //////// DON'T ROTATE INSIDE OF A SUBSCRIBER TO ROTATE
+    //////// IT WILL CAUSE AN ENDLESS RECURSION
+    //////// It's like telling the collection to rotate when it rotates
+    //////// but since it rotates when it rotates
+    //////// it will just rotate again, since you rotated
+    //////// although, you can rotate a different collection inside a subscriber
+
+    // takes the first value, pushes it to the back of the bus, and returns it.
+    public rotate(): T {
+        const value = this.value;
+        const shifted = value.shift();
+        value.push(shifted);
+        this.rotated.next(shifted);
+        this.value = value;
+        return shifted;
+    }
+
+    public rotateEach(action: (value: T) => void): void {
+        _.range(this.value.length)
+            .forEach((i) => {
+                action(this.rotate());
+            });
     }
 
     public mapCollection<U>(selector: (value: T) => U): ReactiveCollection<U> {
