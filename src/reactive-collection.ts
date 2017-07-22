@@ -174,6 +174,10 @@ export class ReactiveCollection<T> {
         return this.array.bufferTimeCount(timeSpan, count, skip, scheduler);
     }
 
+    public zip<U>(other: Observable<U>): Observable<[T[], U]> {
+        return this.array.zip(other);
+    }
+
     public asObservable(): Observable<T[]> {
         return this.array.asObservable();
     }

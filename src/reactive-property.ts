@@ -55,6 +55,10 @@ export class ReactiveProperty<T> {
         return timeBuffer.race(countBuffer);
     }
 
+    public zip<U>(other: Observable<U>): Observable<[T, U]> {
+        return this.subject.zip(other);
+    }
+
     public asObservable(): Observable<T> {
         return this.subject.asObservable();
     }
