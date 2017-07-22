@@ -77,7 +77,6 @@ export abstract class Population<
                 >();
 
         this.subs = [
-            this.populate(),
             this.updateGenotype(),
             this.updateAvgFitness(),
             this.updateBest(),
