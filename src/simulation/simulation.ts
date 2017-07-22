@@ -10,16 +10,23 @@ export class Simulation<GenType extends IGenomeOptions,
 
     constructor(
         public populations:
-        Array<Population<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>>,
-        public environments: Array<Environment<EnvStateType>>,
-    ) {}
+            ReactiveCollection<
+            Population<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>>,
+        public environments: ReactiveCollection<Environment<EnvStateType>>,
+    ) { }
 
     public start(): Subscription {
         const subs = new Subscription();
 
-        this.populations.forEach((pop) => {
-            subs.add(pop.populate(this.environments));
-        });
+        subs.add(
+            this.populations
+                .asObservable()
+                .combineLatest(this.environments)
+                .subscribe((pair) => {
+                    pair[0].forEach((pop) => {
+                        pop.populate(new ReactiveCollection(pair[1]));
+                    });
+                }));
 
         return subs;
     }
