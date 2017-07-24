@@ -60,10 +60,6 @@ export abstract class Population<
     private subs: Subscription = new Subscription();
 
     private generation: number = 0;
-    private get nextEnv(): Environment<EnvStateType> {
-        return _.sortBy(this.envs.value,
-            (env) => this.envs.filterCollection((e) => env === e).value.length)[0];
-    }
 
     constructor(
         public genOptions: GenType,
@@ -100,25 +96,38 @@ export abstract class Population<
     ): Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>;
 
     // spawns and evenly distributes organisms across all envs
-    public populate(environments: ReactiveCollection<Environment<EnvStateType>>): Subscription {
+    public populate(environments: Array<Environment<EnvStateType>>): Subscription {
 
+        const sub = new Subscription();
+        const interaction = new Subscription();
+
+        // when new organisms are created, make them interact with environments
         const interact = this.organisms
             .subscribeToPush((org) => {
-                const env = this.nextEnv;
-                org.interactWithEnvironment(env.state.asObservable(), env.interactions, this.evaluations);
+                const env = environments.rotate(); // rotates through, should evenly distribute organisms
+
+                interaction.add(
+                    org.interactWithEnvironment(
+                        env.state.asObservable(),
+                        env.interactions,
+                        this.evaluations),
+                );
             });
 
+        // when environments updates, kill organisms, create new organisms
         const populate = environments
             .subscribe((envs) => {
                 this.killAllOrganisms();
 
-                while (this.organisms.value.length < this.popOptions.size) {
-                    this.organisms.push(
-                        this.createOrganism(new Genome(this.genOptions), this.orgOptions));
-                }
+                _.range(this.popOptions.size)
+                    .map((i) => this.createOrganism(new Genome(this.genOptions), this.orgOptions))
+                    .forEach(this.organisms.push);
             });
 
-        return interact.add(populate);
+        sub.add(interact);
+        sub.add(populate);
+
+        return [sub, interaction];
     }
 
     public shutdown(): Subscription {
