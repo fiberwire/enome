@@ -35,6 +35,7 @@ import { Organism } from "./organisms/organism";
 import { Population } from "./populations/population";
 import { ReactiveCollection } from "./reactive-collection";
 import { ReactiveProperty } from "./reactive-property";
+import { Simulation } from "./simulation/simulation";
 
 // options
 export {
@@ -93,6 +94,7 @@ export {
     Environment,
     Organism,
     Population,
+    Simulation,
 };
 
 // enums
