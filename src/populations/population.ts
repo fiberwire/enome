@@ -1,4 +1,4 @@
-import { Subject, Subscription } from "rxjs";
+import { Observable, Observer, Subject, Subscription } from "rxjs";
 
 import {
     cloneEvaluation,
@@ -23,303 +23,100 @@ import * as _ from "lodash";
 const chance = new Chance();
 
 export abstract class Population<
-    GenType extends IGenomeOptions,
-    PopType extends IPopulationOptions,
-    OrgType extends IOrganismOptions,
-    DataType, PhenoType, AgentStateType, EnvStateType> {
-
-    public toMutate: Subject<IEvaluation<GenType, DataType, PhenoType>> =
-    new Subject<IEvaluation<GenType, DataType, PhenoType>>();
-
-    public toRandomize: Subject<IEvaluation<GenType, DataType, PhenoType>> =
-    new Subject<IEvaluation<GenType, DataType, PhenoType>>();
-
-    public toReproduce: Subject<IEvaluation<GenType, DataType, PhenoType>> =
-    new Subject<IEvaluation<GenType, DataType, PhenoType>>();
-
-    public toKill: Subject<Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>> =
-    new Subject<Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>>();
+    Gen extends IGenomeOptions,
+    Pop extends IPopulationOptions,
+    Org extends IOrganismOptions,
+    Data, Pheno, AState, EState> {
 
     public avgFitness: ReactiveProperty<number> = new ReactiveProperty<number>();
 
-    public best: ReactiveProperty<IEvaluation<GenType, DataType, PhenoType>> =
-    new ReactiveProperty<IEvaluation<GenType, DataType, PhenoType>>();
-
-    public top: ReactiveCollection<IEvaluation<GenType, DataType, PhenoType>> =
-    new ReactiveCollection<IEvaluation<GenType, DataType, PhenoType>>();
-
-    public envs: ReactiveCollection<Environment<EnvStateType>>;
-
-    public organisms: ReactiveCollection<
-    Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>
-    >;
-
-    private evaluations: Subject<IEvaluation<GenType, DataType, PhenoType>> =
-    new Subject<IEvaluation<GenType, DataType, PhenoType>>();
+    public evaluations: Subject<IEvaluation<Gen, Data, Pheno>> =
+    new Subject<IEvaluation<Gen, Data, Pheno>>();
 
     private subs: Subscription = new Subscription();
 
     private generation: number = 0;
 
     constructor(
-        public genOptions: GenType,
-        public popOptions: PopType,
-        public orgOptions: OrgType,
-        ...envs: Array<Environment<EnvStateType>>) {
-        this.envs = new ReactiveCollection<Environment<EnvStateType>>(envs);
-        this.organisms =
-            new ReactiveCollection<
-                Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>
-                >();
-
-        this.subs = [
-            this.updateGenotype(),
-            this.updateAvgFitness(),
-            this.updateBest(),
-            this.updateTop(),
-            this.mutateGenotype(),
-            this.reproduceGenotype(),
-            this.randomizeGenotype(),
-            this.killOrganisms(),
-            this.shutdown(),
-        ].reduce((sub, s) => sub.add(s));
+        public genOptions: Gen,
+        public popOptions: Pop,
+        public orgOptions: Org) {
     }
 
     // mutate the organism based on evaluation
     public abstract mutate(
-        evaluation: IEvaluation<GenType, DataType, PhenoType>): Genome<GenType>;
+        evaluation: IEvaluation<Gen, Data, Pheno>): Genome<Gen>;
 
     // create an organism to inject into environment.
     public abstract createOrganism(
-        genome: Genome<GenType>,
+        genome: Genome<Gen>,
         options: IOrganismOptions,
-    ): Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>;
+    ): Organism<Gen, Pop, Org, Data, Pheno, AState, EState>;
+
+    public createOrganisms(n: number): Array<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>> {
+        return _.range(n)
+            .map((i) => this.createOrganism(new Genome(this.genOptions), this.orgOptions));
+    }
 
     // spawns and evenly distributes organisms across all envs
-    public populate(environments: Array<Environment<EnvStateType>>): Subscription {
+    public populate(
+        organisms: Observer<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>,
+        top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
+    ): Subscription {
+        const orgs = this.createOrganisms(this.popOptions.size);
 
-        const sub = new Subscription();
-        const interaction = new Subscription();
+        for (const o of orgs) {
+            organisms.next(o);
+        }
 
-        // when new organisms are created, make them interact with environments
-        const interact = this.organisms
-            .subscribeToPush((org) => {
-                const env = environments.rotate(); // rotates through, should evenly distribute organisms
-
-                interaction.add(
-                    org.interactWithEnvironment(
-                        env.state.asObservable(),
-                        env.interactions,
-                        this.evaluations),
-                );
-            });
-
-        // when environments updates, kill organisms, create new organisms
-        const populate = environments
-            .subscribe((envs) => {
-                this.killAllOrganisms();
-
-                _.range(this.popOptions.size)
-                    .map((i) => this.createOrganism(new Genome(this.genOptions), this.orgOptions))
-                    .forEach(this.organisms.push);
-            });
-
-        sub.add(interact);
-        sub.add(populate);
-
-        return [sub, interaction];
-    }
-
-    public shutdown(): Subscription {
-        return this.evaluations
-            .do((e) => this.generation += 1)
-            .do((e) => {
-                if (this.popOptions.progress &&
-                    this.generation % (this.popOptions.generations / 10) === 0) {
-                    // tslint:disable-next-line:no-console
-                    console.log(`
-                        (${this.generation / this.popOptions.generations * 100}%) Generation: ${this.generation}
-                            best: ${this.best.value.fitness}
-                    `);
-                }
-            })
-            .skip(this.popOptions.generations)
-            .take(1)
-            .do((e) => {
-                if (this.popOptions.progress) {
-                    // tslint:disable-next-line:no-console
-                    console.log(`Evolution completed after ${this.generation - 1} generations`);
-                }
-
-            })
-            .subscribe((e) => this.subs.unsubscribe());
-    }
-
-    private killAllOrganisms(): void {
-        this.organisms.forEach((o) => {
-            this.killOrganism(o);
-        });
-        this.organisms.value = [];
-    }
-
-    private killOrganisms(): Subscription {
-        return this.toKill
-            .subscribe((o) => this.killOrganism(o));
-    }
-
-    private killOrganism(
-        org: Organism<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>): void {
-        this.organisms.remove(org);
-        org = null;
+        return this
+            .updateGenotype(this.evaluations, top)
+            .map((genome) => this.createOrganism(genome, this.orgOptions))
+            .subscribe(organisms);
     }
 
     // update genotypes as they are evaluated
-    private updateGenotype(): Subscription {
-        return this.evaluations
-            .subscribe((e) => {
-                this.isCyclic(e);
+    private updateGenotype(
+        evaluations: Observable<IEvaluation<Gen, Data, Pheno>>,
+        top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>): Observable<Genome<Gen>> {
 
-                // randomly choose between mutating, reproducing, or randomizing
-                // mutation is twice as likely as reproduction
-                // reproduction is twice as likely as randomization
-                chance
-                    .weighted([
-                        this.toMutate,
-                        this.toReproduce,
-                        this.toRandomize,
+        return evaluations
+            .map((e) => {
+                const update = chance.weighted(
+                    [
+                        this.mutateGenotype,
+                        this.reproduceGenotype,
+                        this.randomizeGenotype,
                     ],
                     [
                         this.popOptions.weights.mutate,
                         this.popOptions.weights.reproduce,
                         this.popOptions.weights.randomize,
-                    ])
-                    .next(e);
+                    ],
+                );
+
+                return update(e, top);
             });
     }
 
-    private isCyclic(obj: any) {
-        const keys: any[] = [];
-        const stack: any[] = [];
-        const stackSet: Set<any> = new Set();
-        let detected = false;
-
-        function detect(ob: any, key: any) {
-            if (!(ob instanceof Object)) { return; } // Now works with other
-            // kinds of object.
-
-            if (stackSet.has(ob)) { // it's cyclic! Print the object and its locations.
-                const oldindex = stack.indexOf(ob);
-                const l1 = keys.join(".") + "." + key;
-                const l2 = keys.slice(0, oldindex + 1).join(".");
-                // tslint:disable-next-line:no-console
-                console.log("CIRCULAR: " + l1 + " = " + l2 + " = " + ob);
-                // tslint:disable-next-line:no-console
-                console.log(ob);
-                detected = true;
-                return;
-            }
-
-            keys.push(key);
-            stack.push(ob);
-            stackSet.add(ob);
-            for (const k in ob) { // dive on the object's children
-                if (ob.hasOwnProperty(k)) { detect(ob[k], k); }
-            }
-
-            keys.pop();
-            stack.pop();
-            stackSet.delete(ob);
-            return;
-        }
-
-        detect(obj, "obj");
-        return detected;
+    private mutateGenotype(
+        evaluation: IEvaluation<Gen, Data, Pheno>,
+        top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
+    ): Genome<Gen> {
+        return this.mutate(evaluation);
     }
 
-    private updateAvgFitness(): Subscription {
-        return this.evaluations
-            .subscribe((e) => {
-                this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
-            });
+    private reproduceGenotype(
+        evaluation: IEvaluation<Gen, Data, Pheno>,
+        top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
+    ): Genome<Gen> {
+        return reproduceManyToOne(top.value.map((t) => t.genotype));
     }
 
-    private updateBest(): Subscription {
-        return this.evaluations.asObservable()
-            .do((e) => { // set as best if there is no current best
-                if (this.best.value === undefined) {
-                    this.best.value = e;
-                }
-            })
-            .filter((e) => {
-                switch (this.popOptions.objective) {
-                    case FitnessObjective.minimize:
-                        return e.fitness < this.best.value.fitness;
-
-                    case FitnessObjective.maximize:
-                    default:
-                        return e.fitness > this.best.value.fitness;
-                }
-            })
-            // .do((e) => console.log(`new best: ${e.fitness} (old best: ${this.best.value.fitness})`))
-            .map((e) => cloneEvaluation(e))
-            .subscribe((e) => this.best.value = e);
-    }
-
-    private updateTop(): Subscription {
-        return this.evaluations.asObservable()
-            .filter((e) => this.best.value != null && this.best.value !== undefined)
-            .filter((e) => {
-                switch (this.popOptions.objective) {
-                    case FitnessObjective.minimize:
-                        return e.fitness < this.best.value.fitness;
-
-                    case FitnessObjective.maximize:
-                    default:
-                        return e.fitness > this.best.value.fitness;
-                }
-            })
-            .map(cloneEvaluation)
-            .subscribe((e) => {
-                let top = this.top.value;
-                top.push(e);
-                top = _.sortBy(top, (t) => t.fitness);
-                top = new Gene(this.popOptions.topPercent).elements(top);
-                this.top.value = top;
-            });
-    }
-
-    private mutateGenotype(): Subscription {
-        return this.toMutate
-            .subscribe((e) => {
-                const g = this.mutate(e);
-                this.organisms.push(this.createOrganism(g, this.orgOptions));
-            });
-    }
-
-    private reproduceGenotype(): Subscription {
-        return this.toReproduce.asObservable()
-            .filter((e) => this.organisms.value.length > 0)
-            .subscribe((e) => {
-
-                let offspring: Genome<GenType>;
-
-                if (this.top.value.length > 0) {
-                    offspring = reproduceManyToOne(
-                        this.top.mapCollection((t) => t.genotype).value);
-                } else {
-                    offspring = reproduceManyToOne(
-                        this.organisms.mapCollection((t) => t.genotype).value);
-                }
-
-                this.organisms.push(this.createOrganism(offspring, this.orgOptions));
-            });
-    }
-
-    private randomizeGenotype(): Subscription {
-        return this.toRandomize
-            .subscribe((e) => {
-                const g = new Genome(this.genOptions);
-                this.organisms.push(this.createOrganism(g, this.orgOptions));
-            });
+    private randomizeGenotype(
+        evaluation: IEvaluation<Gen, Data, Pheno>,
+        top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
+    ): Genome<Gen> {
+        return new Genome(this.genOptions);
     }
 }

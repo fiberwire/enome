@@ -3,32 +3,41 @@ import {
     IAgentUpdate,
     IEnvironmentOptions,
     IGenomeOptions,
+    IOrganismOptions,
     IPopulationOptions,
     IStateUpdate,
     Organism,
     Population,
+    ReactiveCollection,
     ReactiveProperty,
 } from "../index";
 
 import * as _ from "lodash";
 
-export abstract class Environment<StateType>{
+export abstract class Environment<
+    Gen extends IGenomeOptions,
+    Pop extends IPopulationOptions,
+    Org extends IOrganismOptions,
+    Data, Pheno, AState, EState>{
 
-    public state: ReactiveProperty<IStateUpdate<StateType>>;
+    public state: ReactiveProperty<IStateUpdate<EState>>;
 
-    public interactions: Subject<IAgentUpdate<StateType>> =
-    new Subject<IAgentUpdate<StateType>>();
+    public organisms: ReactiveCollection<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>=
+    new ReactiveCollection<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>();
+
+    public interactions: Subject<IAgentUpdate<EState>> =
+    new Subject<IAgentUpdate<EState>>();
 
     private subs: Subscription = new Subscription();
 
     constructor(public options: IEnvironmentOptions) {
-        this.state = new ReactiveProperty<IStateUpdate<StateType>>(this.initialState);
+        this.state = new ReactiveProperty<IStateUpdate<EState>>(this.initialState);
 
         this.subs.add(this.interaction());
     }
 
     // The beginning state of the Environment
-    public abstract get initialState(): IStateUpdate<StateType>
+    public abstract get initialState(): IStateUpdate<EState>
 
     // resets the environment back to a fresh state
     public reset(): void {
