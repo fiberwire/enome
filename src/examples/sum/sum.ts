@@ -1,4 +1,4 @@
-import { FitnessObjective, GenomeRefill, IOrganismOptions, MutateOp } from "../../index";
+import { FitnessObjective, GenomeRefill, IOrganismOptions, MutateOp, Simulation } from "../../index";
 import { SumEnv } from "./sum-environment";
 import { ISumGenomeOptions } from "./sum-genome-options";
 import { ISumOrganismOptions } from "./sum-organism-options";
@@ -24,7 +24,7 @@ const popOptions: ISumPopOptions = {
     },
     objective: FitnessObjective.minimize,
     progress: true,
-    size: 1,
+    size: 10,
     topPercent: .25,
     weights: {
         mutate: 15,
@@ -39,29 +39,22 @@ const orgOptions: ISumOrganismOptions = {
     target: 150,
 };
 
-const envs = _.range(popOptions.size)
-    .map((i) => new SumEnv({ interactionRate: 100 })) ;
+const env = new SumEnv({ interactionRate: 1 });
 
 const pop = new SumPopulation(
     genOptions,
     popOptions,
     orgOptions,
-    ...envs,
 );
 
-pop.best
-    .filter((b) => b !== undefined && b !== null)
-    .filter((b) => b.data != null)
-    .filter((b) => b.data.length > 0)
+const sim = new Simulation(pop, env).start();
+
+sim.best
+    .filter((b) => b !== undefined && b != null)
     .subscribe((b) => {
         const list = b.phenotype;
-        const sum = b.data[0].sum;
-        const fit = b.fitness;
+        const fitness = b.fitness;
+        const sum = _.sum(list);
 
-        // tslint:disable-next-line:no-console
-        console.log(`new best: {
-             list: ${list},
-             sum: ${sum},
-             fitness: ${fit}
-            }`);
+        console.log(`New Best: list: ${list} sum: ${sum} fitness: ${fitness}`);
     });
