@@ -1,7 +1,7 @@
 import { Observable, Observer, Subject, Subscription } from "rxjs";
 
 import * as _ from "lodash";
-import { IScheduler, Scheduler } from "rxjs/Scheduler";
+import * as Rx from "rxjs";
 import {
     Environment,
     Genome,
@@ -56,28 +56,18 @@ export abstract class Organism<
         const observations = this.observeInteractions(interactions);
         const evaluations = this.evaluateObservations(observations);
 
-        console.log(`interacting with environment: ${this.genotype.id}`);
+        // console.log(`interacting with environment: ${this.genotype.id}`);
 
-        // do something with perceptions
-        subs.add(perception.subscribe((p) => {
-            console.log(`perceived: ${p}`);
+        // send evaluations to population
+        subs.add(evaluations.subscribe((e) => {
+            console.log(`sending evaluation to population: ${this.genotype.id}`);
+            evaluate.next(e);
         }));
 
         // send interactions to environment
         subs.add(interactions.subscribe((i) => {
             console.log(`sending interaction to env: ${this.genotype.id}`);
             env.next(i);
-        }));
-
-        // do something with observations
-        subs.add(observations.subscribe((o) => {
-            console.log(`observed: ${o}`);
-        }));
-
-        // send evaluations to population
-        subs.add(evaluations.subscribe((e) => {
-            console.log(`sending evaluation to population: ${this.genotype.id}`);
-            evaluate.next(e);
         }));
 
         return subs;
@@ -93,7 +83,9 @@ export abstract class Organism<
         return state
             .map((s) => {
                 return this.perceive(s);
-            });
+            })
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap);
     }
 
     // turn perception of env state into state that has been interacted with
@@ -105,15 +97,19 @@ export abstract class Organism<
             .map((i) => {
                 // add agentID to interaction
                 return { ...i, agentID: this.genotype.id };
-            });
+            })
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap);
     }
 
     // collects data from interactions with state
     private observeInteractions(interactions: Observable<IStateUpdate<EState>>): Observable<Data> {
         return interactions
-            .map((s) => {
-                return this.observe(s);
-            });
+            .map((i) => {
+                return this.observe(i);
+            })
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap);
     }
 
     private evaluateObservations(
@@ -127,6 +123,8 @@ export abstract class Organism<
             .map((data) => {
                 return this.evaluate(data, this.genotype, this.phenotype);
             })
-            .take(1);
+            .take(1)
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap);
     }
 }

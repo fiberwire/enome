@@ -79,12 +79,12 @@ export class Simulation<Gen extends IGenomeOptions,
     private introduceOrganisms(): Subscription {
         const intro = this.newOrganisms
             .subscribe((org) => {
-                console.log(`New Organism: ${org.genotype.id}`);
-
                 this.subs.add(org.interactWithEnvironment(
                     this.environment.state.asObservable(),
                     this.environment.state.asObserver(),
                     this.population.evaluations));
+
+                console.log(`New Organism: ${org.genotype.id}`);
             });
 
         return intro;

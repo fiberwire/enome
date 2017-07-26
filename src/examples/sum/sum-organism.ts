@@ -12,7 +12,8 @@ export class SumOrganism extends
     Organism<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumAgentState, ISumEnvState> {
 
     public perceive(state: IStateUpdate<ISumEnvState>): IStateUpdate<ISumAgentState> {
-        console.log(`perceiving: ${this.genotype.id}`);
+        // console.log(`perceiving: ${this.genotype.id}`);
+
         return state;
     }
 
@@ -27,6 +28,7 @@ export class SumOrganism extends
         agentID: string = this.genotype.id,
     ): IAgentUpdate<ISumEnvState> {
         console.log(`interacting: ${this.genotype.id}`);
+
         return {
             agentID,
             interaction: state.interaction + 1,
@@ -50,6 +52,7 @@ export class SumOrganism extends
     ): IEvaluation<ISumGenomeOptions, ISumData, number[]> {
         const difference = this.options.target - data[0].sum;
         const fitness = Math.abs(difference);
+
         console.log(`evaluating: ${this.genotype.id}`);
 
         return {
