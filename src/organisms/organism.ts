@@ -49,6 +49,8 @@ export abstract class Organism<
         env: Observer<IStateUpdate<EState>>,
         evaluate: Observer<IEvaluation<Gen, Data, Pheno>>): Subscription {
 
+        const subs: Subscription = new Subscription();
+
         const perception = this.perceiveEnvironment(state);
         const interactions = this.interactWithState(perception);
         const observations = this.observeInteractions(interactions);
@@ -56,24 +58,29 @@ export abstract class Organism<
 
         console.log(`interacting with environment: ${this.genotype.id}`);
 
-        return [
-            perception.subscribe((p) => {
-                console.log(`perceived: ${p}`);
-            }),
-            // send interactions to environment
-            interactions.subscribe((i) => {
-                console.log(`sending interaction to env: ${this.genotype.id}`);
-                env.next(i);
-            }),
-            observations.subscribe((o) => {
-                console.log(`observed: ${o}`);
-            }),
-            // send evaluations to population
-            evaluations.subscribe((e) => {
-                console.log(`sending evaluation to population: ${this.genotype.id}`);
-                evaluate.next(e);
-            }),
-        ].reduce((sub, s) => sub.add(s));
+        // do something with perceptions
+        subs.add(perception.subscribe((p) => {
+            console.log(`perceived: ${p}`);
+        }));
+
+        // send interactions to environment
+        subs.add(interactions.subscribe((i) => {
+            console.log(`sending interaction to env: ${this.genotype.id}`);
+            env.next(i);
+        }));
+
+        // do something with observations
+        subs.add(observations.subscribe((o) => {
+            console.log(`observed: ${o}`);
+        }));
+
+        // send evaluations to population
+        subs.add(evaluations.subscribe((e) => {
+            console.log(`sending evaluation to population: ${this.genotype.id}`);
+            evaluate.next(e);
+        }));
+
+        return subs;
     }
 
     // turn env state into perception of env state
@@ -101,7 +108,7 @@ export abstract class Organism<
             });
     }
 
-    // adds observations to this.data
+    // collects data from interactions with state
     private observeInteractions(interactions: Observable<IStateUpdate<EState>>): Observable<Data> {
         return interactions
             .map((s) => {
