@@ -17,81 +17,109 @@ import {
 } from "../index";
 
 export abstract class Organism<
-    GenType extends IGenomeOptions,
-    PopType extends IPopulationOptions,
-    OrgType extends IOrganismOptions,
-    DataType, PhenoType, AgentStateType, EnvStateType> {
-    public phenotype: PhenoType;
+    Gen extends IGenomeOptions,
+    Pop extends IPopulationOptions,
+    Org extends IOrganismOptions,
+    Data, Pheno, AState, EState> {
+    public phenotype: Pheno;
 
-    constructor(public genotype: Genome<GenType>,
-                public options: OrgType) {
+    constructor(public genotype: Genome<Gen>,
+                public options: Org) {
         this.phenotype = this.createPhenotype(this.genotype);
     }
 
-    public abstract perceive(state: IStateUpdate<EnvStateType>): IStateUpdate<AgentStateType>;
+    public abstract perceive(state: IStateUpdate<EState>): IStateUpdate<AState>;
 
     public abstract interact(
-        state: IStateUpdate<AgentStateType>, phenotype: PhenoType): IStateUpdate<EnvStateType>;
+        state: IStateUpdate<AState>, phenotype: Pheno): IStateUpdate<EState>;
 
-    public abstract observe(interaction: IStateUpdate<EnvStateType>): DataType;
+    public abstract observe(interaction: IStateUpdate<EState>): Data;
 
     public abstract evaluate(
-        data: DataType[], genotype: Genome<GenType>, phenotype: PhenoType): IEvaluation<GenType, DataType, PhenoType>;
+        data: Data[], genotype: Genome<Gen>, phenotype: Pheno): IEvaluation<Gen, Data, Pheno>;
 
-    public abstract createPhenotype(genome: Genome<GenType>): PhenoType;
+    public abstract createPhenotype(genome: Genome<Gen>): Pheno;
 
     // perceive environment
     // interact with environment state
     // observe interactions
     // evaluate observations
     public interactWithEnvironment(
-        state: Observable<IStateUpdate<EnvStateType>>,
-        env: Observer<IStateUpdate<EnvStateType>>,
-        evaluate: Observer<IEvaluation<GenType, DataType, PhenoType>>): Subscription {
+        state: Observable<IStateUpdate<EState>>,
+        env: Observer<IStateUpdate<EState>>,
+        evaluate: Observer<IEvaluation<Gen, Data, Pheno>>): Subscription {
+
         const perception = this.perceiveEnvironment(state);
         const interactions = this.interactWithState(perception);
         const observations = this.observeInteractions(interactions);
         const evaluations = this.evaluateObservations(observations);
 
+        console.log(`interacting with environment: ${this.genotype.id}`);
+
         return [
-            interactions.subscribe(env), // send interactions to environment
-            evaluations.subscribe(evaluate), // send evaluations to population
+            perception.subscribe((p) => {
+                console.log(`perceived: ${p}`);
+            }),
+            // send interactions to environment
+            interactions.subscribe((i) => {
+                console.log(`sending interaction to env: ${this.genotype.id}`);
+                env.next(i);
+            }),
+            observations.subscribe((o) => {
+                console.log(`observed: ${o}`);
+            }),
+            // send evaluations to population
+            evaluations.subscribe((e) => {
+                console.log(`sending evaluation to population: ${this.genotype.id}`);
+                evaluate.next(e);
+            }),
         ].reduce((sub, s) => sub.add(s));
     }
 
     // turn env state into perception of env state
     // perception is just the information that is relevant to this particular organism
+    // if it's a simple simulation, you would probably just set AState to be of the same
+    // type as EState and return it in this.perceive()
     private perceiveEnvironment(
-        state: Observable<IStateUpdate<EnvStateType>>): Observable<IStateUpdate<AgentStateType>> {
+        state: Observable<IStateUpdate<EState>>,
+    ): Observable<IStateUpdate<AState>> {
         return state
-            .map((s) => this.perceive(s));
+            .map((s) => {
+                return this.perceive(s);
+            });
     }
 
-    // turn perception of env state into interacted state
-    private interactWithState(state: Observable<IStateUpdate<AgentStateType>>): Observable<IAgentUpdate<EnvStateType>> {
+    // turn perception of env state into state that has been interacted with
+    private interactWithState(state: Observable<IStateUpdate<AState>>): Observable<IAgentUpdate<EState>> {
         return state
-            .map((s) => this.interact(s, this.phenotype))
+            .map((s) => {
+                return this.interact(s, this.phenotype);
+            })
             .map((i) => {
                 // add agentID to interaction
-                return { agentID: this.genotype.id, ...i };
+                return { ...i, agentID: this.genotype.id };
             });
     }
 
     // adds observations to this.data
-    private observeInteractions(interactions: Observable<IStateUpdate<EnvStateType>>): Observable<DataType> {
+    private observeInteractions(interactions: Observable<IStateUpdate<EState>>): Observable<Data> {
         return interactions
-            .map((s) => this.observe(s));
+            .map((s) => {
+                return this.observe(s);
+            });
     }
 
     private evaluateObservations(
-        observations: Observable<DataType>,
-    ): Observable<IEvaluation<GenType, DataType, PhenoType>> {
-        const time: Observable<DataType[]> = observations.bufferTime(this.options.lifeSpan);
-        const count: Observable<DataType[]> = observations.bufferCount(this.options.interactions);
-        const timeCount: Observable<DataType[]> = time.race(count);
+        observations: Observable<Data>,
+    ): Observable<IEvaluation<Gen, Data, Pheno>> {
+        // const time: Observable<Data[]> = observations.bufferTime(this.options.lifeSpan);
+        const count: Observable<Data[]> = observations.bufferCount(this.options.interactions);
+        // const timeCount: Observable<Data[]> = time.race<Data[]>(count);
 
-        return timeCount
-            .map((data: DataType[]) => this.evaluate(data, this.genotype, this.phenotype))
+        return count
+            .map((data) => {
+                return this.evaluate(data, this.genotype, this.phenotype);
+            })
             .take(1);
     }
 }
