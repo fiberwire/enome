@@ -1,77 +1,92 @@
 import { Observable } from "rxjs/Observable";
-import { Subject } from "rxjs/Rx";
+import { ReplaySubject, Subject } from "rxjs/Rx";
 import { Subscription } from "rxjs/Subscription";
 import {
-    Environment, IEvaluation, IGenomeOptions,
-    IOrganismOptions, IPopulationOptions, Population,
+    Environment, IEvaluation, IGenomeOptions, IOrganismOptions,
+    IPopulationOptions, Organism, Population,
     ReactiveCollection, ReactiveProperty,
 } from "../index";
 
 import * as _ from "lodash";
 
-export class Simulation<GenType extends IGenomeOptions,
-    PopType extends IPopulationOptions,
-    OrgType extends IOrganismOptions,
-    DataType, PhenoType, AgentStateType, EnvStateType> {
+export class Simulation<Gen extends IGenomeOptions,
+    Pop extends IPopulationOptions,
+    Org extends IOrganismOptions,
+    Data, Pheno, AState, EState> {
 
-    public best: ReactiveCollection<IEvaluation<GenType, DataType, PhenoType>>
+    public best: ReactiveProperty<IEvaluation<Gen, Data, Pheno>>
+    = new ReactiveProperty();
+
+    public top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>
     = new ReactiveCollection();
 
-    public top: ReactiveCollection<IEvaluation<GenType, DataType, PhenoType>>
-    = new ReactiveCollection();
+    public avgFitness: ReactiveProperty<number> = new ReactiveProperty();
 
-    private sub: Subscription = new Subscription();
+    public newOrganisms: ReplaySubject<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>
+    = new ReplaySubject<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>(1);
+
+    private subs: Subscription = new Subscription();
 
     constructor(
-        public populations:
-            Array<Population<GenType, PopType, OrgType, DataType, PhenoType, AgentStateType, EnvStateType>>,
-        public environments: Array<Environment<EnvStateType>>,
+        public population: Population<Gen, Pop, Org, Data, Pheno, AState, EState>,
+        public environment: Environment<Gen, Pop, Org, Data, Pheno, AState, EState>,
     ) { }
 
-    public start(): void {
-        this.populations
-            .forEach((pop) => {
-                this.sub.add(pop.populate(this.environments));
-            });
+    public start(): Simulation<Gen, Pop, Org, Data, Pheno, AState, EState> {
 
-        this.sub.add(this.updateBest());
-        this.sub.add(this.updateTop());
+        this.subs = [
+            this.introduceOrganisms(),
+            this.updateAvgFitness(),
+            this.updateTop(),
+            this.updateBest(),
+            this.population.populate(this.newOrganisms, this.top),
+        ].reduce((sub, s) => sub.add(s));
+
+        return this;
     }
 
-    public updateBest(): Subscription {
-        const sub = new Subscription();
-        const bests = new Subject<ReactiveProperty<IEvaluation<GenType, DataType, PhenoType>>>();
-
-        // for each best, subscribe to it, add value to this.best
-        sub.add(bests.subscribe((best) => {
-            sub.add(best.subscribe((b) => { // when any population's best receives a new value
-                const value = this.best.value;
-                value.push(b);
-                const sorted = _.sortBy(value, (e) => e.fitness); // sort by fitness
-                const taken = _.take(sorted, this.populations.length); // take the same amount of bests as populations
-                this.best.value = taken;
-            }));
-        }));
-
-        // aad best reactive property from each populations to bests
-        this.populations
-            .map((pop) => pop.best)
-            .forEach((best) => {
-                bests.next(best);
+    private updateBest(): Subscription {
+        const update = this.population.evaluations
+            .subscribe((evaluation) => {
+                if (evaluation.fitness > this.best.value.fitness) {
+                    this.best.value = evaluation;
+                }
             });
 
-        return sub;
+        return update;
     }
 
-    public updateTop(): Subscription {
-        const sub = new Subscription();
+    private updateTop(): Subscription {
+        const update = this.population.evaluations
+            .subscribe((e) => {
+                const top = this.top.value;
+                top.push(e);
+                const sorted = _.sortBy(top, (t) => t.fitness);
+                const taken = _.take(sorted, this.population.popOptions.size * this.population.popOptions.topPercent);
+                this.top.value = taken;
+            });
 
-        const tops = this.populations
-            .map((pop) => pop.top.asObservable())
-            .reduce((prev, curr) => prev.zip(curr));
+        return update;
+    }
 
-        this.top.value = tops;
+    private updateAvgFitness(): Subscription {
+        return this.population.evaluations
+            .subscribe((e) => {
+                this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
+            });
+    }
 
-        return sub;
+    private introduceOrganisms(): Subscription {
+        const intro = this.newOrganisms
+            .subscribe((org) => {
+                console.log(`New Organism: ${org.genotype.id}`);
+
+                this.subs.add(org.interactWithEnvironment(
+                    this.environment.state.asObservable(),
+                    this.environment.state.asObserver(),
+                    this.population.evaluations));
+            });
+
+        return intro;
     }
 }
