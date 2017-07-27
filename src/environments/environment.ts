@@ -22,7 +22,7 @@ export abstract class Environment<
 
     public state: ReactiveProperty<IStateUpdate<EState>>;
 
-    public organisms: ReactiveCollection<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>=
+    public organisms: ReactiveCollection<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>> =
     new ReactiveCollection<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>();
 
     public interactions: Subject<IAgentUpdate<EState>> =
@@ -48,11 +48,18 @@ export abstract class Environment<
     private interaction(): Subscription {
         return this.interactions.asObservable()
             .filter((i) => i.interaction > this.state.value.interaction) // only accept new interactions
+            .filter((i) => i !== undefined)
             .filter((i) => i.interaction !== undefined)
-            .bufferTime(1 / this.options.interactionRate) // buffer new interactions periodically
-            .map((interactions) => _.shuffle(interactions)[0]) // choose a random interaction from buffer
+            .bufferTime(1000 / this.options.interactionRate) // buffer new interactions periodically
+            .filter((interactions) => interactions.length > 0)
+            .map((interactions) => {
+                const i = _.shuffle(interactions)[0];
+                return i;
+            }) // choose a random interaction from buffer
             .subscribe((i) => {
                 this.state.value = i;
-            });
+            },
+            (error) => console.log(`error in environment.interaction: ${error}`),
+            () => console.log(`environment completed interaction`));
     }
 }
