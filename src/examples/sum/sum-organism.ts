@@ -12,8 +12,7 @@ export class SumOrganism extends
     Organism<ISumGenomeOptions, ISumPopOptions, ISumOrganismOptions, ISumData, number[], ISumAgentState, ISumEnvState> {
 
     public perceive(state: IStateUpdate<ISumEnvState>): IStateUpdate<ISumAgentState> {
-        // console.log(`perceiving: ${this.genotype.id}`);
-
+        console.log(`perceiving: ${this.genotype.id}`);
         return state;
     }
 

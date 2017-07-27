@@ -47,33 +47,39 @@ export class Simulation<Gen extends IGenomeOptions,
 
     private updateBest(): Subscription {
         const update = this.population.evaluations
+            .filter((e) => e != null && e !== undefined)
             .subscribe((evaluation) => {
                 if (evaluation.fitness > this.best.value.fitness) {
                     this.best.value = evaluation;
                 }
-            });
+            },
+            (error) => console.log(`error from simulation.updateBest: ${error}`));
 
         return update;
     }
 
     private updateTop(): Subscription {
         const update = this.population.evaluations
+            .filter((e) => e != null && e !== undefined)
             .subscribe((e) => {
                 const top = this.top.value;
                 top.push(e);
                 const sorted = _.sortBy(top, (t) => t.fitness);
                 const taken = _.take(sorted, this.population.popOptions.size * this.population.popOptions.topPercent);
                 this.top.value = taken;
-            });
+            },
+            (error) => console.log(`error from simulation.updateTop: ${error}`));
 
         return update;
     }
 
     private updateAvgFitness(): Subscription {
         return this.population.evaluations
+            .filter((e) => e != null && e !== undefined)
             .subscribe((e) => {
                 this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
-            });
+            },
+            (error) => console.log(`error from simulation.updateAvgFitness: ${error}`));
     }
 
     private introduceOrganisms(): Subscription {
@@ -85,7 +91,8 @@ export class Simulation<Gen extends IGenomeOptions,
                     this.population.evaluations));
 
                 console.log(`New Organism: ${org.genotype.id}`);
-            });
+            },
+            (error) => console.log(`error from simulation.introduceOrganism: ${error}`));
 
         return intro;
     }

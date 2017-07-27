@@ -72,7 +72,10 @@ export abstract class Population<
         return this
             .updateGenotype(this.evaluations, top)
             .map((genome) => this.createOrganism(genome, this.orgOptions))
-            .subscribe(organisms);
+            .subscribe(
+                (o) => organisms.next(o),
+                (error) => console.log(`${error}`),
+            );
     }
 
     // update genotypes as they are evaluated

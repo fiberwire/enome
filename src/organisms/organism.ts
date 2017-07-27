@@ -60,15 +60,18 @@ export abstract class Organism<
 
         // send evaluations to population
         subs.add(evaluations.subscribe((e) => {
-            console.log(`sending evaluation to population: ${this.genotype.id}`);
             evaluate.next(e);
-        }));
+            console.log(`sent evaluation to population: ${this.genotype.id}`);
+            subs.unsubscribe();
+        },
+        (error) => console.log(`${error}`)));
 
         // send interactions to environment
         subs.add(interactions.subscribe((i) => {
-            console.log(`sending interaction to env: ${this.genotype.id}`);
             env.next(i);
-        }));
+            console.log(`sent interaction to env: ${this.genotype.id}`);
+        },
+        (error) => console.log(`${error}`)));
 
         return subs;
     }
