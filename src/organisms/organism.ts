@@ -51,29 +51,32 @@ export abstract class Organism<
 
         const subs: Subscription = new Subscription();
 
+        const interactions = new Subject<IAgentUpdate<EState>>();
+        const evaluations = new Subject<IEvaluation<Gen, Data, Pheno>>();
+
         const perception = this.perceiveEnvironment(state);
-        const interactions = this.interactWithState(perception);
+        const interacting = this.interactWithState(perception).subscribe(interactions);
+
         const observations = this.observeInteractions(interactions);
-        const evaluations = this.evaluateObservations(observations);
+        const evaluating = this.evaluateObservations(observations).subscribe(evaluations);
 
-        // console.log(`interacting with environment: ${this.genotype.id}`);
-
-        // send evaluations to population
-        subs.add(evaluations.subscribe((e) => {
-            evaluate.next(e);
-            console.log(`sent evaluation to population: ${this.genotype.id}`);
-            subs.unsubscribe();
-        },
-        (error) => console.log(`${error}`)));
-
-        // send interactions to environment
-        subs.add(interactions.subscribe((i) => {
+        const sendingInteractions = interactions
+        .subscribe((i) => {
+            console.log(`sending interaction to environment. #${i.interaction}: ${i.agentID}`);
             env.next(i);
-            console.log(`sent interaction to env: ${this.genotype.id}`);
-        },
-        (error) => console.log(`${error}`)));
+        });
 
-        return subs;
+        const sendingEvaluations = evaluations
+        .subscribe((e) => {
+            console.log(`sending evaluation to population. ${e.genotype.id}`);
+            evaluate.next(e);
+        });
+
+        return subs
+            .add(interacting)
+            .add(evaluating)
+            .add(sendingInteractions)
+            .add(sendingEvaluations);
     }
 
     // turn env state into perception of env state
