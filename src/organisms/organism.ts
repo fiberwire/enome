@@ -55,26 +55,41 @@ export abstract class Organism<
         const evaluations = new Subject<IEvaluation<Gen, Data, Pheno>>();
 
         const perception = this.perceiveEnvironment(state);
-        const interacting = this.interactWithState(perception).subscribe(interactions);
-
         const observations = this.observeInteractions(interactions);
-        const evaluating = this.evaluateObservations(observations).subscribe(evaluations);
 
-        const sendingInteractions = interactions
-        .subscribe((i) => {
-            console.log(`sending interaction to environment. #${i.interaction}: ${i.agentID}`);
-            env.next(i);
-        });
+        const evaluation = this.evaluateObservations(observations).subscribe(
+            (e) => evaluations.next(e),
+            (error) => console.log(`evaluation: ${error}`),
+            () => console.log("evaluation completed"),
+        );
 
-        const sendingEvaluations = evaluations
-        .subscribe((e) => {
-            console.log(`sending evaluation to population. ${e.genotype.id}`);
-            evaluate.next(e);
-        });
+        const interaction = this.interactWithState(perception).subscribe(
+            (i) => interactions.next(i),
+            (error) => console.log(`interaction: ${error}`),
+            () => console.log("interaction completed"),
+        );
+
+        const sendingInteractions = interactions.subscribe(
+            (i) => {
+                console.log(`sending interaction to environment. #${i.interaction}: ${i.agentID}`);
+                env.next(i);
+            },
+            (error) => console.log(`sendingInteraction: ${error}`),
+            () => console.log("sendingInteractions completed"),
+        );
+
+        const sendingEvaluations = evaluations.subscribe(
+            (e) => {
+                console.log(`sending evaluation to population. ${e.genotype.id}`);
+                evaluate.next(e);
+            },
+            (error) => console.log(`sendingEvaluations: ${error}`),
+            () => console.log("sendingEvaluations completed"),
+        );
 
         return subs
-            .add(interacting)
-            .add(evaluating)
+            .add(interaction)
+            .add(evaluation)
             .add(sendingInteractions)
             .add(sendingEvaluations);
     }
@@ -87,6 +102,7 @@ export abstract class Organism<
         state: Observable<IStateUpdate<EState>>,
     ): Observable<IStateUpdate<AState>> {
         return state
+            .take(this.options.interactions)
             .map((s) => {
                 return this.perceive(s);
             })
@@ -97,6 +113,7 @@ export abstract class Organism<
     // turn perception of env state into state that has been interacted with
     private interactWithState(state: Observable<IStateUpdate<AState>>): Observable<IAgentUpdate<EState>> {
         return state
+            .take(this.options.interactions)
             .map((s) => {
                 return this.interact(s, this.phenotype);
             })
