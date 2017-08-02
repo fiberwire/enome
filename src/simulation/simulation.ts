@@ -34,13 +34,13 @@ export class Simulation<Gen extends IGenomeOptions,
 
     public start(): Simulation<Gen, Pop, Org, Data, Pheno, AState, EState> {
 
-        this.subs = [
-            this.introduceOrganisms(),
-            this.updateAvgFitness(),
-            this.updateTop(),
-            this.updateBest(),
-            this.population.populate(this.newOrganisms, this.top),
-        ].reduce((sub, s) => sub.add(s));
+        this.subs = new Subscription()
+            .add(this.introduceOrganisms())
+            .add(this.updateAvgFitness())
+            .add(this.updateTop())
+            .add(this.updateBest())
+            .add(this.population.populate(this.newOrganisms, this.top));
+
 
         return this;
     }
