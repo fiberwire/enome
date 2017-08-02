@@ -74,7 +74,7 @@ export abstract class Population<
             .map((genome) => this.createOrganism(genome, this.orgOptions))
             .subscribe(
                 (o) => organisms.next(o),
-                (error) => console.log(`${error}`),
+                (error) => console.log(`population.populate(): ${error}`),
             );
     }
 
