@@ -41,7 +41,6 @@ export class Simulation<Gen extends IGenomeOptions,
             .add(this.updateBest())
             .add(this.population.populate(this.newOrganisms, this.top));
 
-
         return this;
     }
 
@@ -53,7 +52,9 @@ export class Simulation<Gen extends IGenomeOptions,
                     this.best.value = evaluation;
                 }
             },
-            (error) => console.log(`error from simulation.updateBest: ${error}`));
+            (error) => console.log(`error from simulation.updateBest: ${error}`),
+            () => console.log("simulation complete"),
+        );
 
         return update;
     }
