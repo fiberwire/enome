@@ -1,4 +1,4 @@
-import { Observable, Observer, Subject, Subscription } from "rxjs";
+import { Observable, Observer, ReplaySubject, Subject, Subscription } from "rxjs";
 
 import * as _ from "lodash";
 import * as Rx from "rxjs";
@@ -24,7 +24,7 @@ export abstract class Organism<
     public phenotype: Pheno;
 
     constructor(public genotype: Genome<Gen>,
-                public options: Org) {
+        public options: Org) {
         this.phenotype = this.createPhenotype(this.genotype);
     }
 
@@ -51,47 +51,70 @@ export abstract class Organism<
 
         const subs: Subscription = new Subscription();
 
-        const interactions = new Subject<IAgentUpdate<EState>>();
-        const evaluations = new Subject<IEvaluation<Gen, Data, Pheno>>();
+        const perceptions = new ReplaySubject<IStateUpdate<AState>>();
+        const interactions = new ReplaySubject<IAgentUpdate<EState>>();
+        const evaluations = new ReplaySubject<IEvaluation<Gen, Data, Pheno>>();
+        const observations = new ReplaySubject<Data>();
 
-        const perception = this.perceiveEnvironment(state);
-        const observations = this.observeInteractions(interactions);
-
-        const evaluation = this.evaluateObservations(observations).subscribe(
-            (e) => evaluations.next(e),
-            (error) => console.log(`evaluation: ${error}`),
-            () => console.log("evaluation completed"),
+        const perception = this.perceiveEnvironment(state).subscribe(
+            (p) => perceptions.next(p),
+            (error) => console.log(`perception: ${error}`),
+            () => console.log("perception completed"),
         );
 
-        const interaction = this.interactWithState(perception).subscribe(
+        const interaction = this.interactWithState(perceptions)
+            .take(this.options.interactions)
+            .subscribe(
             (i) => interactions.next(i),
             (error) => console.log(`interaction: ${error}`),
             () => console.log("interaction completed"),
         );
 
-        const sendingInteractions = interactions.subscribe(
+        const observation = this.observeInteractions(interactions)
+            .take(this.options.interactions)
+            .subscribe(
+            (o) => observations.next(o),
+            (error) => console.log(`observation: ${error}`),
+            () => console.log("observation completed"),
+        );
+
+        const evaluation = this.evaluateObservations(observations)
+            .take(this.options.interactions)
+            .subscribe(
+            (e) => evaluations.next(e),
+            (error) => console.log(`evaluation: ${error}`),
+            () => console.log("evaluation completed"),
+        );
+
+        const sendInteractions = interactions
+            .take(this.options.interactions)
+            .subscribe(
             (i) => {
                 console.log(`sending interaction to environment. #${i.interaction}: ${i.agentID}`);
                 env.next(i);
             },
-            (error) => console.log(`sendingInteraction: ${error}`),
-            () => console.log("sendingInteractions completed"),
+            (error) => console.log(`sendInteraction: ${error}`),
+            () => console.log("sendInteractions completed"),
         );
 
-        const sendingEvaluations = evaluations.subscribe(
+        const sendEvaluations = evaluations
+            .take(this.options.interactions)
+            .subscribe(
             (e) => {
                 console.log(`sending evaluation to population. ${e.genotype.id}`);
                 evaluate.next(e);
             },
-            (error) => console.log(`sendingEvaluations: ${error}`),
-            () => console.log("sendingEvaluations completed"),
+            (error) => console.log(`sendEvaluations: ${error}`),
+            () => console.log("sendEvaluations completed"),
         );
 
         return subs
+            .add(perception)
             .add(interaction)
+            .add(observation)
             .add(evaluation)
-            .add(sendingInteractions)
-            .add(sendingEvaluations);
+            .add(sendInteractions)
+            .add(sendEvaluations);
     }
 
     // turn env state into perception of env state
@@ -102,7 +125,7 @@ export abstract class Organism<
         state: Observable<IStateUpdate<EState>>,
     ): Observable<IStateUpdate<AState>> {
         return state
-            .take(this.options.interactions)
+            // .take(this.options.interactions)
             .map((s) => {
                 return this.perceive(s);
             })
@@ -113,7 +136,7 @@ export abstract class Organism<
     // turn perception of env state into state that has been interacted with
     private interactWithState(state: Observable<IStateUpdate<AState>>): Observable<IAgentUpdate<EState>> {
         return state
-            .take(this.options.interactions)
+            // .take(this.options.interactions)
             .map((s) => {
                 return this.interact(s, this.phenotype);
             })
