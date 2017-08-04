@@ -13,7 +13,10 @@
         "declarationDir": "out",
         "outDir": "out",
         "rootDir": ".",
-        "baseUrl": "./src"
+        "baseUrl": "./src",
+        "paths": {
+            "*": ["*"]
+        }
     },
     "include": [
         "src/**/*",

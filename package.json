@@ -36,12 +36,12 @@
     "rxjs": "^5.4.2"
   },
   "devDependencies": {
-    "@types/chai": "^3.5.2",
-    "@types/chance": "^0.7.33",
-    "@types/d3-interpolate": "^1.1.5",
-    "@types/lodash": "^4.14.70",
+    "@types/chai": "^4.0.2",
+    "@types/chance": "^0.7.34",
+    "@types/d3-interpolate": "^1.1.6",
+    "@types/lodash": "^4.14.71",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^7.0.38",
+    "@types/node": "^8.0.19",
     "chai": "^3.5.0",
     "mocha": "^3.3.0",
     "rimraf": "^2.6.1",
