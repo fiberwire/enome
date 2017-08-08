@@ -40,12 +40,12 @@ export abstract class Population<
     constructor(
         public genOptions: Gen,
         public popOptions: Pop,
-        public orgOptions: Org) {
+        public orgOptions: Org,
+    ) {
     }
 
     // mutate the organism based on evaluation
-    public abstract mutate(
-        evaluation: IEvaluation<Gen, Data, Pheno>): Genome<Gen>;
+    public abstract mutate(evaluation: IEvaluation<Gen, Data, Pheno>): Genome<Gen>;
 
     // create an organism to inject into environment.
     public abstract createOrganism(
@@ -72,10 +72,13 @@ export abstract class Population<
         return this
             .updateGenotype(this.evaluations, top)
             .map((genome) => this.createOrganism(genome, this.orgOptions))
+            .take(this.popOptions.generations)
+            .do((g) => console.log(`Generation: ${this.generation++}`))
             .subscribe(
-                (o) => organisms.next(o),
-                (error) => console.log(`population.populate(): ${error}`),
-            );
+            (o) => organisms.next(o),
+            (error) => console.log(`population.populate(): ${error.stack}`),
+            () => console.log(`Evolution completed after ${this.generation++} generations.`),
+        );
     }
 
     // update genotypes as they are evaluated
@@ -86,19 +89,29 @@ export abstract class Population<
         return evaluations
             .map((e) => {
                 const update = chance.weighted(
-                    [
-                        this.mutateGenotype,
-                        this.reproduceGenotype,
-                        this.randomizeGenotype,
-                    ],
+                    ["mutate", "reproduce", "randomize", "keep"],
                     [
                         this.popOptions.weights.mutate,
                         this.popOptions.weights.reproduce,
                         this.popOptions.weights.randomize,
+                        this.popOptions.weights.keep,
                     ],
                 );
 
-                return update(e, top);
+                switch (update) {
+                    case "mutate":
+                        return this.mutateGenotype(e, top);
+
+                        case "reproduce":
+                        return this.reproduceGenotype(e, top);
+
+                        case "randomize":
+                        return this.randomizeGenotype(e, top);
+
+                        case "keep":
+                        default:
+                        return e.genotype;
+                }
             });
     }
 
@@ -113,7 +126,12 @@ export abstract class Population<
         evaluation: IEvaluation<Gen, Data, Pheno>,
         top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
     ): Genome<Gen> {
-        return reproduceManyToOne(top.value.map((t) => t.genotype));
+        if (top.value.length > 0 && top.value != null && top.value !== undefined) {
+            return reproduceManyToOne(top.value.map((t) => t.genotype));
+        } else {
+            return this.mutate(evaluation);
+        }
+
     }
 
     private randomizeGenotype(
