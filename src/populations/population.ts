@@ -77,7 +77,9 @@ export abstract class Population<
             .do((g) => {
                 if (this.popOptions.progress) {
                     if (this.generation % _.round((this.popOptions.generations / 10)) === 0) {
-                        console.log(`Generation: ${this.generation}`);
+                        console.log(
+                            `Generation: ${this.generation} ${_.round(this.generation * 100 / this.popOptions.generations)}%`,
+                        );
                     }
                 }
             })
