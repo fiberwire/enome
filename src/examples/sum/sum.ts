@@ -8,23 +8,23 @@ import { SumPopulation } from "./sum-population";
 import * as _ from "lodash";
 
 const genOptions: ISumGenomeOptions = {
-    geneLength: 1,
-    genomeLength: 50,
-    length: 7,
-    max: 100,
+    geneLength: 2,
+    genomeLength: 100,
+    length: 100,
+    max: 500,
     min: 1,
     refill: GenomeRefill.extend,
 };
 
 const popOptions: ISumPopOptions = {
-    generations: 100,
+    generations: 20000,
     mutate: {
-        mutateChance: 0.01,
+        mutateChance: 0.15,
         mutateOp: MutateOp.sub,
     },
     objective: FitnessObjective.minimize,
     progress: true,
-    size: 10,
+    size: 100,
     topPercent: .25,
     weights: {
         keep: 5,
@@ -36,8 +36,7 @@ const popOptions: ISumPopOptions = {
 
 const orgOptions: ISumOrganismOptions = {
     interactions: 1,
-    lifeSpan: 10,
-    target: 150,
+    target: 4567,
 };
 
 const env = new SumEnv({ interactionRate: 1 });
