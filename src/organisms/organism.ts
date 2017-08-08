@@ -64,12 +64,7 @@ export abstract class Organism<
             .map((buffer) => Promise.all(buffer)) // resolve promises
             .map(async (o) => { // evaluate
                 const evaluation = await this.evaluateObservations(o);
-                try {
-                    evaluate.next(evaluation);
-                } catch (e) {
-                    console.log(e.stack);
-                }
-
+                evaluate.next(evaluation);
         })
             .subscribe();
     }

@@ -105,8 +105,6 @@ export class Simulation<Gen extends IGenomeOptions,
                     this.environment.state.asObservable(),
                     this.environment.state.asObserver(),
                     this.population.evaluations));
-
-                console.log(`New Organism: ${org.genotype.id}`);
             },
             (error) => console.log(`error from simulation.introduceOrganism: ${error}`));
 
