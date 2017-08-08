@@ -73,7 +73,14 @@ export abstract class Population<
             .updateGenotype(this.evaluations, top)
             .map((genome) => this.createOrganism(genome, this.orgOptions))
             .take(this.popOptions.generations)
-            .do((g) => console.log(`Generation: ${this.generation++}`))
+            .do((g) => this.generation++)
+            .do((g) => {
+                if (this.popOptions.progress) {
+                    if (this.generation % _.round((this.popOptions.generations / 10)) === 0) {
+                        console.log(`Generation: ${this.generation}`);
+                    }
+                }
+            })
             .subscribe(
             (o) => organisms.next(o),
             (error) => console.log(`population.populate(): ${error.stack}`),
@@ -102,14 +109,14 @@ export abstract class Population<
                     case "mutate":
                         return this.mutateGenotype(e, top);
 
-                        case "reproduce":
+                    case "reproduce":
                         return this.reproduceGenotype(e, top);
 
-                        case "randomize":
+                    case "randomize":
                         return this.randomizeGenotype(e, top);
 
-                        case "keep":
-                        default:
+                    case "keep":
+                    default:
                         return e.genotype;
                 }
             });
