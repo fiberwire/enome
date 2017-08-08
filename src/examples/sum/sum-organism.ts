@@ -3,8 +3,8 @@ import { ISumAgentState } from "./interfaces/sum-agent-state";
 import { ISumData } from "./interfaces/sum-data";
 import { ISumEnvState } from "./interfaces/sum-env-state";
 import { ISumGenomeOptions } from "./interfaces/sum-genome-options";
+import { ISumOrganismOptions } from "./interfaces/sum-organism-options";
 import { ISumPopOptions } from "./interfaces/sum-pop-options";
-import { ISumOrganismOptions } from "./sum-organism-options";
 
 import * as _ from "lodash";
 

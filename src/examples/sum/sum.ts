@@ -1,8 +1,8 @@
 import { FitnessObjective, GenomeRefill, IOrganismOptions, MutateOp, Simulation } from "../../index";
 import { ISumGenomeOptions } from "./interfaces/sum-genome-options";
+import { ISumOrganismOptions } from "./interfaces/sum-organism-options";
 import { ISumPopOptions } from "./interfaces/sum-pop-options";
 import { SumEnv } from "./sum-environment";
-import { ISumOrganismOptions } from "./sum-organism-options";
 import { SumPopulation } from "./sum-population";
 
 import * as _ from "lodash";
