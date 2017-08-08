@@ -24,7 +24,7 @@ export abstract class Organism<
     public phenotype: Pheno;
 
     constructor(public genotype: Genome<Gen>,
-        public options: Org) {
+                public options: Org) {
         this.phenotype = this.createPhenotype(this.genotype);
     }
 
@@ -56,30 +56,28 @@ export abstract class Organism<
         const evaluations = new ReplaySubject<IEvaluation<Gen, Data, Pheno>>();
         const observations = new ReplaySubject<Data>();
 
-        const perception = this.perceiveEnvironment(state).subscribe(
+        const perception = this.perceiveEnvironment(state.take(this.options.interactions))
+            .subscribe(
             (p) => perceptions.next(p),
             (error) => console.log(`perception: ${error}`),
             () => console.log("perception completed"),
         );
 
-        const interaction = this.interactWithState(perceptions)
-            .take(this.options.interactions)
+        const interaction = this.interactWithState(perceptions.take(this.options.interactions))
             .subscribe(
             (i) => interactions.next(i),
             (error) => console.log(`interaction: ${error}`),
             () => console.log("interaction completed"),
         );
 
-        const observation = this.observeInteractions(interactions)
-            .take(this.options.interactions)
+        const observation = this.observeInteractions(interactions.take(this.options.interactions))
             .subscribe(
             (o) => observations.next(o),
             (error) => console.log(`observation: ${error}`),
             () => console.log("observation completed"),
         );
 
-        const evaluation = this.evaluateObservations(observations)
-            .take(this.options.interactions)
+        const evaluation = this.evaluateObservations(observations.take(this.options.interactions))
             .subscribe(
             (e) => evaluations.next(e),
             (error) => console.log(`evaluation: ${error}`),
@@ -87,7 +85,7 @@ export abstract class Organism<
         );
 
         const sendInteractions = interactions
-            .take(this.options.interactions)
+            // .take(this.options.interactions)
             .subscribe(
             (i) => {
                 console.log(`sending interaction to environment. #${i.interaction}: ${i.agentID}`);
@@ -98,7 +96,7 @@ export abstract class Organism<
         );
 
         const sendEvaluations = evaluations
-            .take(this.options.interactions)
+            // .take(this.options.interactions)
             .subscribe(
             (e) => {
                 console.log(`sending evaluation to population. ${e.genotype.id}`);
