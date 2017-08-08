@@ -1,3 +1,4 @@
+import { FitnessObjective } from "../enums/fitness-objective";
 import { Observable } from "rxjs/Observable";
 import { ReplaySubject, Subject } from "rxjs/Rx";
 import { Subscription } from "rxjs/Subscription";
@@ -48,8 +49,22 @@ export class Simulation<Gen extends IGenomeOptions,
         const update = this.population.evaluations
             .filter((e) => e != null && e !== undefined)
             .subscribe((evaluation) => {
-                if (evaluation.fitness > this.best.value.fitness) {
+                if (this.best.value === undefined || this.best.value == null) {
                     this.best.value = evaluation;
+                }
+
+                switch (this.population.popOptions.objective) {
+                    case FitnessObjective.minimize:
+                        if (evaluation.fitness < this.best.value.fitness) {
+                            this.best.value = evaluation;
+                        }
+                        break;
+
+                    case FitnessObjective.maximize:
+                        if (evaluation.fitness > this.best.value.fitness) {
+                            this.best.value = evaluation;
+                        }
+                        break;
                 }
             },
             (error) => console.log(`error from simulation.updateBest: ${error}`),
