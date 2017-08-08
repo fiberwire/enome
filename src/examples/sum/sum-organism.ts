@@ -1,10 +1,10 @@
 import { Genome, IAgentUpdate, IEvaluation, IStateUpdate, Organism } from "../../index";
-import { ISumAgentState } from "./sum-agent-state";
-import { ISumData } from "./sum-data";
-import { ISumEnvState } from "./sum-env-state";
-import { ISumGenomeOptions } from "./sum-genome-options";
+import { ISumAgentState } from "./interfaces/sum-agent-state";
+import { ISumData } from "./interfaces/sum-data";
+import { ISumEnvState } from "./interfaces/sum-env-state";
+import { ISumGenomeOptions } from "./interfaces/sum-genome-options";
+import { ISumPopOptions } from "./interfaces/sum-pop-options";
 import { ISumOrganismOptions } from "./sum-organism-options";
-import { ISumPopOptions } from "./sum-pop-options";
 
 import * as _ from "lodash";
 

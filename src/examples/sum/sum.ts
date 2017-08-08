@@ -1,8 +1,8 @@
 import { FitnessObjective, GenomeRefill, IOrganismOptions, MutateOp, Simulation } from "../../index";
+import { ISumGenomeOptions } from "./interfaces/sum-genome-options";
+import { ISumPopOptions } from "./interfaces/sum-pop-options";
 import { SumEnv } from "./sum-environment";
-import { ISumGenomeOptions } from "./sum-genome-options";
 import { ISumOrganismOptions } from "./sum-organism-options";
-import { ISumPopOptions } from "./sum-pop-options";
 import { SumPopulation } from "./sum-population";
 
 import * as _ from "lodash";
@@ -10,14 +10,14 @@ import * as _ from "lodash";
 const genOptions: ISumGenomeOptions = {
     geneLength: 2,
     genomeLength: 100,
-    length: 100,
-    max: 500,
+    length: 10,
+    max: 5000,
     min: 1,
     refill: GenomeRefill.extend,
 };
 
 const popOptions: ISumPopOptions = {
-    generations: 20000,
+    generations: 10000,
     mutate: {
         mutateChance: 0.15,
         mutateOp: MutateOp.sub,

@@ -1,13 +1,13 @@
 import { FitnessObjective } from "../../enums/fitness-objective";
 import { Environment, Genome, IEvaluation, IOrganismOptions, mutate, Organism, Population } from "../../index";
-import { ISumAgentState } from "./sum-agent-state";
-import { ISumData } from "./sum-data";
-import { ISumEnvState } from "./sum-env-state";
+import { ISumAgentState } from "./interfaces/sum-agent-state";
+import { ISumData } from "./interfaces/sum-data";
+import { ISumEnvState } from "./interfaces/sum-env-state";
+import { ISumGenomeOptions } from "./interfaces/sum-genome-options";
+import { ISumPopOptions } from "./interfaces/sum-pop-options";
 import { SumEnv } from "./sum-environment";
-import { ISumGenomeOptions } from "./sum-genome-options";
 import { SumOrganism } from "./sum-organism";
 import { ISumOrganismOptions } from "./sum-organism-options";
-import { ISumPopOptions } from "./sum-pop-options";
 
 import * as _ from "lodash";
 

@@ -1,9 +1,9 @@
-import { ISumData } from "./sum-data";
-import { ISumEnvState } from "./sum-env-state";
-import { ISumGenomeOptions } from "./sum-genome-options";
+import { ISumData } from "./interfaces/sum-data";
+import { ISumEnvState } from "./interfaces/sum-env-state";
+import { ISumGenomeOptions } from "./interfaces/sum-genome-options";
+import { ISumPopOptions } from "./interfaces/sum-pop-options";
 import { SumOrganism } from "./sum-organism";
 import { ISumOrganismOptions } from "./sum-organism-options";
-import { ISumPopOptions } from "./sum-pop-options";
 import { SumPopulation } from "./sum-population";
 
 import { Environment, Genome, IEnvironmentOptions, IStateUpdate, Organism } from "../../index";

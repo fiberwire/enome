@@ -1,5 +1,5 @@
 
-import { IGenomeOptions } from "../../index";
+import { IGenomeOptions } from "../../../index";
 
 export interface ISumGenomeOptions extends IGenomeOptions {
     length: number;
