@@ -13,5 +13,6 @@ export interface IPopulationOptions {
         mutate: number,
         reproduce: number,
         randomize: number,
+        keep: number,
     };
 }

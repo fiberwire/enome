@@ -17,19 +17,20 @@ const genOptions: ISumGenomeOptions = {
 };
 
 const popOptions: ISumPopOptions = {
-    generations: 100000,
+    generations: 100,
     mutate: {
         mutateChance: 0.01,
         mutateOp: MutateOp.sub,
     },
     objective: FitnessObjective.minimize,
     progress: true,
-    size: 1,
+    size: 10,
     topPercent: .25,
     weights: {
+        keep: 5,
         mutate: 15,
         randomize: 10,
-        reproduce: 75,
+        reproduce: 70,
     },
 };
 
