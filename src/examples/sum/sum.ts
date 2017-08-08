@@ -6,10 +6,11 @@ import { SumEnv } from "./sum-environment";
 import { SumPopulation } from "./sum-population";
 
 import * as _ from "lodash";
+import * as Rx from "rxjs";
 
 const genOptions: ISumGenomeOptions = {
-    geneLength: 2,
-    genomeLength: 100,
+    geneLength: 1,
+    genomeLength: 50,
     length: 10,
     max: 5000,
     min: 1,
@@ -24,7 +25,7 @@ const popOptions: ISumPopOptions = {
     },
     objective: FitnessObjective.minimize,
     progress: true,
-    size: 100,
+    size: 10,
     topPercent: .25,
     weights: {
         keep: 5,
@@ -39,7 +40,7 @@ const orgOptions: ISumOrganismOptions = {
     target: 4567,
 };
 
-const env = new SumEnv({ interactionRate: 1 });
+const env = new SumEnv({ interactionRate: 1000 });
 
 const pop = new SumPopulation(
     genOptions,
@@ -51,6 +52,8 @@ const sim = new Simulation(pop, env).start();
 
 sim.best
     .filter((b) => b !== undefined && b != null)
+    .observeOn(Rx.Scheduler.asap)
+    .subscribeOn(Rx.Scheduler.asap)
     .subscribe((b) => {
         const list = b.phenotype;
         const fitness = b.fitness;

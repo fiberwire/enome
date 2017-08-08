@@ -1,4 +1,5 @@
 import { Observable, Observer, Subject, Subscription } from "rxjs";
+import * as Rx from "rxjs";
 
 import {
     cloneEvaluation,
@@ -83,6 +84,7 @@ export abstract class Population<
                     }
                 }
             })
+            .subscribeOn(Rx.Scheduler.asap)
             .subscribe(
             (o) => organisms.next(o),
             (error) => console.log(`population.populate(): ${error.stack}`),

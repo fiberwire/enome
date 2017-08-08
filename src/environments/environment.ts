@@ -13,6 +13,7 @@ import {
 } from "../index";
 
 import * as _ from "lodash";
+import * as Rx from "rxjs";
 
 export abstract class Environment<
     Gen extends IGenomeOptions,
@@ -21,9 +22,6 @@ export abstract class Environment<
     Data, Pheno, AState, EState>{
 
     public state: ReactiveProperty<IStateUpdate<EState>>;
-
-    public organisms: ReactiveCollection<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>> =
-    new ReactiveCollection<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>();
 
     public interactions: Subject<IAgentUpdate<EState>> =
     new Subject<IAgentUpdate<EState>>();
@@ -48,14 +46,14 @@ export abstract class Environment<
     private interaction(): Subscription {
         return this.interactions.asObservable()
             .filter((i) => i.interaction > this.state.value.interaction) // only accept new interactions
-            .filter((i) => i !== undefined)
-            .filter((i) => i.interaction !== undefined)
             .bufferTime(1000 / this.options.interactionRate) // buffer new interactions periodically
             .filter((interactions) => interactions.length > 0)
             .map((interactions) => {
                 const i = _.shuffle(interactions)[0];
                 return i;
             }) // choose a random interaction from buffer
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap)
             .subscribe((i) => {
                 this.state.value = i;
             },

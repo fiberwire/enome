@@ -24,7 +24,7 @@ export abstract class Organism<
     public phenotype: Pheno;
 
     constructor(public genotype: Genome<Gen>,
-                public options: Org) {
+        public options: Org) {
         this.phenotype = this.createPhenotype(this.genotype);
     }
 
@@ -65,7 +65,9 @@ export abstract class Organism<
             .map(async (o) => { // evaluate
                 const evaluation = await this.evaluateObservations(o);
                 evaluate.next(evaluation);
-        })
+            })
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap)
             .subscribe();
     }
 

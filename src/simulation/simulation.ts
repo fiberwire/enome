@@ -1,7 +1,8 @@
-import { FitnessObjective } from "../enums/fitness-objective";
+import * as Rx from "rxjs";
 import { Observable } from "rxjs/Observable";
 import { ReplaySubject, Subject } from "rxjs/Rx";
 import { Subscription } from "rxjs/Subscription";
+import { FitnessObjective } from "../enums/fitness-objective";
 import {
     Environment, IEvaluation, IGenomeOptions, IOrganismOptions,
     IPopulationOptions, Organism, Population,
@@ -48,6 +49,8 @@ export class Simulation<Gen extends IGenomeOptions,
     private updateBest(): Subscription {
         const update = this.population.evaluations
             .filter((e) => e != null && e !== undefined)
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap)
             .subscribe((evaluation) => {
                 if (this.best.value === undefined || this.best.value == null) {
                     this.best.value = evaluation;
@@ -77,6 +80,8 @@ export class Simulation<Gen extends IGenomeOptions,
     private updateTop(): Subscription {
         const update = this.population.evaluations
             .filter((e) => e != null && e !== undefined)
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap)
             .subscribe((e) => {
                 const top = this.top.value;
                 top.push(e);
@@ -92,6 +97,8 @@ export class Simulation<Gen extends IGenomeOptions,
     private updateAvgFitness(): Subscription {
         return this.population.evaluations
             .filter((e) => e != null && e !== undefined)
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap)
             .subscribe((e) => {
                 this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
             },
@@ -100,6 +107,8 @@ export class Simulation<Gen extends IGenomeOptions,
 
     private introduceOrganisms(): Subscription {
         const intro = this.newOrganisms
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap)
             .subscribe((org) => {
                 this.subs.add(org.interactWithEnvironment(
                     this.environment.state.asObservable(),

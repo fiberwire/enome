@@ -4,6 +4,7 @@ import { IScheduler } from "rxjs/Scheduler";
 import { ReactiveProperty } from "./index";
 
 import * as _ from "lodash";
+import * as Rx from "rxjs";
 
 export class ReactiveCollection<T> {
 
@@ -48,27 +49,45 @@ export class ReactiveCollection<T> {
     }
 
     public subscribeToPush(observer: (value: T) => void | Observer<T>): Subscription {
-        return this.pushed.subscribe(observer);
+        return this.pushed
+        .observeOn(Rx.Scheduler.asap)
+        .subscribeOn(Rx.Scheduler.asap)
+        .subscribe(observer);
     }
 
     public subscribeToPop(observer: (value: T) => void | Observer<T>): Subscription {
-        return this.popped.subscribe(observer);
+        return this.popped
+        .observeOn(Rx.Scheduler.asap)
+        .subscribeOn(Rx.Scheduler.asap)
+        .subscribe(observer);
     }
 
     public subscribeToShift(observer: (value: T) => void | Observer<T>): Subscription {
-        return this.shifted.subscribe(observer);
+        return this.shifted
+        .observeOn(Rx.Scheduler.asap)
+        .subscribeOn(Rx.Scheduler.asap)
+        .subscribe(observer);
     }
 
     public subscribeToUnshift(observer: (value: T) => void | Observer<T>): Subscription {
-        return this.unshifted.subscribe(observer);
+        return this.unshifted
+        .observeOn(Rx.Scheduler.asap)
+        .subscribeOn(Rx.Scheduler.asap)
+        .subscribe(observer);
     }
 
     public subscribeToRemove(observer: (value: T) => void | Observer<T>): Subscription {
-        return this.removed.subscribe(observer);
+        return this.removed
+        .observeOn(Rx.Scheduler.asap)
+        .subscribeOn(Rx.Scheduler.asap)
+        .subscribe(observer);
     }
 
     public subscribeToRotate(observer: (value: T) => void | Observer<T>): Subscription {
-        return this.rotated.subscribe(observer);
+        return this.rotated
+        .observeOn(Rx.Scheduler.asap)
+        .subscribeOn(Rx.Scheduler.asap)
+        .subscribe(observer);
     }
 
     public push(value: T): ReactiveCollection<T> {
