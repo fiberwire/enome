@@ -46,6 +46,10 @@ export class Simulation<Gen extends IGenomeOptions,
         return this;
     }
 
+    public stop(): void {
+        this.subs.unsubscribe();
+    }
+
     private updateBest(): Subscription {
         const update = this.population.evaluations
             .filter((e) => e != null && e !== undefined)
