@@ -21,7 +21,7 @@ export class Genome<T extends IGenomeOptions> {
         public options: T,
         public sequence: number[] =
             values(options.genomeLength) // generate values
-                .map((value) => _.range(options.geneLength).map((i) => value)) // copy values options.geneLength times
+                .map((v) => _.range(options.geneLength).map((i) => v)) // copy values options.geneLength times
                 .reduce((prev, curr) => _.concat(prev, curr)), // merge back into a single array
         public idLength: number = Math.min(12, options.genomeLength),
     ) {
