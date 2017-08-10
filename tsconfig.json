@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es5",
+        "moduleResolution": "node",
+        "target": "es6",
         "noImplicitAny": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,
@@ -14,9 +15,7 @@
         "rootDir": ".",
         "baseUrl": "./src",
         "paths": {
-            "*": [
-                "*"
-            ]
+            "*": ["*"]
         }
     },
     "include": [

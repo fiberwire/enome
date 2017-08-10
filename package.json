@@ -1,6 +1,6 @@
 {
   "name": "enome",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "A genome generation and evolution library.",
   "main": "out/src/index.js",
   "typings": "out/src/index.d.ts",
@@ -8,7 +8,7 @@
     "test": "mocha --colors --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
     "watch": "mocha --colors --watch --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
     "lint": "tsconfig-lint .",
-    "sum": "ts-node src/examples/sum.ts",
+    "sum": "ts-node src/examples/sum/sum.ts",
     "letters": "ts-node src/examples/letters.ts",
     "tsc": "tsc --watch",
     "prepublish": "npm run compile",
@@ -23,26 +23,25 @@
     "algorithm",
     "genome",
     "gene",
-    "evolution"
+    "evolution",
+    "reactive",
+    "async"
   ],
   "author": "Andrew Ramos",
   "license": "ISC",
   "dependencies": {
-    "chance": "^1.0.8",
-    "d3-interpolate": "^1.1.4",
+    "chance": "^1.0.10",
+    "d3-interpolate": "^1.1.5",
     "lodash": "^4.17.4",
-    "readline-sync": "^1.4.7",
-    "rx": "^4.1.0"
+    "rxjs": "^5.4.2"
   },
   "devDependencies": {
-    "@types/chai": "^3.5.2",
-    "@types/chance": "^0.7.33",
-    "@types/d3-interpolate": "^1.1.5",
-    "@types/lodash": "^4.14.64",
+    "@types/chai": "^4.0.2",
+    "@types/chance": "^0.7.34",
+    "@types/d3-interpolate": "^1.1.6",
+    "@types/lodash": "^4.14.71",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^7.0.18",
-    "@types/readline-sync": "^1.4.2",
-    "@types/rx": "^4.1.1",
+    "@types/node": "^8.0.19",
     "chai": "^3.5.0",
     "mocha": "^3.3.0",
     "rimraf": "^2.6.1",
@@ -50,6 +49,6 @@
     "tsconfig-lint": "^0.12.0",
     "tsconfig-paths": "^2.1.2",
     "tslint": "^5.3.2",
-    "typescript": "^2.3.2"
+    "typescript": "^2.4.1"
   }
 }

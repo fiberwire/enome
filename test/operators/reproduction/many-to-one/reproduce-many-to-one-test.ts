@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as _ from "lodash";
 import "mocha";
-import { replenish } from "../../../../src/operators/replenish";
+import { refill } from "../../../../src/operators/refill";
 import { reproduceManyToOne } from "../../../../src/operators/reproduction/many-to-one/reproduce-many-to-one";
 import { mocks } from "../../../mocks";
 
@@ -11,7 +11,7 @@ describe("operators", () => {
             let { genomes } = mocks();
 
             beforeEach(() => {
-                genomes = genomes.map(replenish);
+                genomes = genomes.map(refill);
             });
 
             it("should produce an offspring from many genomes, given a weight array", () => {

@@ -1,6 +1,7 @@
+import { GenomeRefill } from "../index";
 
 export interface IGenomeOptions {
     genomeLength: number;
     geneLength: number;
-    loopGenes: boolean;
+    refill: GenomeRefill;
 }

@@ -1,5 +1,5 @@
-import { ReproduceType } from "../enums/reproduce-type";
-export interface ReproduceOptions {
-    type: ReproduceType;
-    sampleSize: number;
+
+export interface IReproduceOptions {
+    reproduceChance: number;
+    randomChance: number;
 }
