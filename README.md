@@ -13,45 +13,31 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
 
 * ### `Organism`:
     * an `Organism` is just an object that contains a `genotype` and a `phenotype` and has the ability to interact with an `Environment`.
-        * a `genotype`, in this case, is a `Genome`, which contains genetic information that you use to create the `phenotype`.
+        * a `genotype`, in this case, is a `Genome`, which contains genetic information that you use to create a `phenotype`.
         * a `phenotype`, in this case, is whatever kind of object you would like to evolve.
     * `Organisms` record data as they are interacting with the `Environment`.
-        * Once the `Organism` has done a specified number of `interactions` or has reached its specified `lifeSpan`, it queues itself up for evaluation by its `Population`.
+        * Once the `Organism` has done a specified number of `interactions`, it evaluates itself based on the data it collected and sends the evaluation to the `Population`, which will decide how to evolve the organism.
+        * You specify the function that determines the `fitness` of the `Organism` based on its data.
     
 * ### `Environment`:
     * an `Environment` is essentially just an asynchronous state container.
-    * You interact with an `Environment` by sending `IStateUpdates` to its `state` `Subject`.
+    * You interact with an `Environment` by sending `IStateUpdates` to its `state` property.
     * an `Environment` may have multiple `Organisms` interacting with it at a time.
     * `Environments` have an `interactionRate` property which you can set that limits how often it accepts `IStateUpdates` (think of it like a frame rate).
-        * `Environments` deal with multiple asynchronous sources of incoming `IStateUpdates` by buffering them over time based on the `interactionRate` and then randomly choosing between ones that were based on the current `state`, otherwise state updates could happen out of order (think of it like an asynchronous way of having a shared order of events even though everything is happening out of order, technically).
+        * `Environments` deal with multiple asynchronous sources of incoming `IStateUpdates` by buffering them over time based on the `interactionRate` and then randomly choosing between them. The `Environment` will only accept state updates that are based on the current `state`, otherwise state updates could happen out of order (think of it like an asynchronous way of having a shared order of events even though everything is happening out of order, technically).
 
 * ### `Population`
-    * `Populations` create `Organisms` and tell them which environments to interact with.
+    * `Populations` populate environments with organisms.
     * `Populations` are also in charge of determining how `Organisms` evolve.
-        * when a `Population` receives an `Organism` to evaluate, it looks at the data that the `Organism` collected to determine its `fitness`.
-            * You specify the function that determines the `fitness` of the `Organism` based on its data.
-        * when a `Population` finishes evaluating an `Organism`, it then determines what it wants to do with the `genotype` of the `Organism` between three options:
-            1. `mutate`
-                * mutates the `genotype` based on options that you set
-                * creates a new `Organism` with the mutated `genotype`. 
-            2. `reproduce`
-                * produces an offspring `genotype` by mixing the `genotypes` of all the other `Organisms` in the `Population`. 
-                * creates a new `Organism` with the offspring `genotype`. 
-            3. `randomize`
-                * creates a new `Organism` with a randomly generated `Genome`.
-                * this is good for introducing genetic variety into the population so it doesn't hit a local minimum
-        * The way it determines what to do with the `genotype` is by randomly choosing based on relative weights that you give it.
-            * for instance, you could give it
-            
-            ```  
-            {
-                mutate: .15,
-                reproduce: .75,
-                randomize: .1
-            }
-            ```
-
-            which would give mutation a 15% chance, reproduction a 75% chance, and randomization a 10% chance.
+        * when a `Population` receives an evaluation, it looks at the `fitness` and determines what it wants to do with the `genotype`.
+            * `Populations` can update the genotype in the following ways:
+                * `Reproduce` will mix the genomes of the top organisms in the population based on fitness. (You can specify the percentage of organisms that qualifies as "top", which lets you determine whether you want to refine what is already working well or find new solutions)
+                * `Mutate` will give each value in the Genome's sequence a chance to mutate and has two different mutation methods to choose from.
+                    * `sub` will substitute the value for a new randomly generated one.
+                    * `avg` will average the value with a new randomly generated one.
+                * `Randomize` will replace the genome with a new randomly generated one (using the same options).
+                * `Keep` will just send the organism back into the environment. This is good for when you get a genotype with a very good fitness and you don't want it to be mutated which has the possibility of making it worse.
+            * By default, `Populations` will choose between the different update methods randomly based on an array of weights that you provide.
                 
 
 ## Underlying the evolution system are `Genomes` and `Genes`:
