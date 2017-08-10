@@ -2,6 +2,7 @@ import { FillType } from "./enums/fill-type";
 import { FitnessObjective } from "./enums/fitness-objective";
 import { GenomeRefill } from "./enums/genome-refill";
 import { MutateOp } from "./enums/mutate-op";
+import { UpdateType } from "./enums/update-type";
 import { Environment } from "./environments/environment";
 import { Gene } from "./genotypes/gene";
 import { Genome } from "./genotypes/genome";
@@ -103,6 +104,7 @@ export {
     FitnessObjective,
     GenomeRefill,
     MutateOp,
+    UpdateType,
 };
 
 // misc

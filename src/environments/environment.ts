@@ -10,6 +10,7 @@ import {
     Population,
     ReactiveCollection,
     ReactiveProperty,
+    UpdateType,
 } from "../index";
 
 import * as _ from "lodash";
@@ -37,6 +38,30 @@ export abstract class Environment<
     // The beginning state of the Environment
     public abstract get initialState(): IStateUpdate<EState>
 
+    public get bufferedInteractions(): Observable<Array<IAgentUpdate<EState>>> {
+        return this.interactions
+            .filter((i) => i.interaction > this.state.value.interaction) // only accept new interactions
+            .bufferTime(1000 / this.options.interactionRate) // buffer new interactions periodically
+            .filter((interactions) => interactions.length > 0);
+    }
+
+    public get randomInteractions(): Observable<IAgentUpdate<EState>> {
+        return this.bufferedInteractions
+            .map((interactions) => {
+                const i = _.shuffle(interactions)[0];
+                return i;
+            }); // choose a random interaction from buffer
+    }
+
+    public get assignedInteractions(): Observable<IAgentUpdate<EState>> {
+        return this.bufferedInteractions
+            .map((i) => {
+                return i.reduceRight((prev, curr) => {
+                    return Object.assign(prev, curr);
+                });
+            });
+    }
+
     // resets the environment back to a fresh state
     public reset(): void {
         this.state.value = this.initialState;
@@ -44,14 +69,10 @@ export abstract class Environment<
 
     // choose a random interaction to use as this.state
     private interaction(): Subscription {
-        return this.interactions.asObservable()
-            .filter((i) => i.interaction > this.state.value.interaction) // only accept new interactions
-            .bufferTime(1000 / this.options.interactionRate) // buffer new interactions periodically
-            .filter((interactions) => interactions.length > 0)
-            .map((interactions) => {
-                const i = _.shuffle(interactions)[0];
-                return i;
-            }) // choose a random interaction from buffer
+        const interactions = this.options.updateType === UpdateType.assign ?
+            this.assignedInteractions : this.randomInteractions;
+
+        return interactions
             .observeOn(Rx.Scheduler.asap)
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe((i) => {

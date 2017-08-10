@@ -1,4 +1,4 @@
-import { FitnessObjective, GenomeRefill, IOrganismOptions, MutateOp, Simulation } from "../../index";
+import { FitnessObjective, GenomeRefill, IOrganismOptions, MutateOp, Simulation, UpdateType } from "../../index";
 import { ISumGenomeOptions } from "./interfaces/sum-genome-options";
 import { ISumOrganismOptions } from "./interfaces/sum-organism-options";
 import { ISumPopOptions } from "./interfaces/sum-pop-options";
@@ -9,8 +9,8 @@ import * as _ from "lodash";
 import * as Rx from "rxjs";
 
 const genOptions: ISumGenomeOptions = {
-    geneLength: 1,
-    genomeLength: 50,
+    geneLength: 2,
+    genomeLength: 10,
     length: 10,
     max: 5000,
     min: 1,
@@ -18,9 +18,9 @@ const genOptions: ISumGenomeOptions = {
 };
 
 const popOptions: ISumPopOptions = {
-    generations: 10000,
+    generations: 15000,
     mutate: {
-        mutateChance: 0.15,
+        mutateChance: 0.05,
         mutateOp: MutateOp.sub,
     },
     objective: FitnessObjective.minimize,
@@ -37,10 +37,13 @@ const popOptions: ISumPopOptions = {
 
 const orgOptions: ISumOrganismOptions = {
     interactions: 1,
-    target: 4567,
+    target: 14567,
 };
 
-const env = new SumEnv({ interactionRate: 1000 });
+const env = new SumEnv({
+    interactionRate: 1000 ,
+    updateType: UpdateType.assign,
+});
 
 const pop = new SumPopulation(
     genOptions,
