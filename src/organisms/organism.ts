@@ -24,7 +24,7 @@ export abstract class Organism<
     public phenotype: Pheno;
 
     constructor(public genotype: Genome<Gen>,
-        public options: Org) {
+                public options: Org) {
         this.phenotype = this.createPhenotype(this.genotype);
     }
 
@@ -61,7 +61,7 @@ export abstract class Organism<
                 return observation;
             })
             .bufferCount(this.options.interactions) // buffer observations
-            .map((buffer) => Promise.all(buffer)) // resolve promises
+            .map((buffer) => Promise.all(buffer)) // turns a Promise<Data>[] into a Promise<Data[]>
             .map(async (o) => { // evaluate
                 const evaluation = await this.evaluateObservations(o);
                 evaluate.next(evaluation);
