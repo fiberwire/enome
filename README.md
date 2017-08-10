@@ -92,7 +92,7 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
         
         ```
 
-How enome generates `Genome`s:
+How enome generates `Genomes`:
 - Generates a `sequence` of `values` between 0 and 1.
 - Groups those `values` into `Genes` by averaging them together
   - This results in the `Genome` being less sensitive to `mutation`
@@ -106,5 +106,3 @@ How enome generates `Genome`s:
 ```
 npm install enome
 ```
-
-# Example usage
