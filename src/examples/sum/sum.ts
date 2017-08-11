@@ -54,9 +54,6 @@ const pop = new SumPopulation(
 const sim = new Simulation(pop, env).start();
 
 sim.best
-    .filter((b) => b !== undefined && b != null)
-    .observeOn(Rx.Scheduler.asap)
-    .subscribeOn(Rx.Scheduler.asap)
     .subscribe((b) => {
         const list = b.phenotype;
         const fitness = b.fitness;

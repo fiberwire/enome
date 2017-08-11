@@ -16,9 +16,6 @@ export class Simulation<Gen extends IGenomeOptions,
     Org extends IOrganismOptions,
     Data, Pheno, AState, EState> {
 
-    public best: ReactiveProperty<IEvaluation<Gen, Data, Pheno>>
-    = new ReactiveProperty();
-
     public top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>
     = new ReactiveCollection();
 
@@ -27,12 +24,24 @@ export class Simulation<Gen extends IGenomeOptions,
     public newOrganisms: ReplaySubject<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>
     = new ReplaySubject<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>(1);
 
+    // tslint:disable-next-line:variable-name
+    private _best: ReactiveProperty<IEvaluation<Gen, Data, Pheno>>
+    = new ReactiveProperty();
+
     private subs: Subscription = new Subscription();
 
     constructor(
         public population: Population<Gen, Pop, Org, Data, Pheno, AState, EState>,
         public environment: Environment<Gen, Pop, Org, Data, Pheno, AState, EState>,
     ) { }
+
+    public get best(): Observable<IEvaluation<Gen, Data, Pheno>> {
+        return this._best
+            .asObservable()
+            .filter((b) => b !== undefined && b != null)
+            .observeOn(Rx.Scheduler.asap)
+            .subscribeOn(Rx.Scheduler.asap);
+    }
 
     public start(): Simulation<Gen, Pop, Org, Data, Pheno, AState, EState> {
 
@@ -56,20 +65,20 @@ export class Simulation<Gen extends IGenomeOptions,
             .observeOn(Rx.Scheduler.asap)
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe((evaluation) => {
-                if (this.best.value === undefined || this.best.value == null) {
-                    this.best.value = evaluation;
+                if (this._best.value === undefined || this._best.value == null) {
+                    this._best.value = evaluation;
                 }
 
                 switch (this.population.popOptions.objective) {
                     case FitnessObjective.minimize:
-                        if (evaluation.fitness < this.best.value.fitness) {
-                            this.best.value = evaluation;
+                        if (evaluation.fitness < this._best.value.fitness) {
+                            this._best.value = evaluation;
                         }
                         break;
 
                     case FitnessObjective.maximize:
-                        if (evaluation.fitness > this.best.value.fitness) {
-                            this.best.value = evaluation;
+                        if (evaluation.fitness > this._best.value.fitness) {
+                            this._best.value = evaluation;
                         }
                         break;
                 }
