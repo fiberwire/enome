@@ -23,6 +23,8 @@ export abstract class Organism<
     Data, Pheno, AState, EState> {
     public phenotype: Pheno;
 
+    public alive: ReactiveProperty<boolean> = new ReactiveProperty(true);
+
     constructor(public genotype: Genome<Gen>,
                 public options: Org) {
         this.phenotype = this.createPhenotype(this.genotype);
@@ -64,8 +66,10 @@ export abstract class Organism<
             .map((buffer) => Promise.all(buffer)) // turns a Promise<Data>[] into a Promise<Data[]>
             .map(async (o) => { // evaluate
                 const evaluation = await this.evaluateObservations(o);
-                evaluate.next(evaluation);
+                return evaluation;
             })
+            .do(async (e) => evaluate.next(await e))
+            .do((e) => this.alive.value = false)
             .observeOn(Rx.Scheduler.asap)
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe();

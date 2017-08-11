@@ -20,42 +20,4 @@ export class SumPopulation extends Population<
         ISumData, number[], ISumAgentState, ISumEnvState> {
         return new SumOrganism(genome, options);
     }
-
-    public mutate(
-        evaluation: IEvaluation<ISumGenomeOptions, ISumData, number[]>,
-    ): Genome<ISumGenomeOptions> {
-        switch (this.popOptions.objective) {
-            case FitnessObjective.minimize:
-                if (evaluation.fitness <= this.avgFitness.value) {
-                    return mutate(
-                        evaluation.genotype,
-                        this.popOptions.mutate.mutateChance * .5,
-                        this.popOptions.mutate.mutateOp,
-                    );
-                } else {
-                    return mutate(
-                        evaluation.genotype,
-                        this.popOptions.mutate.mutateChance * .5,
-                        this.popOptions.mutate.mutateOp,
-                    );
-                }
-
-            default:
-            case FitnessObjective.maximize:
-                if (evaluation.fitness >= this.avgFitness.value) {
-                    return mutate(
-                        evaluation.genotype,
-                        this.popOptions.mutate.mutateChance * .5,
-                        this.popOptions.mutate.mutateOp,
-                    );
-                } else {
-                    return mutate(
-                        evaluation.genotype,
-                        this.popOptions.mutate.mutateChance * .5,
-                        this.popOptions.mutate.mutateOp,
-                    );
-                }
-        }
-    }
-
 }
