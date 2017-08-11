@@ -11,7 +11,7 @@
     "sum": "ts-node src/examples/sum/sum.ts",
     "letters": "ts-node src/examples/letters.ts",
     "tsc": "tsc --watch",
-    "prepublish": "npm run compile",
+    "prepare": "npm run compile",
     "compile": "rimraf out && tsc"
   },
   "repository": {
