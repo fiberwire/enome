@@ -24,9 +24,11 @@ export class Simulation<Gen extends IGenomeOptions,
     public newOrganisms: ReplaySubject<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>
     = new ReplaySubject<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>(1);
 
+    public organisms: ReactiveCollection<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>> =
+    new ReactiveCollection();
+
     // tslint:disable-next-line:variable-name
-    private _best: ReactiveProperty<IEvaluation<Gen, Data, Pheno>>
-    = new ReactiveProperty();
+    private _best: ReactiveProperty<IEvaluation<Gen, Data, Pheno>> = new ReactiveProperty();
 
     private subs: Subscription = new Subscription();
 
@@ -46,6 +48,7 @@ export class Simulation<Gen extends IGenomeOptions,
     public start(): Simulation<Gen, Pop, Org, Data, Pheno, AState, EState> {
 
         this.subs = new Subscription()
+            .add(this.removeDeadOrganisms())
             .add(this.introduceOrganisms())
             .add(this.updateAvgFitness())
             .add(this.updateTop())
@@ -108,7 +111,7 @@ export class Simulation<Gen extends IGenomeOptions,
     }
 
     private updateAvgFitness(): Subscription {
-        return this.population.evaluations
+        const update = this.population.evaluations
             .filter((e) => e != null && e !== undefined)
             .observeOn(Rx.Scheduler.asap)
             .subscribeOn(Rx.Scheduler.asap)
@@ -116,6 +119,8 @@ export class Simulation<Gen extends IGenomeOptions,
                 this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
             },
             (error) => console.log(`error from simulation.updateAvgFitness: ${error}`));
+
+        return update;
     }
 
     private introduceOrganisms(): Subscription {
@@ -127,9 +132,23 @@ export class Simulation<Gen extends IGenomeOptions,
                     this.environment.state.asObservable(),
                     this.environment.state.asObserver(),
                     this.population.evaluations));
+
+                this.organisms.push(org);
             },
             (error) => console.log(`error from simulation.introduceOrganism: ${error}`));
 
         return intro;
+    }
+
+    private removeDeadOrganisms(): Subscription {
+        const remove = this.organisms.subscribeToPush((o) => { // when organism is introduced to environment
+            o.alive
+                .filter((alive) => !alive) // if organisms is dead
+                .subscribe((alive) => {
+                    this.organisms.remove(o); // remove from organisms
+                });
+        });
+
+        return remove;
     }
 }
