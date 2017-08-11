@@ -84,6 +84,7 @@ export abstract class Population<
                     }
                 }
             })
+            .observeOn(Rx.Scheduler.asap)
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe(
             (o) => organisms.next(o),
