@@ -42,7 +42,7 @@ export abstract class Environment<
         return this.interactions
             .filter((i) => i.interaction > this.state.value.interaction) // only accept new interactions
             .bufferTime(1000 / this.options.interactionRate) // buffer new interactions periodically
-            .filter((interactions) => interactions.length > 0);
+            .filter((interactions) => interactions.length > 0); // do notihng if there are no interactions
     }
 
     public get randomInteractions(): Observable<IAgentUpdate<EState>> {
@@ -69,8 +69,17 @@ export abstract class Environment<
 
     // choose a random interaction to use as this.state
     private interaction(): Subscription {
-        const interactions = this.options.updateType === UpdateType.assign ?
-            this.assignedInteractions : this.randomInteractions;
+        let interactions: Observable<IAgentUpdate<EState>>;
+
+        switch (this.options.updateType) {
+            case UpdateType.assign:
+                interactions = this.assignedInteractions;
+                break;
+
+            case UpdateType.random:
+                interactions = this.randomInteractions;
+                break;
+        }
 
         return interactions
             .observeOn(Rx.Scheduler.asap)
