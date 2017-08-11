@@ -1,5 +1,6 @@
 import { Observable, Observer, Subject, Subscription } from "rxjs";
 import * as Rx from "rxjs";
+import { mutate } from "../index";
 
 import {
     cloneEvaluation,
@@ -46,7 +47,42 @@ export abstract class Population<
     }
 
     // mutate the organism based on evaluation
-    public abstract mutate(evaluation: IEvaluation<Gen, Data, Pheno>): Genome<Gen>;
+    public mutate(
+        evaluation: IEvaluation<Gen, Data, Pheno>,
+    ): Genome<Gen> {
+        switch (this.popOptions.objective) {
+            case FitnessObjective.minimize:
+                if (evaluation.fitness <= this.avgFitness.value) { // better than average
+                    return mutate(
+                        evaluation.genotype,
+                        this.popOptions.mutate.mutateChance * .5,
+                        this.popOptions.mutate.mutateOp,
+                    );
+                } else { // worse than average
+                    return mutate(
+                        evaluation.genotype,
+                        this.popOptions.mutate.mutateChance,
+                        this.popOptions.mutate.mutateOp,
+                    );
+                }
+
+            default:
+            case FitnessObjective.maximize:
+                if (evaluation.fitness >= this.avgFitness.value) { // better than average
+                    return mutate(
+                        evaluation.genotype,
+                        this.popOptions.mutate.mutateChance * .5,
+                        this.popOptions.mutate.mutateOp,
+                    );
+                } else { // worse than average
+                    return mutate(
+                        evaluation.genotype,
+                        this.popOptions.mutate.mutateChance,
+                        this.popOptions.mutate.mutateOp,
+                    );
+                }
+        }
+    }
 
     // create an organism to inject into environment.
     public abstract createOrganism(
