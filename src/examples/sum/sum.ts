@@ -9,7 +9,7 @@ import * as _ from "lodash";
 import * as Rx from "rxjs";
 
 const genOptions: ISumGenomeOptions = {
-    geneLength: 2,
+    geneLength: 3,
     genomeLength: 10,
     length: 10,
     max: 5000,
@@ -18,20 +18,18 @@ const genOptions: ISumGenomeOptions = {
 };
 
 const popOptions: ISumPopOptions = {
-    generations: 15000,
+    generations: 1000,
     mutate: {
-        mutateChance: 0.05,
-        mutateOp: MutateOp.sub,
+        mutateChance: 0.15,
+        mutateOp: MutateOp.avg,
     },
     objective: FitnessObjective.minimize,
     progress: true,
     size: 10,
     topPercent: .25,
-    weights: {
-        keep: 5,
-        mutate: 15,
-        randomize: 10,
-        reproduce: 70,
+    updateWeights: {
+        randomize: 25,
+        reproduce: 75,
     },
 };
 
@@ -41,7 +39,7 @@ const orgOptions: ISumOrganismOptions = {
 };
 
 const env = new SumEnv({
-    interactionRate: 1000 ,
+    interactionRate: 1000,
     updateType: UpdateType.assign,
 });
 

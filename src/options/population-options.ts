@@ -9,10 +9,8 @@ export interface IPopulationOptions {
     progress: boolean;
     size: number;
     topPercent: number;
-    weights: {
-        mutate: number,
-        reproduce: number,
+    updateWeights: {
         randomize: number,
-        keep: number,
+        reproduce: number,
     };
 }

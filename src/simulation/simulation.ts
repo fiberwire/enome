@@ -53,7 +53,10 @@ export class Simulation<Gen extends IGenomeOptions,
             .add(this.updateAvgFitness())
             .add(this.updateTop())
             .add(this.updateBest())
-            .add(this.population.populate(this.newOrganisms, this.top));
+            .add(this.population.populate(
+                this.newOrganisms,
+                this.top,
+                this.avgFitness));
 
         return this;
     }

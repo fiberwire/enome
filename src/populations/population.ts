@@ -30,8 +30,6 @@ export abstract class Population<
     Org extends IOrganismOptions,
     Data, Pheno, AState, EState> {
 
-    public avgFitness: ReactiveProperty<number> = new ReactiveProperty<number>();
-
     public evaluations: Subject<IEvaluation<Gen, Data, Pheno>> =
     new Subject<IEvaluation<Gen, Data, Pheno>>();
 
@@ -46,49 +44,21 @@ export abstract class Population<
     ) {
     }
 
-    // mutate the organism based on evaluation
-    public mutate(
-        evaluation: IEvaluation<Gen, Data, Pheno>,
-    ): Genome<Gen> {
-        switch (this.popOptions.objective) {
-            case FitnessObjective.minimize:
-                if (evaluation.fitness <= this.avgFitness.value) { // better than average
-                    return mutate(
-                        evaluation.genotype,
-                        this.popOptions.mutate.mutateChance * .5,
-                        this.popOptions.mutate.mutateOp,
-                    );
-                } else { // worse than average
-                    return mutate(
-                        evaluation.genotype,
-                        this.popOptions.mutate.mutateChance,
-                        this.popOptions.mutate.mutateOp,
-                    );
-                }
-
-            default:
-            case FitnessObjective.maximize:
-                if (evaluation.fitness >= this.avgFitness.value) { // better than average
-                    return mutate(
-                        evaluation.genotype,
-                        this.popOptions.mutate.mutateChance * .5,
-                        this.popOptions.mutate.mutateOp,
-                    );
-                } else { // worse than average
-                    return mutate(
-                        evaluation.genotype,
-                        this.popOptions.mutate.mutateChance,
-                        this.popOptions.mutate.mutateOp,
-                    );
-                }
-        }
-    }
-
     // create an organism to inject into environment.
     public abstract createOrganism(
         genome: Genome<Gen>,
         options: IOrganismOptions,
     ): Organism<Gen, Pop, Org, Data, Pheno, AState, EState>;
+
+    public mutate(
+        genome: Genome<Gen>,
+    ): Genome<Gen> {
+        return mutate(
+            genome,
+            this.popOptions.mutate.mutateChance,
+            this.popOptions.mutate.mutateOp,
+        );
+    }
 
     public createOrganisms(n: number): Array<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>> {
         return _.range(n)
@@ -99,6 +69,7 @@ export abstract class Population<
     public populate(
         organisms: Observer<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>,
         top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
+        avgFitness: ReactiveProperty<number>,
     ): Subscription {
         const orgs = this.createOrganisms(this.popOptions.size);
 
@@ -107,7 +78,7 @@ export abstract class Population<
         }
 
         return this
-            .updateGenotype(this.evaluations, top)
+            .updateGenotype(this.evaluations, top, avgFitness)
             .map((genome) => this.createOrganism(genome, this.orgOptions))
             .take(this.popOptions.generations)
             .do((g) => this.generation++)
@@ -130,61 +101,68 @@ export abstract class Population<
     }
 
     // update genotypes as they are evaluated
-    private updateGenotype(
+    public updateGenotype(
         evaluations: Observable<IEvaluation<Gen, Data, Pheno>>,
-        top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>): Observable<Genome<Gen>> {
+        top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
+        avgFitness: ReactiveProperty<number>): Observable<Genome<Gen>> {
 
         return evaluations
             .map((e) => {
+
+                // choose whether to reproduce or randomize
                 const update = chance.weighted(
-                    ["mutate", "reproduce", "randomize", "keep"],
                     [
-                        this.popOptions.weights.mutate,
-                        this.popOptions.weights.reproduce,
-                        this.popOptions.weights.randomize,
-                        this.popOptions.weights.keep,
+                        this.reproduceGenotype.bind(this),
+                        this.randomizeGenotype.bind(this),
+                    ],
+                    [
+                        this.popOptions.updateWeights.reproduce,
+                        this.popOptions.updateWeights.randomize,
                     ],
                 );
 
-                switch (update) {
-                    case "mutate":
-                        return this.mutateGenotype(e, top);
+                switch (this.popOptions.objective) {
 
-                    case "reproduce":
-                        return this.reproduceGenotype(e, top);
+                    case FitnessObjective.maximize:
+                        if (e.fitness > avgFitness.value) { // better than average
+                            return e.genotype;
+                        } else { // worse than average
+                            return update(e, top, avgFitness);
+                        }
 
-                    case "randomize":
-                        return this.randomizeGenotype(e, top);
-
-                    case "keep":
-                    default:
-                        return e.genotype;
+                    case FitnessObjective.minimize:
+                        if (e.fitness < avgFitness.value) { // better than average
+                            return e.genotype;
+                        } else { // worse than average
+                            return update(e, top, avgFitness);
+                        }
                 }
             });
-    }
-
-    private mutateGenotype(
-        evaluation: IEvaluation<Gen, Data, Pheno>,
-        top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
-    ): Genome<Gen> {
-        return this.mutate(evaluation);
     }
 
     private reproduceGenotype(
         evaluation: IEvaluation<Gen, Data, Pheno>,
         top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
+        avgFitness: ReactiveProperty<number>,
     ): Genome<Gen> {
         if (top.value.length > 0 && top.value != null && top.value !== undefined) {
-            return reproduceManyToOne(top.value.map((t) => t.genotype));
-        } else {
-            return this.mutate(evaluation);
-        }
 
+            // offspring of all top genotypes
+            const offspring = reproduceManyToOne(top.value.map((t) => t.genotype));
+
+            // mutate offspring
+            const mutantOffspring = this.mutate(offspring);
+
+            return mutantOffspring;
+        } else {
+            return this.mutate(evaluation.genotype);
+        }
     }
 
     private randomizeGenotype(
         evaluation: IEvaluation<Gen, Data, Pheno>,
         top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
+        avgFitness: ReactiveProperty<number>,
     ): Genome<Gen> {
         return new Genome(this.genOptions);
     }
