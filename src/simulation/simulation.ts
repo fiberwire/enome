@@ -27,6 +27,8 @@ export class Simulation<Gen extends IGenomeOptions,
     public organisms: ReactiveCollection<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>> =
     new ReactiveCollection();
 
+    public progress: ReactiveProperty<number> = new ReactiveProperty(0);
+
     // tslint:disable-next-line:variable-name
     private _best: ReactiveProperty<IEvaluation<Gen, Data, Pheno>> = new ReactiveProperty();
 
@@ -56,7 +58,8 @@ export class Simulation<Gen extends IGenomeOptions,
             .add(this.population.populate(
                 this.newOrganisms,
                 this.top,
-                this.avgFitness));
+                this.avgFitness,
+                this.progress));
 
         return this;
     }

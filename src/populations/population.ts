@@ -53,11 +53,12 @@ export abstract class Population<
 
         // set default values
         this.popOptions = Object.assign({
+            logInterval: .10,
+            logProgress: false,
             mutate: {
                 chance: 0.05,
                 op: MutateOp.sub,
             },
-            progress: false,
             topPercent: .25,
             updateWeights: {
                 randomize: 25,
@@ -93,6 +94,7 @@ export abstract class Population<
         organisms: Observer<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>,
         top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,
         avgFitness: ReactiveProperty<number>,
+        progress: ReactiveProperty<number>,
     ): Subscription {
         const orgs = this.createOrganisms(this.popOptions.size);
 
@@ -104,14 +106,17 @@ export abstract class Population<
             .updateGenotype(this.evaluations, top, avgFitness)
             .map((genome) => this.createOrganism(genome, this.orgOptions))
             .take(this.popOptions.generations)
-            .do((g) => this.generation++)
             .do((g) => {
-                if (this.popOptions.progress || false) {
-                    if (this.generation % _.round((this.popOptions.generations / 10)) === 0) {
+                this.generation++;
+                progress.value = this.generation * 100 / this.popOptions.generations;
+            })
+            .do((g) => {
+                if (this.popOptions.logProgress) {
+                    if (progress.value % this.popOptions.logInterval === 0) {
                         // tslint:disable-next-line:no-console
                         console.log(
                             // tslint:disable-next-line:max-line-length
-                            `Generation: ${this.generation} ${_.round(this.generation * 100 / this.popOptions.generations)}%`,
+                            `Generation: ${this.generation} ${_.round(progress.value)}%`,
                         );
                     }
                 }

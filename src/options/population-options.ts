@@ -6,7 +6,8 @@ export interface IPopulationOptions {
     generations: number;
     mutate?: IMutateOptions;
     objective: FitnessObjective;
-    progress?: boolean;
+    logInterval?: number;
+    logProgress?: boolean;
     size: number;
     topPercent?: number;
     updateWeights?: {
