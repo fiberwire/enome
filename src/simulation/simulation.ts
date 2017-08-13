@@ -103,9 +103,13 @@ export class Simulation<Gen extends IGenomeOptions,
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe((e) => {
                 const top = this.top.value;
+
+                // default to 25% if topPercent is not specified
+                const percent = this.population.popOptions.topPercent || .25;
+
                 top.push(e);
                 const sorted = _.sortBy(top, (t) => t.fitness);
-                const taken = _.take(sorted, this.population.popOptions.size * this.population.popOptions.topPercent);
+                const taken = _.take(sorted, this.population.popOptions.size * percent);
                 this.top.value = taken;
             },
             (error) => console.log(`error from simulation.updateTop: ${error}`));

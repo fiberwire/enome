@@ -8,7 +8,7 @@ export interface IPopulationOptions {
     objective: FitnessObjective;
     progress: boolean;
     size: number;
-    topPercent: number;
+    topPercent?: number;
     updateWeights?: {
         randomize: number,
         reproduce: number,

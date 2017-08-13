@@ -26,11 +26,6 @@ const popOptions: ISumPopOptions = {
     objective: FitnessObjective.minimize,
     progress: true,
     size: 10,
-    topPercent: .25,
-    updateWeights: {
-        randomize: 25,
-        reproduce: 75,
-    },
 };
 
 const orgOptions: ISumOrganismOptions = {
