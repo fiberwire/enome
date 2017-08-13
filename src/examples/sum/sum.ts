@@ -19,10 +19,6 @@ const genOptions: ISumGenomeOptions = {
 
 const popOptions: ISumPopOptions = {
     generations: 1000,
-    mutate: {
-        mutateChance: 0.15,
-        mutateOp: MutateOp.avg,
-    },
     objective: FitnessObjective.minimize,
     progress: true,
     size: 10,

@@ -1,6 +1,5 @@
 import { Observable, Observer, Subject, Subscription } from "rxjs";
 import * as Rx from "rxjs";
-import { mutate } from "../index";
 
 import {
     cloneEvaluation,
@@ -13,6 +12,8 @@ import {
     IGenomeOptions,
     IOrganismOptions,
     IPopulationOptions,
+    mutate,
+    MutateOp,
     Organism,
     ReactiveCollection,
     ReactiveProperty,
@@ -53,10 +54,24 @@ export abstract class Population<
     public mutate(
         genome: Genome<Gen>,
     ): Genome<Gen> {
+        let mutChance: number;
+        let mutOp: MutateOp;
+
+        if (this.popOptions.mutate) {
+            mutChance = this.popOptions.mutate.chance;
+            mutOp = this.popOptions.mutate.op;
+        } else {
+            // default to 5% mutate chance if chance isn't specified
+            mutChance = 0.05;
+
+            // default to sub if op isn't specified
+            mutOp = MutateOp.sub;
+        }
+
         return mutate(
             genome,
-            this.popOptions.mutate.mutateChance,
-            this.popOptions.mutate.mutateOp,
+            mutChance,
+            mutOp,
         );
     }
 
