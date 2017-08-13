@@ -98,7 +98,7 @@ export abstract class Population<
             .take(this.popOptions.generations)
             .do((g) => this.generation++)
             .do((g) => {
-                if (this.popOptions.progress) {
+                if (this.popOptions.progress || false) {
                     if (this.generation % _.round((this.popOptions.generations / 10)) === 0) {
                         // tslint:disable-next-line:no-console
                         console.log(

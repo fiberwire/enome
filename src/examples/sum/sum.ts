@@ -9,7 +9,7 @@ import * as _ from "lodash";
 import * as Rx from "rxjs";
 
 const genOptions: ISumGenomeOptions = {
-    genomeLength: 4,
+    genomeLength: 10,
     length: 10,
     max: 5000,
     min: 1,
@@ -18,7 +18,6 @@ const genOptions: ISumGenomeOptions = {
 const popOptions: ISumPopOptions = {
     generations: 1000,
     objective: FitnessObjective.minimize,
-    progress: true,
     size: 10,
 };
 
@@ -45,5 +44,6 @@ sim.best
         const fitness = b.fitness;
         const sum = _.sum(list);
 
+        // tslint:disable-next-line:no-console
         console.log(`New Best: list: ${list} sum: ${sum} fitness: ${fitness}`);
     });
