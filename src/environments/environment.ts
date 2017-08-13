@@ -27,10 +27,17 @@ export abstract class Environment<
     public interactions: Subject<IAgentUpdate<EState>> =
     new Subject<IAgentUpdate<EState>>();
 
+    public history: ReactiveCollection<IStateUpdate<EState>>;
+
     private subs: Subscription = new Subscription();
 
     constructor(public options: IEnvironmentOptions) {
         this.state = new ReactiveProperty<IStateUpdate<EState>>(this.initialState);
+
+        // record history if historyLength is set
+        if (this.options.historyLength) {
+            this.subs.add(this.recordHistory());
+        }
 
         this.subs.add(this.interaction());
     }
@@ -89,5 +96,15 @@ export abstract class Environment<
             },
             (error) => console.log(`error in environment.interaction: ${error}`),
             () => console.log(`environment completed interaction`));
+    }
+
+    private recordHistory(): Subscription {
+        return this.state.subscribe((s) => {
+            this.history.push(s);
+
+            if (this.history.value.length > this.options.historyLength) {
+                this.history.value = _.takeRight(this.history.value, this.options.historyLength);
+            }
+        });
     }
 }

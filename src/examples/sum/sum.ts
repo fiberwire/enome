@@ -39,6 +39,7 @@ const orgOptions: ISumOrganismOptions = {
 };
 
 const env = new SumEnv({
+    historyLength: 15,
     interactionRate: 1000,
     updateType: UpdateType.assign,
 });
