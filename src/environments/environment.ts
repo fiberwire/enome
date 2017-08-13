@@ -84,6 +84,7 @@ export abstract class Environment<
                 break;
 
             case UpdateType.random:
+            default:
                 interactions = this.randomInteractions;
                 break;
         }
