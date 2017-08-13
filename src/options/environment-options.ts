@@ -1,7 +1,7 @@
 import { UpdateType } from "../index";
 
 export interface IEnvironmentOptions {
-    interactionRate: number;
+    interactionRate?: number;
     updateType?: UpdateType;
     historyLength?: number;
 }

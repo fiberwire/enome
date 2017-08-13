@@ -24,8 +24,19 @@ export abstract class Environment<
 
     public state: ReactiveProperty<IStateUpdate<EState>>;
 
-    public interactions: Subject<IAgentUpdate<EState>> =
+    public incomingInteractions: Subject<IAgentUpdate<EState>> =
     new Subject<IAgentUpdate<EState>>();
+
+    public get interactions(): Observable<IAgentUpdate<EState>> {
+        switch (this.options.updateType) {
+            case UpdateType.assign:
+                return this.assignedInteractions;
+
+            case UpdateType.random:
+            default: // if updateType is not specified, use random
+                return this.randomInteractions;
+        }
+    }
 
     public history: ReactiveCollection<IStateUpdate<EState>>;
 
@@ -46,9 +57,11 @@ export abstract class Environment<
     public abstract get initialState(): IStateUpdate<EState>
 
     public get bufferedInteractions(): Observable<Array<IAgentUpdate<EState>>> {
-        return this.interactions
+        const rate = this.options.interactionRate || 1000; // default to 1000 if interaction rate isn't specified
+
+        return this.incomingInteractions
             .filter((i) => i.interaction > this.state.value.interaction) // only accept new interactions
-            .bufferTime(1000 / this.options.interactionRate) // buffer new interactions periodically
+            .bufferTime(1000 / rate) // buffer new interactions periodically
             .filter((interactions) => interactions.length > 0); // do notihng if there are no interactions
     }
 
@@ -76,20 +89,7 @@ export abstract class Environment<
 
     // choose a random interaction to use as this.state
     private interaction(): Subscription {
-        let interactions: Observable<IAgentUpdate<EState>>;
-
-        switch (this.options.updateType) {
-            case UpdateType.assign:
-                interactions = this.assignedInteractions;
-                break;
-
-            case UpdateType.random:
-            default:
-                interactions = this.randomInteractions;
-                break;
-        }
-
-        return interactions
+        return this.interactions
             .observeOn(Rx.Scheduler.asap)
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe((i) => {
