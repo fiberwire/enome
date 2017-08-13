@@ -85,7 +85,9 @@ export abstract class Population<
             .do((g) => {
                 if (this.popOptions.progress) {
                     if (this.generation % _.round((this.popOptions.generations / 10)) === 0) {
+                        // tslint:disable-next-line:no-console
                         console.log(
+                            // tslint:disable-next-line:max-line-length
                             `Generation: ${this.generation} ${_.round(this.generation * 100 / this.popOptions.generations)}%`,
                         );
                     }
@@ -95,7 +97,9 @@ export abstract class Population<
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe(
             (o) => organisms.next(o),
+            // tslint:disable-next-line:no-console
             (error) => console.log(`population.populate(): ${error.stack}`),
+            // tslint:disable-next-line:no-console
             () => console.log(`Evolution completed after ${this.generation++} generations.`),
         );
     }
@@ -109,15 +113,21 @@ export abstract class Population<
         return evaluations
             .map((e) => {
 
+                // default to 25/75 split if weights are not specified
+                const weights = this.popOptions.updateWeights || {
+                    randomize: 25,
+                    reproduce: 75,
+                };
+
                 // choose whether to reproduce or randomize
                 const update = chance.weighted(
                     [
-                        this.reproduceGenotype.bind(this),
                         this.randomizeGenotype.bind(this),
+                        this.reproduceGenotype.bind(this),
                     ],
                     [
-                        this.popOptions.updateWeights.reproduce,
-                        this.popOptions.updateWeights.randomize,
+                        weights.randomize,
+                        weights.reproduce,
                     ],
                 );
 

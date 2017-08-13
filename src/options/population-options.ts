@@ -9,7 +9,7 @@ export interface IPopulationOptions {
     progress: boolean;
     size: number;
     topPercent: number;
-    updateWeights: {
+    updateWeights?: {
         randomize: number,
         reproduce: number,
     };
