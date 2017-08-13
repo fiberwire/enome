@@ -9,7 +9,6 @@ import * as _ from "lodash";
 import * as Rx from "rxjs";
 
 const genOptions: ISumGenomeOptions = {
-    geneLength: 3,
     genomeLength: 4,
     length: 10,
     max: 5000,

@@ -21,7 +21,7 @@ export class Genome<T extends IGenomeOptions> {
         public options: T,
         public sequence: number[] =
             values(options.genomeLength) // generate values
-                .map((v) => _.range(options.geneLength).map((i) => v)) // copy values options.geneLength times
+                .map((v) => _.range(options.geneLength || 2).map((i) => v)) // copy values options.geneLength times
                 .reduce((prev, curr) => _.concat(prev, curr)), // merge back into a single array
         public idLength: number = Math.min(12, options.genomeLength),
     ) {
@@ -48,7 +48,7 @@ export class Genome<T extends IGenomeOptions> {
     // the longer the genes are, the less sensitive to mutation they are.
     get freshGenes(): Gene[] {
         const genes = _
-            .chunk(this.sequence, this.options.geneLength)
+            .chunk(this.sequence, this.options.geneLength || 2)
             .map((n) => _.reduce(n, (memo, num) => memo + num, 0) / n.length || 1)
             .map((n) => new Gene(n));
         return genes;
@@ -60,7 +60,7 @@ export class Genome<T extends IGenomeOptions> {
 
         const ext = fresh.map((f) => {
             const g = new Gene(_.mean(_
-                .range(this.options.geneLength)
+                .range(this.options.geneLength || 2)
                 .map((i) => c.floating({
                     max: 1,
                     min: 0,
