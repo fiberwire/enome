@@ -4,12 +4,12 @@ import { IReproduceOptions } from "./reproduce-options";
 
 export interface IPopulationOptions {
     generations: number;
-    mutate: IMutateOptions;
+    mutate?: IMutateOptions;
     objective: FitnessObjective;
-    progress: boolean;
+    progress?: boolean;
     size: number;
-    topPercent: number;
-    updateWeights: {
+    topPercent?: number;
+    updateWeights?: {
         randomize: number,
         reproduce: number,
     };

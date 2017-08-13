@@ -1,6 +1,5 @@
 import { Observable, Observer, Subject, Subscription } from "rxjs";
 import * as Rx from "rxjs";
-import { mutate } from "../index";
 
 import {
     cloneEvaluation,
@@ -9,10 +8,13 @@ import {
     FitnessObjective,
     Gene,
     Genome,
+    GenomeRefill,
     IEvaluation,
     IGenomeOptions,
     IOrganismOptions,
     IPopulationOptions,
+    mutate,
+    MutateOp,
     Organism,
     ReactiveCollection,
     ReactiveProperty,
@@ -42,6 +44,26 @@ export abstract class Population<
         public popOptions: Pop,
         public orgOptions: Org,
     ) {
+
+        // set default values
+        this.genOptions = Object.assign({
+            geneLength: 2,
+            refill: GenomeRefill.extend,
+        }, this.genOptions);
+
+        // set default values
+        this.popOptions = Object.assign({
+            mutate: {
+                chance: 0.05,
+                op: MutateOp.sub,
+            },
+            progress: false,
+            topPercent: .25,
+            updateWeights: {
+                randomize: 25,
+                reproduce: 75,
+            },
+        }, this.popOptions);
     }
 
     // create an organism to inject into environment.
@@ -53,10 +75,11 @@ export abstract class Population<
     public mutate(
         genome: Genome<Gen>,
     ): Genome<Gen> {
+
         return mutate(
             genome,
-            this.popOptions.mutate.mutateChance,
-            this.popOptions.mutate.mutateOp,
+            this.popOptions.mutate.chance,
+            this.popOptions.mutate.op,
         );
     }
 
@@ -83,9 +106,11 @@ export abstract class Population<
             .take(this.popOptions.generations)
             .do((g) => this.generation++)
             .do((g) => {
-                if (this.popOptions.progress) {
+                if (this.popOptions.progress || false) {
                     if (this.generation % _.round((this.popOptions.generations / 10)) === 0) {
+                        // tslint:disable-next-line:no-console
                         console.log(
+                            // tslint:disable-next-line:max-line-length
                             `Generation: ${this.generation} ${_.round(this.generation * 100 / this.popOptions.generations)}%`,
                         );
                     }
@@ -95,7 +120,9 @@ export abstract class Population<
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe(
             (o) => organisms.next(o),
+            // tslint:disable-next-line:no-console
             (error) => console.log(`population.populate(): ${error.stack}`),
+            // tslint:disable-next-line:no-console
             () => console.log(`Evolution completed after ${this.generation++} generations.`),
         );
     }
@@ -109,15 +136,21 @@ export abstract class Population<
         return evaluations
             .map((e) => {
 
+                // default to 25/75 split if weights are not specified
+                const weights = this.popOptions.updateWeights || {
+                    randomize: 25,
+                    reproduce: 75,
+                };
+
                 // choose whether to reproduce or randomize
                 const update = chance.weighted(
                     [
-                        this.reproduceGenotype.bind(this),
                         this.randomizeGenotype.bind(this),
+                        this.reproduceGenotype.bind(this),
                     ],
                     [
-                        this.popOptions.updateWeights.reproduce,
-                        this.popOptions.updateWeights.randomize,
+                        weights.randomize,
+                        weights.reproduce,
                     ],
                 );
 

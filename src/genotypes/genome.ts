@@ -88,7 +88,11 @@ export class Genome<T extends IGenomeOptions> {
                     this.genes = this.freshGenes;
                     break;
 
+                case GenomeRefill.none:
+                    throw new Error((`${this.id} ran out of genes`));
+
                 case GenomeRefill.extend:
+                default: // default to extend if refill isn't specified
                     this.genes = this.extendedGenes;
             }
         }
@@ -104,11 +108,12 @@ export class Genome<T extends IGenomeOptions> {
                     this.genes = this.freshGenes;
                     break;
 
-                case GenomeRefill.extend:
-                    this.genes = this.extendedGenes;
-
                 case GenomeRefill.none:
                     throw new Error((`${this.id} ran out of genes`));
+
+                case GenomeRefill.extend:
+                default: // default to extend if refill isn't specified
+                    this.genes = this.extendedGenes;
             }
         }
 
