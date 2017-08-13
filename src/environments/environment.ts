@@ -47,6 +47,7 @@ export abstract class Environment<
 
         // record history if historyLength is set
         if (this.options.historyLength) {
+            this.history = new ReactiveCollection();
             this.subs.add(this.recordHistory());
         }
 
