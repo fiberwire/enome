@@ -10,11 +10,10 @@ import * as Rx from "rxjs";
 
 const genOptions: ISumGenomeOptions = {
     geneLength: 3,
-    genomeLength: 10,
+    genomeLength: 4,
     length: 10,
     max: 5000,
     min: 1,
-    refill: GenomeRefill.extend,
 };
 
 const popOptions: ISumPopOptions = {
@@ -31,8 +30,6 @@ const orgOptions: ISumOrganismOptions = {
 
 const env = new SumEnv({
     historyLength: 15,
-    interactionRate: 1000,
-    updateType: UpdateType.assign,
 });
 
 const pop = new SumPopulation(
