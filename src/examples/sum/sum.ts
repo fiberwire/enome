@@ -16,7 +16,7 @@ const genOptions: ISumGenomeOptions = {
 };
 
 const popOptions: ISumPopOptions = {
-    generations: 1000,
+    generations: 1500,
     objective: FitnessObjective.minimize,
     size: 10,
 };

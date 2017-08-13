@@ -8,6 +8,7 @@ import {
     FitnessObjective,
     Gene,
     Genome,
+    GenomeRefill,
     IEvaluation,
     IGenomeOptions,
     IOrganismOptions,
@@ -43,6 +44,26 @@ export abstract class Population<
         public popOptions: Pop,
         public orgOptions: Org,
     ) {
+
+        // set default values
+        this.genOptions = Object.assign({
+            geneLength: 2,
+            refill: GenomeRefill.extend,
+        }, this.genOptions);
+
+        // set default values
+        this.popOptions = Object.assign({
+            mutate: {
+                chance: 0.05,
+                op: MutateOp.sub,
+            },
+            progress: false,
+            topPercent: .25,
+            updateWeights: {
+                randomize: 25,
+                reproduce: 75,
+            },
+        }, this.popOptions);
     }
 
     // create an organism to inject into environment.
@@ -54,24 +75,11 @@ export abstract class Population<
     public mutate(
         genome: Genome<Gen>,
     ): Genome<Gen> {
-        let mutChance: number;
-        let mutOp: MutateOp;
-
-        if (this.popOptions.mutate) {
-            mutChance = this.popOptions.mutate.chance;
-            mutOp = this.popOptions.mutate.op;
-        } else {
-            // default to 5% mutate chance if chance isn't specified
-            mutChance = 0.05;
-
-            // default to sub if op isn't specified
-            mutOp = MutateOp.sub;
-        }
 
         return mutate(
             genome,
-            mutChance,
-            mutOp,
+            this.popOptions.mutate.chance,
+            this.popOptions.mutate.op,
         );
     }
 
