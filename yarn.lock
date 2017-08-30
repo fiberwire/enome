@@ -141,9 +141,9 @@ diff@^2.2.1:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/diff/-/diff-2.2.3.tgz#60eafd0d28ee906e4e8ff0a52c1229521033bf99"
 
-enviro-rx@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/enviro-rx/-/enviro-rx-1.0.1.tgz#e579252e335653a1b280f83ae227a58f902917dd"
+enviro-rx@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/enviro-rx/-/enviro-rx-1.1.1.tgz#eea8109f3dfb79529a8bc8e013256350247c0b19"
   dependencies:
     chance "^1.0.10"
     lodash "^4.17.4"
@@ -380,12 +380,6 @@ rimraf@^2.6.1:
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.1.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
   dependencies:
     glob "^7.0.5"
-
-rxjs@^5.4.2:
-  version "5.4.2"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.4.2.tgz#2a3236fcbf03df57bae06fd6972fd99e5c08fcf7"
-  dependencies:
-    symbol-observable "^1.0.1"
 
 rxjs@^5.4.3:
   version "5.4.3"

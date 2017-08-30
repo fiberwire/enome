@@ -27,7 +27,7 @@ const orgOptions: ISumOrganismOptions = {
 };
 
 const env = new SumEnv({
-    historyLength: 15,
+    interactionTime: 1000,
 });
 
 const pop = new SumPopulation(
