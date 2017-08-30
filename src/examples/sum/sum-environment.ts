@@ -7,7 +7,7 @@ import { SumOrganism } from "./sum-organism";
 import { SumPopulation } from "./sum-population";
 
 import { AgentEnvironment, IAgentEnvironmentOptions, IAgentUpdate, IStateUpdate } from "enviro-rx";
-import { Environment, Genome, Organism } from "../../index";
+import { Genome, Organism } from "../../index";
 
 export class SumEnv extends AgentEnvironment<ISumEnvState, ISumEnvState> {
 

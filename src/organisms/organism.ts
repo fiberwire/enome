@@ -3,7 +3,6 @@ import { Observable, Observer, ReplaySubject, Scheduler, Subject, Subscription }
 
 import * as _ from "lodash";
 import {
-    Environment,
     Genome,
     IEvaluation,
     IEvolvable,
@@ -34,8 +33,8 @@ export abstract class Organism<
     constructor(
         public genotype: Genome<Gen>,
         public options: Org) {
-            super();
-            this.phenotype = this.createPhenotype(this.genotype);
+        super();
+        this.phenotype = this.createPhenotype(this.genotype);
     }
 
     public abstract interact(
@@ -56,6 +55,7 @@ export abstract class Organism<
             .bufferCount(this.options.interactions)
             .map((d) => Promise.all(d))
             .map((d) => this.evaluateObservations(d))
+            .take(1)
             .subscribe(async (e) => {
                 evaluations.next(await e);
             });

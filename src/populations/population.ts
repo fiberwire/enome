@@ -4,7 +4,6 @@ import * as Rx from "rxjs";
 import {
     cloneEvaluation,
     cloneOrganism,
-    Environment,
     FitnessObjective,
     Gene,
     Genome,
@@ -45,13 +44,13 @@ export abstract class Population<
         public orgOptions: Org,
     ) {
 
-        // set default values
+        // set default genOptions
         this.genOptions = Object.assign({
             geneLength: 2,
             refill: GenomeRefill.extend,
         }, this.genOptions);
 
-        // set default values
+        // set default popOptions
         this.popOptions = Object.assign({
             logInterval: .10,
             logProgress: false,
@@ -89,7 +88,6 @@ export abstract class Population<
             .map((i) => this.createOrganism(new Genome(this.genOptions), this.orgOptions));
     }
 
-    // spawns and evenly distributes organisms across all envs
     public populate(
         organisms: Observer<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>,
         top: ReactiveCollection<IEvaluation<Gen, Data, Pheno>>,

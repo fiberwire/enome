@@ -3,7 +3,7 @@ import { FitnessObjective } from "./enums/fitness-objective";
 import { GenomeRefill } from "./enums/genome-refill";
 import { MutateOp } from "./enums/mutate-op";
 import { UpdateType } from "./enums/update-type";
-import { Environment } from "./environments/environment";
+import { ArtificialSelection } from "./environments/artificial-selection";
 import { Gene } from "./genotypes/gene";
 import { Genome } from "./genotypes/genome";
 import { IArtificialEState } from "./interfaces/artificial-state";
@@ -92,7 +92,7 @@ export {
 
 // evolution stuff
 export {
-    Environment,
+    ArtificialSelection,
     Organism,
     Population,
     Simulation,

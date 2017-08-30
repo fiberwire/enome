@@ -4,7 +4,7 @@ import { ReplaySubject, Subject } from "rxjs/Rx";
 import { Subscription } from "rxjs/Subscription";
 import { FitnessObjective } from "../enums/fitness-objective";
 import {
-    Environment, IEvaluation, IGenomeOptions, IOrganismOptions,
+    IEvaluation, IGenomeOptions, IOrganismOptions,
     IPopulationOptions, Organism, Population,
     ReactiveCollection, ReactiveProperty,
 } from "../index";
@@ -140,6 +140,7 @@ export class Simulation<Gen extends IGenomeOptions,
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe((org) => {
                 this.subs.add(org.interactWithEnvironment(this.environment));
+                this.subs.add(org.evaluation(this.environment, this.population.evaluations));
 
                 this.organisms.push(org);
             },

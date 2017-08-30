@@ -1,5 +1,5 @@
 import { FitnessObjective } from "../../enums/fitness-objective";
-import { Environment, Genome, IEvaluation, IOrganismOptions, mutate, Organism, Population } from "../../index";
+import { Genome, IEvaluation, IOrganismOptions, mutate, Organism, Population } from "../../index";
 import { ISumAgentState } from "./interfaces/sum-agent-state";
 import { ISumData } from "./interfaces/sum-data";
 import { ISumEnvState } from "./interfaces/sum-env-state";
