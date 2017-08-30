@@ -6,11 +6,11 @@
   "typings": "out/src/index.d.ts",
   "scripts": {
     "test": "mocha --colors --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
-    "watch": "mocha --colors --watch --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
+    "test:watch": "mocha --colors --watch --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
     "lint": "tsconfig-lint .",
     "sum": "ts-node src/examples/sum/sum.ts",
     "letters": "ts-node src/examples/letters.ts",
-    "tsc": "tsc --watch",
+    "watch": "tsc --watch",
     "prepare": "npm run compile",
     "compile": "rimraf out && tsc"
   },
@@ -32,9 +32,9 @@
   "dependencies": {
     "chance": "^1.0.10",
     "d3-interpolate": "^1.1.5",
-    "enviro-rx": "^1.0.1",
+    "enviro-rx": "^1.1.1",
     "lodash": "^4.17.4",
-    "rxjs": "^5.4.2"
+    "rxjs": "^5.4.3"
   },
   "devDependencies": {
     "@types/chai": "^4.0.2",
