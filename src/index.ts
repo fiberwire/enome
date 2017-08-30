@@ -7,7 +7,9 @@ import { Environment } from "./environments/environment";
 import { Gene } from "./genotypes/gene";
 import { Genome } from "./genotypes/genome";
 import { IAgentUpdate } from "./interfaces/agent-update";
+import { IArtificialEState } from "./interfaces/artificial-state";
 import { IEvaluation } from "./interfaces/evaluation";
+import { IEvolvable } from "./interfaces/evolvable";
 import { IStateUpdate } from "./interfaces/state-update";
 import { clone } from "./operators/clone";
 import { cloneEvaluation } from "./operators/cloneEvaluation";
@@ -86,8 +88,10 @@ export {
 // interfaces
 export {
     IEvaluation,
+    IEvolvable,
     IStateUpdate,
     IAgentUpdate,
+    IArtificialEState,
 };
 
 // evolution stuff
