@@ -7,6 +7,7 @@ import {
     Genome,
     IAgentUpdate,
     IEvaluation,
+    IEvolvable,
     IGenomeOptions,
     IOrganismOptions,
     IPopulationOptions,
@@ -20,7 +21,8 @@ export abstract class Organism<
     Gen extends IGenomeOptions,
     Pop extends IPopulationOptions,
     Org extends IOrganismOptions,
-    Data, Pheno, AState, EState> {
+    Data, Pheno, AState, EState>
+    implements IEvolvable<Gen, Pheno> {
     public phenotype: Pheno;
 
     public alive: ReactiveProperty<boolean> = new ReactiveProperty(true);
