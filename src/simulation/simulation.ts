@@ -9,6 +9,7 @@ import {
     ReactiveCollection, ReactiveProperty,
 } from "../index";
 
+import { AgentEnvironment } from "enviro-rx";
 import * as _ from "lodash";
 
 export class Simulation<Gen extends IGenomeOptions,
@@ -36,7 +37,7 @@ export class Simulation<Gen extends IGenomeOptions,
 
     constructor(
         public population: Population<Gen, Pop, Org, Data, Pheno, AState, EState>,
-        public environment: Environment<Gen, Pop, Org, Data, Pheno, AState, EState>,
+        public environment: AgentEnvironment<AState, EState>,
     ) { }
 
     public get best(): Observable<IEvaluation<Gen, Data, Pheno>> {
@@ -138,10 +139,7 @@ export class Simulation<Gen extends IGenomeOptions,
             .observeOn(Rx.Scheduler.asap)
             .subscribeOn(Rx.Scheduler.asap)
             .subscribe((org) => {
-                this.subs.add(org.interactWithEnvironment(
-                    this.environment.state.asObservable(),
-                    this.environment.state.asObserver(),
-                    this.population.evaluations));
+                this.subs.add(org.interactWithEnvironment(this.environment));
 
                 this.organisms.push(org);
             },
