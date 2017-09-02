@@ -32,10 +32,10 @@ export abstract class Population<
   Pheno,
   AState,
   EState
-  > {
+> {
   public evaluations: Subject<IEvaluation<Gen, Data, Pheno>> = new Subject<
     IEvaluation<Gen, Data, Pheno>
-    >();
+  >();
 
   public generation: number = 0;
 
@@ -118,14 +118,14 @@ export abstract class Population<
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(
-      o => organisms.next(o),
-      // tslint:disable-next-line:no-console
-      error => console.log(`population.populate(): ${error.stack}`),
-      // tslint:disable-next-line:no-console
-      () =>
-        console.log(
-          `Evolution completed after ${this.generation++} generations.`
-        )
+        o => organisms.next(o),
+        // tslint:disable-next-line:no-console
+        error => console.log(`population.populate(): ${error.stack}`),
+        // tslint:disable-next-line:no-console
+        () =>
+          console.log(
+            `Evolution completed after ${this.generation++} generations.`
+          )
       );
   }
 
@@ -195,5 +195,4 @@ export abstract class Population<
   ): Genome<Gen> {
     return new Genome(this.genOptions);
   }
-
 }

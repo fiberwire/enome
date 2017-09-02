@@ -28,28 +28,28 @@ export class Simulation<
   Pheno,
   AState,
   EState
-  > {
+> {
   public top: ReactiveCollection<
-  IEvaluation<Gen, Data, Pheno>
+    IEvaluation<Gen, Data, Pheno>
   > = new ReactiveCollection();
 
   public avgFitness: ReactiveProperty<number> = new ReactiveProperty();
 
   public newOrganisms: ReplaySubject<
-  Organism<Gen, Pop, Org, Data, Pheno, AState, EState>
+    Organism<Gen, Pop, Org, Data, Pheno, AState, EState>
   > = new ReplaySubject<Organism<Gen, Pop, Org, Data, Pheno, AState, EState>>(
     1
   );
 
   public organisms: ReactiveCollection<
-  Organism<Gen, Pop, Org, Data, Pheno, AState, EState>
+    Organism<Gen, Pop, Org, Data, Pheno, AState, EState>
   > = new ReactiveCollection();
 
   public progress: ReactiveProperty<number> = new ReactiveProperty(0);
 
   // tslint:disable-next-line:variable-name
   private _best: ReactiveProperty<
-  IEvaluation<Gen, Data, Pheno>
+    IEvaluation<Gen, Data, Pheno>
   > = new ReactiveProperty();
 
   private subs: Subscription = new Subscription();
@@ -57,7 +57,7 @@ export class Simulation<
   constructor(
     public population: Population<Gen, Pop, Org, Data, Pheno, AState, EState>,
     public environment: AgentEnvironment<AState, EState>
-  ) { }
+  ) {}
 
   public get best(): Observable<IEvaluation<Gen, Data, Pheno>> {
     return this._best
@@ -76,12 +76,12 @@ export class Simulation<
       .add(this.updateBest())
       .add(this.logProgress())
       .add(
-      this.population.populate(
-        this.newOrganisms,
-        this.top,
-        this.avgFitness,
-        this.progress
-      )
+        this.population.populate(
+          this.newOrganisms,
+          this.top,
+          this.avgFitness,
+          this.progress
+        )
       );
 
     return this;
@@ -96,27 +96,28 @@ export class Simulation<
       .filter(e => e != null && e !== undefined)
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
-      .subscribe(evaluation => {
-        if (this._best.value === undefined || this._best.value == null) {
-          this._best.value = evaluation;
-        }
+      .subscribe(
+        evaluation => {
+          if (this._best.value === undefined || this._best.value == null) {
+            this._best.value = evaluation;
+          }
 
-        switch (this.population.popOptions.objective) {
-          case FitnessObjective.minimize:
-            if (evaluation.fitness < this._best.value.fitness) {
-              this._best.value = evaluation;
-            }
-            break;
+          switch (this.population.popOptions.objective) {
+            case FitnessObjective.minimize:
+              if (evaluation.fitness < this._best.value.fitness) {
+                this._best.value = evaluation;
+              }
+              break;
 
-          case FitnessObjective.maximize:
-            if (evaluation.fitness > this._best.value.fitness) {
-              this._best.value = evaluation;
-            }
-            break;
-        }
-      },
-      error => console.log(`error from simulation.updateBest: ${error}`),
-      () => console.log('simulation complete')
+            case FitnessObjective.maximize:
+              if (evaluation.fitness > this._best.value.fitness) {
+                this._best.value = evaluation;
+              }
+              break;
+          }
+        },
+        error => console.log(`error from simulation.updateBest: ${error}`),
+        () => console.log('simulation complete')
       );
 
     return update;
@@ -128,21 +129,21 @@ export class Simulation<
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(
-      e => {
-        const top = this.top.value;
+        e => {
+          const top = this.top.value;
 
-        // default to 25% if topPercent is not specified
-        const percent = this.population.popOptions.topPercent || 0.25;
+          // default to 25% if topPercent is not specified
+          const percent = this.population.popOptions.topPercent || 0.25;
 
-        top.push(e);
-        const sorted = _.sortBy(top, t => t.fitness);
-        const taken = _.take(
-          sorted,
-          this.population.popOptions.size * percent
-        );
-        this.top.value = taken;
-      },
-      error => console.log(`error from simulation.updateTop: ${error}`)
+          top.push(e);
+          const sorted = _.sortBy(top, t => t.fitness);
+          const taken = _.take(
+            sorted,
+            this.population.popOptions.size * percent
+          );
+          this.top.value = taken;
+        },
+        error => console.log(`error from simulation.updateTop: ${error}`)
       );
 
     return update;
@@ -154,10 +155,10 @@ export class Simulation<
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(
-      e => {
-        this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
-      },
-      error => console.log(`error from simulation.updateAvgFitness: ${error}`)
+        e => {
+          this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
+        },
+        error => console.log(`error from simulation.updateAvgFitness: ${error}`)
       );
 
     return update;
@@ -168,16 +169,16 @@ export class Simulation<
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(
-      org => {
-        this.subs.add(org.interactWithEnvironment(this.environment));
-        this.subs.add(
-          org.evaluation(this.environment, this.population.evaluations)
-        );
+        org => {
+          this.subs.add(org.interactWithEnvironment(this.environment));
+          this.subs.add(
+            org.evaluation(this.environment, this.population.evaluations)
+          );
 
-        this.organisms.push(org);
-      },
-      error =>
-        console.log(`error from simulation.introduceOrganism: ${error}`)
+          this.organisms.push(org);
+        },
+        error =>
+          console.log(`error from simulation.introduceOrganism: ${error}`)
       );
 
     return intro;
@@ -199,14 +200,21 @@ export class Simulation<
   private logProgress(): Subscription {
     if (this.population.popOptions.logProgress) {
       return this.progress
-        .filter(p => this._best.value !== null && this._best.value !== undefined)
+        .filter(
+          p => this._best.value !== null && this._best.value !== undefined
+        )
         .subscribe(p => {
-          if (this.progress.value % this.population.popOptions.logInterval === 0) {
+          if (
+            this.progress.value % this.population.popOptions.logInterval ===
+            0
+          ) {
             // tslint:disable-next-line:no-console
             console.log(
               `
-    Generation: ${this.population.generation}/${this.population.popOptions.generations} (${_.round(this.progress.value)}%)
-    Current Best - id: ${this._best.value.genotype.id}, fitness: ${this._best.value.fitness}
+    Generation: ${this.population.generation}/${this.population.popOptions
+                .generations} (${_.round(this.progress.value)}%)
+    Current Best - id: ${this._best.value.genotype.id}, fitness: ${this._best
+                .value.fitness}
               `
             );
           }
