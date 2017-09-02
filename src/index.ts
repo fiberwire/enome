@@ -34,7 +34,7 @@ import { IOrganismOptions } from './options/organism-options';
 import { IPopulationOptions } from './options/population-options';
 import { IReproduceOptions } from './options/reproduce-options';
 import { Organism } from './organisms/organism';
-import { ParentSpecimen } from './organisms/parent-specimen';
+import { IParentSpecimen } from './organisms/parent-specimen';
 import { Specimen } from './organisms/specimen';
 import { Population } from './populations/population';
 import { ReactiveCollection } from './reactive-collection';
@@ -83,7 +83,7 @@ export {
   ArtificialSelection,
   Organism,
   Population,
-  ParentSpecimen,
+  IParentSpecimen,
   Specimen,
   Simulation,
 };
