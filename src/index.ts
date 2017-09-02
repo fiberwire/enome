@@ -26,6 +26,7 @@ import { reproduceManyToOne } from './operators/reproduction/many-to-one/reprodu
 import { reproduce } from './operators/reproduction/reproduce';
 import { value } from './operators/value';
 import { values } from './operators/values';
+import { IArtificialOptions } from "./options/artificial-options";
 import { IEnvironmentOptions } from './options/environment-options';
 import { IGenomeOptions } from './options/genome-options';
 import { IMutateOptions } from './options/mutate-options';
@@ -33,6 +34,8 @@ import { IOrganismOptions } from './options/organism-options';
 import { IPopulationOptions } from './options/population-options';
 import { IReproduceOptions } from './options/reproduce-options';
 import { Organism } from './organisms/organism';
+import { ParentSpecimen } from "./organisms/parent-specimen";
+import { Specimen } from "./organisms/specimen";
 import { Population } from './populations/population';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
@@ -40,6 +43,7 @@ import { Simulation } from './simulation/simulation';
 
 // options
 export {
+  IArtificialOptions,
   IGenomeOptions,
   IMutateOptions,
   IReproduceOptions,
@@ -75,7 +79,7 @@ export { reproduce, reproduceManyToMany, reproduceManyToOne };
 export { IEvaluation, IEvolvable, IArtificialEState };
 
 // evolution stuff
-export { ArtificialSelection, Organism, Population, Simulation };
+export { ArtificialSelection, Organism, Population, ParentSpecimen, Specimen, Simulation };
 
 // enums
 export { FillType, FitnessObjective, GenomeRefill, MutateOp, UpdateType };
