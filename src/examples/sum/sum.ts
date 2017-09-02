@@ -23,7 +23,9 @@ const genOptions: ISumGenomeOptions = {
 };
 
 const popOptions: ISumPopOptions = {
-  generations: 1500,
+  generations: 1000,
+  logInterval: 10,
+  logProgress: true,
   objective: FitnessObjective.minimize,
   size: 10,
 };
@@ -34,7 +36,7 @@ const orgOptions: ISumOrganismOptions = {
 };
 
 const env = new SumEnv({
-  interactionTime: 1000,
+  interactionTime: 1,
 });
 
 const pop = new SumPopulation(genOptions, popOptions, orgOptions);

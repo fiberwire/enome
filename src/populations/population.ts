@@ -32,14 +32,14 @@ export abstract class Population<
   Pheno,
   AState,
   EState
-> {
+  > {
   public evaluations: Subject<IEvaluation<Gen, Data, Pheno>> = new Subject<
     IEvaluation<Gen, Data, Pheno>
-  >();
+    >();
+
+  public generation: number = 0;
 
   private subs: Subscription = new Subscription();
-
-  private generation: number = 0;
 
   constructor(
     public genOptions: Gen,
@@ -52,11 +52,12 @@ export abstract class Population<
       refill: GenomeRefill.extend,
     };
 
-    this.genOptions = Object.assign(this.genOptions, genDefaults);
+    // tslint:disable-next-line:prefer-object-spread
+    this.genOptions = Object.assign(genDefaults, this.genOptions);
 
     // set default popOptions
     const popDefaults = {
-      logInterval: 0.1,
+      logInterval: 10, // 10 percent
       logProgress: false,
       mutate: {
         chance: 0.05,
@@ -69,7 +70,8 @@ export abstract class Population<
       },
     };
 
-    this.popOptions = Object.assign(this.popOptions, popDefaults);
+    // tslint:disable-next-line:prefer-object-spread
+    this.popOptions = Object.assign(popDefaults, this.popOptions);
   }
 
   // create an organism to inject into environment.
@@ -113,28 +115,17 @@ export abstract class Population<
         this.generation++;
         progress.value = this.generation * 100 / this.popOptions.generations;
       })
-      .do(g => {
-        if (this.popOptions.logProgress) {
-          if (progress.value % this.popOptions.logInterval === 0) {
-            // tslint:disable-next-line:no-console
-            console.log(
-              // tslint:disable-next-line:max-line-length
-              `Generation: ${this.generation} ${_.round(progress.value)}%`
-            );
-          }
-        }
-      })
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(
-        o => organisms.next(o),
-        // tslint:disable-next-line:no-console
-        error => console.log(`population.populate(): ${error.stack}`),
-        // tslint:disable-next-line:no-console
-        () =>
-          console.log(
-            `Evolution completed after ${this.generation++} generations.`
-          )
+      o => organisms.next(o),
+      // tslint:disable-next-line:no-console
+      error => console.log(`population.populate(): ${error.stack}`),
+      // tslint:disable-next-line:no-console
+      () =>
+        console.log(
+          `Evolution completed after ${this.generation++} generations.`
+        )
       );
   }
 
@@ -204,4 +195,5 @@ export abstract class Population<
   ): Genome<Gen> {
     return new Genome(this.genOptions);
   }
+
 }
