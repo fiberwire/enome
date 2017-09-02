@@ -1,5 +1,4 @@
-import { Observable, Observer, Subject, Subscription } from 'rxjs';
-import * as Rx from 'rxjs';
+import { Observable, Observer, Scheduler, Subject, Subscription } from 'rxjs';
 
 import {
   cloneEvaluation,
@@ -48,31 +47,29 @@ export abstract class Population<
     public orgOptions: Org
   ) {
     // set default genOptions
-    this.genOptions = Object.assign(
-      {
-        geneLength: 2,
-        refill: GenomeRefill.extend,
-      },
-      this.genOptions
-    );
+    const genDefaults = {
+      geneLength: 2,
+      refill: GenomeRefill.extend,
+    };
+
+    this.genOptions = Object.assign(this.genOptions, genDefaults);
 
     // set default popOptions
-    this.popOptions = Object.assign(
-      {
-        logInterval: 0.1,
-        logProgress: false,
-        mutate: {
-          chance: 0.05,
-          op: MutateOp.sub,
-        },
-        topPercent: 0.25,
-        updateWeights: {
-          randomize: 25,
-          reproduce: 75,
-        },
+    const popDefaults = {
+      logInterval: 0.1,
+      logProgress: false,
+      mutate: {
+        chance: 0.05,
+        op: MutateOp.sub,
       },
-      this.popOptions
-    );
+      topPercent: 0.25,
+      updateWeights: {
+        randomize: 25,
+        reproduce: 75,
+      },
+    };
+
+    this.popOptions = Object.assign(this.popOptions, popDefaults);
   }
 
   // create an organism to inject into environment.
@@ -127,8 +124,8 @@ export abstract class Population<
           }
         }
       })
-      .observeOn(Rx.Scheduler.asap)
-      .subscribeOn(Rx.Scheduler.asap)
+      .observeOn(Scheduler.asap)
+      .subscribeOn(Scheduler.asap)
       .subscribe(
         o => organisms.next(o),
         // tslint:disable-next-line:no-console

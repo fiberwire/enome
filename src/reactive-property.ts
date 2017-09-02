@@ -2,12 +2,11 @@ import {
   BehaviorSubject,
   Observable,
   Observer,
+  Scheduler,
   Subject,
   Subscription,
 } from 'rxjs';
 import { IScheduler } from 'rxjs/Scheduler';
-
-import * as Rx from 'rxjs';
 
 export class ReactiveProperty<T> {
   // tslint:disable-next-line:variable-name
@@ -30,8 +29,8 @@ export class ReactiveProperty<T> {
 
   public subscribe(observer: (value: T) => void | Observer<T>): Subscription {
     return this.subject
-      .observeOn(Rx.Scheduler.asap)
-      .subscribeOn(Rx.Scheduler.asap)
+      .observeOn(Scheduler.asap)
+      .subscribeOn(Scheduler.asap)
       .subscribe(observer);
   }
 
