@@ -1,22 +1,16 @@
 {
   "name": "enome",
-  "version": "2.3.0",
+  "version": "3.2.0",
   "description": "A genome generation and evolution library.",
-  "main": "out/src/index.js",
-  "typings": "out/src/index.d.ts",
-  "scripts": {
-    "test": "mocha --colors --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
-    "test:watch": "mocha --colors --watch --compilers ts:ts-node/register --require tsconfig-paths/register test/**/*.ts",
-    "lint": "tsconfig-lint .",
-    "sum": "ts-node src/examples/sum/sum.ts",
-    "letters": "ts-node src/examples/letters.ts",
-    "watch": "tsc --watch",
-    "prepare": "npm run compile",
-    "compile": "rimraf out && tsc"
-  },
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/fiberwire/enome.git"
+  },
+  "author": {
+    "name": "Andrew Ramos",
+    "email": "andrew.ramos92@gmail.com",
+    "url": ""
   },
   "keywords": [
     "genetic",
@@ -27,8 +21,23 @@
     "reactive",
     "async"
   ],
-  "author": "Andrew Ramos",
-  "license": "ISC",
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "clean": "rimraf lib && rimraf coverage",
+    "format": "prettier --write \"{src,__tests__}/**/*.ts\" --single-quote --trailing-comma es5",
+    "lint": "tslint --force --format verbose \"src/**/*.ts\"",
+    "prepublish": "npm run build",
+    "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
+    "build": "tsc --pretty",
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "watch": "npm run build -- --watch",
+    "watch:test": "jest --watch"
+  },
   "dependencies": {
     "chance": "^1.0.10",
     "d3-interpolate": "^1.1.5",
@@ -37,19 +46,34 @@
     "rxjs": "^5.4.3"
   },
   "devDependencies": {
-    "@types/chai": "^4.0.2",
     "@types/chance": "^0.7.34",
     "@types/d3-interpolate": "^1.1.6",
     "@types/lodash": "^4.14.71",
-    "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.19",
-    "chai": "^3.5.0",
-    "mocha": "^3.3.0",
-    "rimraf": "^2.6.1",
-    "ts-node": "^3.0.4",
-    "tsconfig-lint": "^0.12.0",
-    "tsconfig-paths": "^2.1.2",
-    "tslint": "^5.3.2",
-    "typescript": "^2.4.1"
+    "@types/jest": "^20.0.5",
+    "@types/node": "^8.0.0",
+    "coveralls": "^2.0.0",
+    "jest": "^20.0.4",
+    "jest-environment-node-debug": "^2.0.0",
+    "prettier": "^1.5.2",
+    "rimraf": "^2.0.0",
+    "ts-jest": "^20.0.7",
+    "ts-node": "^3.2.0",
+    "tslint": "^5.0.0",
+    "tslint-config-prettier": "^1.1.0",
+    "typescript": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "jest": {
+    "transform": {
+      ".(ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testEnvironment": "node"
   }
 }

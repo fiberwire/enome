@@ -1,4 +1,4 @@
 export enum MutateOp {
-    avg,
-    sub,
+  avg,
+  sub,
 }

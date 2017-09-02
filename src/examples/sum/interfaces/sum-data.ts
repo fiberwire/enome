@@ -1,5 +1,4 @@
-
 export interface ISumData {
-    sum: number;
-    list: number[];
+  sum: number;
+  list: number[];
 }

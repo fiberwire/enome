@@ -1,6 +1,5 @@
-
 export enum GenomeRefill {
-    loop,
-    extend,
-    none,
+  loop,
+  extend,
+  none,
 }

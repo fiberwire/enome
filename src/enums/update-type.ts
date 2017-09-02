@@ -1,4 +1,4 @@
 export enum UpdateType {
-    random,
-    assign,
+  random,
+  assign,
 }

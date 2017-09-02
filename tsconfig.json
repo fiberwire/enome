@@ -1,28 +1,26 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "target": "es6",
-        "noImplicitAny": true,
-        "noImplicitThis": true,
-        "noImplicitReturns": true,
-        "removeComments": false,
-        "alwaysStrict": true,
-        "sourceMap": true,
-        "declaration": true,
-        "declarationDir": "out",
-        "outDir": "out",
-        "rootDir": ".",
-        "baseUrl": "./src",
-        "paths": {
-            "*": ["*"]
-        }
-    },
-    "include": [
-        "src/**/*",
-        "test/**/*"
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": [
+      "esnext", "dom"
     ],
-    "exclude": [
-        "node_modules"
+    "target": "es6",
+    "noImplicitAny": true,
+    "outDir": "./lib",
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "inlineSourceMap": true,
+    "typeRoots": [
+      "./node_modules/@types"
     ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*-spec.ts"
+  ]
 }
