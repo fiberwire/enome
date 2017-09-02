@@ -28,6 +28,18 @@
         "jest-environment-node-debug"
       ],
       "cwd": "${workspaceRoot}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug examples/sum",
+      "program": "${workspaceRoot}/lib/examples/sum/sum",
+      "cwd": "${workspaceRoot}",
+      "sourceMaps": true,
+      "smartStep": true,
+      "outFiles": [
+        "${workspaceRoot}/lib/*.js"
+      ]
     }
   ]
 }
