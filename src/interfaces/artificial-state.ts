@@ -1,6 +1,6 @@
-import { IEvolvable, IGenomeOptions } from '../index';
+import { IEvolvable, IGenomeOptions, ParentSpecimen, Specimen } from '../index';
 
 export interface IArtificialEState<Gen extends IGenomeOptions, Pheno> {
-  specimens: Array<IEvolvable<Gen, Pheno>>;
-  parents: Array<IEvolvable<Gen, Pheno>>;
+  specimens: Array<Specimen<Gen, Pheno>>;
+  parents: Array<ParentSpecimen<Gen, Pheno>>;
 }
