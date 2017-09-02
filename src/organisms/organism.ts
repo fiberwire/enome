@@ -13,7 +13,7 @@ import {
   Scheduler,
   Subject,
   Subscription,
-} from 'rxjs/Rx';
+} from 'rxjs';
 
 import * as _ from 'lodash';
 import {
