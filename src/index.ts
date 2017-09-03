@@ -40,6 +40,7 @@ import { Population } from './populations/population';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
 import { Simulation } from './simulation/simulation';
+import { ArtificalCmd } from "./enums/artificial-cmd";
 
 // options
 export {
@@ -89,7 +90,7 @@ export {
 };
 
 // enums
-export { FillType, FitnessObjective, GenomeRefill, MutateOp, UpdateType };
+export { ArtificalCmd, FillType, FitnessObjective, GenomeRefill, MutateOp, UpdateType };
 
 // misc
 export { ReactiveProperty, ReactiveCollection };
