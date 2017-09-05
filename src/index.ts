@@ -1,12 +1,15 @@
+import { IArtificialAState } from "./artificial-selection/artificial-astate";
+import { ArtificialSelection } from "./artificial-selection/artificial-selection";
+import { IArtificialEState } from "./artificial-selection/artificial-state";
+import { IParentSpecimen } from "./artificial-selection/parent-specimen";
+import { ArtificialCmd } from './enums/artificial-cmd';
 import { FillType } from './enums/fill-type';
 import { FitnessObjective } from './enums/fitness-objective';
 import { GenomeRefill } from './enums/genome-refill';
 import { MutateOp } from './enums/mutate-op';
 import { UpdateType } from './enums/update-type';
-import { ArtificialSelection } from './environments/artificial-selection';
 import { Gene } from './genotypes/gene';
 import { Genome } from './genotypes/genome';
-import { IArtificialEState } from './interfaces/artificial-state';
 import { IEvaluation } from './interfaces/evaluation';
 import { IEvolvable } from './interfaces/evolvable';
 import { clone } from './operators/clone';
@@ -34,13 +37,11 @@ import { IOrganismOptions } from './options/organism-options';
 import { IPopulationOptions } from './options/population-options';
 import { IReproduceOptions } from './options/reproduce-options';
 import { Organism } from './organisms/organism';
-import { IParentSpecimen } from './organisms/parent-specimen';
 import { Specimen } from './organisms/specimen';
 import { Population } from './populations/population';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
 import { Simulation } from './simulation/simulation';
-import { ArtificalCmd } from "./enums/artificial-cmd";
 
 // options
 export {
@@ -77,7 +78,7 @@ export { avg, mutate, mutateMany, sub };
 export { reproduce, reproduceManyToMany, reproduceManyToOne };
 
 // interfaces
-export { IEvaluation, IEvolvable, IArtificialEState };
+export { IEvaluation, IEvolvable, IArtificialAState, IArtificialEState };
 
 // evolution stuff
 export {
@@ -90,7 +91,14 @@ export {
 };
 
 // enums
-export { ArtificalCmd, FillType, FitnessObjective, GenomeRefill, MutateOp, UpdateType };
+export {
+  ArtificialCmd,
+  FillType,
+  FitnessObjective,
+  GenomeRefill,
+  MutateOp,
+  UpdateType,
+};
 
 // misc
 export { ReactiveProperty, ReactiveCollection };

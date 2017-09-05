@@ -1,9 +1,9 @@
 import { AgentEnvironment, IAgentUpdate, IStateUpdate } from 'enviro-rx';
-import { IArtificialEState, IGenomeOptions } from '../index';
+import { IArtificialAState, IArtificialEState, IGenomeOptions } from '../index';
 
 export abstract class ArtificialSelection<
   Gen extends IGenomeOptions,
   Pheno,
-  AState,
+  AState extends IArtificialAState,
   EState extends IArtificialEState<Gen, Pheno>
 > extends AgentEnvironment<AState, EState> {}
