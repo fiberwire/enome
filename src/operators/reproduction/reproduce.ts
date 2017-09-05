@@ -18,9 +18,9 @@ export function reproduce<T extends IGenomeOptions>(
   return mutate(
     new Genome<T>(
       gen1.options,
-      _.zip(gen1.sequence, gen2.sequence).map((values: number[]) => {
+      _.zip(gen1.sequence, gen2.sequence).map((vals: number[]) => {
         // console.log(`w1: ${w1}, w2: ${w2}`);
-        const v = chance.weighted(values, [weight1, weight2]);
+        const v = chance.weighted(vals, [weight1, weight2]);
         return v;
       })
     ),
