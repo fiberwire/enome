@@ -1,19 +1,39 @@
 import * as Chance from 'chance';
-import * as d3 from 'd3-interpolate';
 
 const chance = new Chance();
 
 export class Gene {
+  
+  public static reverseFloat(min: number, max: number, value: number): number {
+    return this.reverseLerp(min, max, value);
+  }
+
+  public static reverseInt(min: number, max: number, value: number): number {
+    return this.reverseLerp(min, max, value);
+  }
+
+  public static reverseNatural(min: number, max:number, value: number): number {
+    return this.reverseLerp(min, max, value);
+  }
+
+  private static lerp(min: number, max: number, value: number): number {
+    return min - (max - min) * value;
+  }
+
+  private static reverseLerp(min: number, max: number, value: number): number {
+    return (value - min) / (max - min);
+  }
+
   constructor(public value: number) {}
 
   // returns a float, interpolated based on this.value
   public float(min: number, max: number, value: number = this.value): number {
-    return d3.interpolateNumber(min, max)(value);
+    return Gene.lerp(min, max, value);
   }
 
   // returns an integer, interpolated based on this.value
   public int(min: number, max: number, value: number = this.value): number {
-    return d3.interpolateRound(min, max)(value);
+    return Math.round(Gene.lerp(min, max, value));
   }
 
   // returns a natural number, interpolated based on this.value
@@ -29,6 +49,14 @@ export class Gene {
   // returns an upper or lower case letter, interpolated based on this.value
   public letter(value: number = this.value): string {
     const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ'.split(
+      ''
+    );
+    return this.element(letters, value);
+  }
+
+  // returns an upper or lower case letter or a space, interpolated based on this.value
+  public letterOrSpace(value: number = this.value): string {
+    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ '.split(
       ''
     );
     return this.element(letters, value);
