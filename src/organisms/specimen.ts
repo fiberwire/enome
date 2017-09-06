@@ -18,6 +18,6 @@ export abstract class Specimen<Gen extends IGenomeOptions, Pheno>
       createPhenotype: this.createPhenotype,
       genotype: this.genotype,
       phenotype: this.phenotype,
-    }
+    };
   }
 }

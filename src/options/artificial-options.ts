@@ -1,4 +1,4 @@
-import { IAgentEnvironmentOptions } from "enviro-rx";
+import { IAgentEnvironmentOptions } from 'enviro-rx';
 
 export interface IArtificialOptions extends IAgentEnvironmentOptions {
   parents: number;

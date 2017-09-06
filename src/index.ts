@@ -1,7 +1,7 @@
-import { IArtificialAState } from "./artificial-selection/artificial-astate";
-import { ArtificialCmd } from "./artificial-selection/artificial-cmd";
-import { IArtificialEState } from "./artificial-selection/artificial-estate";
-import { ArtificialSelection } from "./artificial-selection/artificial-selection";
+import { IArtificialAState } from './artificial-selection/artificial-astate';
+import { ArtificialCmd } from './artificial-selection/artificial-cmd';
+import { IArtificialEState } from './artificial-selection/artificial-estate';
+import { ArtificialSelection } from './artificial-selection/artificial-selection';
 import { FillType } from './enums/fill-type';
 import { FitnessObjective } from './enums/fitness-objective';
 import { GenomeRefill } from './enums/genome-refill';
@@ -80,13 +80,7 @@ export { reproduce, reproduceManyToMany, reproduceManyToOne };
 export { IEvaluation, IEvolvable, IArtificialAState, IArtificialEState };
 
 // evolution stuff
-export {
-  ArtificialSelection,
-  Organism,
-  Population,
-  Specimen,
-  Simulation,
-};
+export { ArtificialSelection, Organism, Population, Specimen, Simulation };
 
 // enums
 export {
