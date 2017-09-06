@@ -3,17 +3,57 @@ import * as Chance from 'chance';
 const chance = new Chance();
 
 export class Gene {
-  
-  public static reverseFloat(min: number, max: number, value: number): number {
-    return this.reverseLerp(min, max, value);
+
+  public static reverseFloat(min: number, max: number, float: number): number {
+    return this.reverseLerp(min, max, float);
   }
 
-  public static reverseInt(min: number, max: number, value: number): number {
-    return this.reverseLerp(min, max, value);
+  public static reverseInt(min: number, max: number, int: number): number {
+    const i = Math.round(int);
+    return this.reverseLerp(min, max, i);
   }
 
-  public static reverseNatural(min: number, max:number, value: number): number {
-    return this.reverseLerp(min, max, value);
+
+  public static reverseNatural(min: number, max: number, natural: number): number {
+    const n = Math.max(0, natural);
+    return this.reverseLerp(min, max, n);
+  }
+
+  public static reverseBool(bool: boolean): number {
+    // in case avg is being used instead of sub as the mutation op, 
+    // returning 0.75 for true and 0.25 for false will prevent it from
+    // being overly insensitive to change relative to 1 for true and 0 for false
+    if (bool) { return 0.75; }
+    else { return 0.25; }
+  }
+
+  public static reverseLetter(letter: string): number {
+    if (letter.length !== 1){
+      throw new Error("letter.length must equal 1");
+    }
+
+    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ'.split(
+      ''
+    );
+
+    return this.reverseElement(letter, letters);
+  }
+
+  public static reverseLetterOrSpace(letter: string): number {
+    if (letter.length !== 1){
+      throw new Error("letter.length must equal 1");
+    }
+
+    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ '.split(
+      ''
+    );
+    return this.reverseElement(letter, letters);
+  }
+
+  // does reverse int on the index of the element in the array
+  public static reverseElement<T>(element: T, array: T[]): number {
+    const index = array.indexOf(element);
+    return this.reverseInt(0, array.length, index);
   }
 
   private static lerp(min: number, max: number, value: number): number {
@@ -24,7 +64,7 @@ export class Gene {
     return (value - min) / (max - min);
   }
 
-  constructor(public value: number) {}
+  constructor(public value: number) { }
 
   // returns a float, interpolated based on this.value
   public float(min: number, max: number, value: number = this.value): number {
