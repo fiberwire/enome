@@ -1,7 +1,5 @@
-
-import * as _ from "lodash";
-import { Genome, IGenomeOptions } from "../index";
-
+import * as _ from 'lodash';
+import { Genome, IGenomeOptions } from '../index';
 
 /**
  * Pads the sequence by copying each value n times.
@@ -22,6 +20,7 @@ import { Genome, IGenomeOptions } from "../index";
  * @returns {number[]} - the padded sequence
  */
 export function pad(sequence: number[], n: number): number[] {
-  return sequence.map(v => _.range(n).map(i => v)) // copy values n times
+  return sequence
+    .map(v => _.range(n).map(i => v)) // copy values n times
     .reduce((prev, curr) => _.concat(prev, curr)); // merge back into a single array
 }

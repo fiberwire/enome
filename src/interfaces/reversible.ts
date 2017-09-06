@@ -1,5 +1,4 @@
-
-import { Genome, IGenomeOptions } from "../index";
+import { Genome, IGenomeOptions } from '../index';
 
 export interface IReversible<Gen extends IGenomeOptions, Pheno> {
   genotype: Genome<Gen>;

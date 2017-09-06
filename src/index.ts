@@ -11,7 +11,7 @@ import { Gene } from './genotypes/gene';
 import { Genome } from './genotypes/genome';
 import { IEvaluation } from './interfaces/evaluation';
 import { IEvolvable } from './interfaces/evolvable';
-import { IReversible } from "./interfaces/reversible";
+import { IReversible } from './interfaces/reversible';
 import { clone } from './operators/clone';
 import { cloneEvaluation } from './operators/cloneEvaluation';
 import { cloneOrganism } from './operators/cloneOrganism';
@@ -23,7 +23,7 @@ import { avg } from './operators/mutation/avg';
 import { mutate } from './operators/mutation/mutate';
 import { mutateMany } from './operators/mutation/mutate-many';
 import { sub } from './operators/mutation/sub';
-import { pad } from "./operators/pad";
+import { pad } from './operators/pad';
 import { refill } from './operators/refill';
 import { reproduceManyToMany } from './operators/reproduction/many-to-many/reproduce-many-to-many';
 import { reproduceManyToOne } from './operators/reproduction/many-to-one/reproduce-many-to-one';
@@ -80,7 +80,13 @@ export { avg, mutate, mutateMany, sub };
 export { reproduce, reproduceManyToMany, reproduceManyToOne };
 
 // interfaces
-export { IEvaluation, IEvolvable, IArtificialAState, IArtificialEState, IReversible };
+export {
+  IEvaluation,
+  IEvolvable,
+  IArtificialAState,
+  IArtificialEState,
+  IReversible,
+};
 
 // evolution stuff
 export { ArtificialSelection, Organism, Population, Specimen, Simulation };
