@@ -1,8 +1,7 @@
 import { IArtificialAState } from "./artificial-selection/artificial-astate";
+import { ArtificialCmd } from "./artificial-selection/artificial-cmd";
+import { IArtificialEState } from "./artificial-selection/artificial-estate";
 import { ArtificialSelection } from "./artificial-selection/artificial-selection";
-import { IArtificialEState } from "./artificial-selection/artificial-state";
-import { IParentSpecimen } from "./artificial-selection/parent-specimen";
-import { ArtificialCmd } from './enums/artificial-cmd';
 import { FillType } from './enums/fill-type';
 import { FitnessObjective } from './enums/fitness-objective';
 import { GenomeRefill } from './enums/genome-refill';
@@ -85,7 +84,6 @@ export {
   ArtificialSelection,
   Organism,
   Population,
-  IParentSpecimen,
   Specimen,
   Simulation,
 };
