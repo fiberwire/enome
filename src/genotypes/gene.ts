@@ -3,7 +3,6 @@ import * as Chance from 'chance';
 const chance = new Chance();
 
 export class Gene {
-
   public static reverseFloat(min: number, max: number, float: number): number {
     return this.reverseLerp(min, max, float);
   }
@@ -13,23 +12,29 @@ export class Gene {
     return this.reverseLerp(min, max, i);
   }
 
-
-  public static reverseNatural(min: number, max: number, natural: number): number {
+  public static reverseNatural(
+    min: number,
+    max: number,
+    natural: number
+  ): number {
     const n = Math.max(0, natural);
     return this.reverseLerp(min, max, n);
   }
 
   public static reverseBool(bool: boolean): number {
-    // in case avg is being used instead of sub as the mutation op, 
+    // in case avg is being used instead of sub as the mutation op,
     // returning 0.75 for true and 0.25 for false will prevent it from
     // being overly insensitive to change relative to 1 for true and 0 for false
-    if (bool) { return 0.75; }
-    else { return 0.25; }
+    if (bool) {
+      return 0.75;
+    } else {
+      return 0.25;
+    }
   }
 
   public static reverseLetter(letter: string): number {
-    if (letter.length !== 1){
-      throw new Error("letter.length must equal 1");
+    if (letter.length !== 1) {
+      throw new Error('letter.length must equal 1');
     }
 
     const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ'.split(
@@ -39,9 +44,33 @@ export class Gene {
     return this.reverseElement(letter, letters);
   }
 
+  public static reverseLetterLower(letter: string): number {
+    if (letter.length !== 1) {
+      throw new Error('letter.length must equal 1');
+    }
+
+    const letters = 'abcdefghijklmnopqrstuvwxyz'.split(
+      ''
+    );
+
+    return this.reverseElement(letter, letters);
+  }
+
+  public static reverseLetterUpper(letter: string): number {
+    if (letter.length !== 1) {
+      throw new Error('letter.length must equal 1');
+    }
+
+    const letters = 'ABCDEFGIJKLMNOPQRSTUVWXYZ'.split(
+      ''
+    );
+
+    return this.reverseElement(letter, letters);
+  }
+
   public static reverseLetterOrSpace(letter: string): number {
-    if (letter.length !== 1){
-      throw new Error("letter.length must equal 1");
+    if (letter.length !== 1) {
+      throw new Error('letter.length must equal 1');
     }
 
     const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ '.split(
@@ -50,10 +79,21 @@ export class Gene {
     return this.reverseElement(letter, letters);
   }
 
+  public static reverseChar(char: string): number {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'.split(
+      ''
+    );
+    return this.reverseElement(char, chars);
+  }
+
   // does reverse int on the index of the element in the array
   public static reverseElement<T>(element: T, array: T[]): number {
     const index = array.indexOf(element);
     return this.reverseInt(0, array.length, index);
+  }
+
+  public static reverseElements<T>(elements: T[], array: T[]): number {
+    return this.reverseInt(0, array.length, elements.length);
   }
 
   private static lerp(min: number, max: number, value: number): number {
