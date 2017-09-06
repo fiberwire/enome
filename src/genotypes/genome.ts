@@ -1,6 +1,6 @@
 import * as Chance from 'chance';
 import * as _ from 'lodash';
-import { Gene, GenomeRefill, IGenomeOptions, value, values } from '../index';
+import { Gene, GenomeRefill, IGenomeOptions, pad, value, values } from '../index';
 
 const chance = new Chance();
 
@@ -12,10 +12,8 @@ export class Genome<T extends IGenomeOptions> {
 
   constructor(
     public options: T,
-    public sequence: number[] = values(options.genomeLength) // generate values
-      .map(v => _.range(options.geneLength).map(i => v)) // copy values options.geneLength times
-      .reduce((prev, curr) => _.concat(prev, curr)), // merge back into a single array
-    public idLength: number = Math.min(12, options.genomeLength)
+    public sequence: number[] = pad(values(options.genomeLength), options.geneLength),
+    public idLength: number = Math.min(13, options.genomeLength)
   ) {
     this.genes = this.freshGenes;
   }
