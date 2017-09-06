@@ -1,46 +1,45 @@
 {
-    // Use IntelliSense to learn about possible Node.js debug attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "pooled",
-            "program": "${workspaceRoot}/out/src/examples/pooled.js",
-            "protocol": "inspector"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "sum",
-            "program": "${workspaceRoot}/out/src/examples/sum/sum.js",
-            "protocol": "inspector"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "letters",
-            "program": "${workspaceRoot}/out/src/examples/letters.js",
-            "protocol": "inspector"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Mocha Tests",
-            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "--compilers",
-                "ts:ts-node/register",
-                "-r",
-                "tsconfig-paths/register",
-                "test/**/*.ts",
-                "--watch",
-                "--no-timeouts"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "protocol": "inspector"
-        }
-    ]
+  // Use IntelliSense to learn about possible Node.js debug attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug file",
+      "program": "${workspaceRoot}/lib/${fileBasenameNoExtension}.js",
+      "cwd": "${workspaceRoot}",
+      "sourceMaps": true,
+      "smartStep": true,
+      "preLaunchTask": "build",
+      "outFiles": [
+        "${workspaceRoot}/lib/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug test",
+      "program": "${workspaceRoot}/node_modules/.bin/jest",
+      "args": [
+        "${relativeFile}",
+        "--env",
+        "jest-environment-node-debug"
+      ],
+      "cwd": "${workspaceRoot}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug examples/sum",
+      "program": "${workspaceRoot}/lib/examples/sum/sum",
+      "cwd": "${workspaceRoot}",
+      "sourceMaps": true,
+      "smartStep": true,
+      "outFiles": [
+        "${workspaceRoot}/lib/*.js"
+      ]
+    }
+  ]
 }

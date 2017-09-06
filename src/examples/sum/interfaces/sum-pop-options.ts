@@ -1,5 +1,4 @@
-import { IPopulationOptions } from "../../../index";
+import { IPopulationOptions } from '../../../index';
 
 // tslint:disable-next-line:no-empty-interface
-export interface ISumPopOptions extends IPopulationOptions {
-}
+export interface ISumPopOptions extends IPopulationOptions {}

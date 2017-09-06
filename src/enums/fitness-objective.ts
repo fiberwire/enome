@@ -1,4 +1,4 @@
 export enum FitnessObjective {
-    minimize,
-    maximize,
+  minimize,
+  maximize,
 }

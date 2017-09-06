@@ -1,5 +1,5 @@
 export enum FillType {
-    worst,
-    random,
-    none,
+  worst,
+  random,
+  none,
 }

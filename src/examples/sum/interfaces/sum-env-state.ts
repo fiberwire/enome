@@ -1,5 +1,4 @@
-
 export interface ISumEnvState {
-    sum: number;
-    list: number[];
+  sum: number;
+  list: number[];
 }

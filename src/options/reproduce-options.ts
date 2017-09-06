@@ -1,5 +1,4 @@
-
 export interface IReproduceOptions {
-    reproduceChance: number;
-    randomChance: number;
+  reproduceChance: number;
+  randomChance: number;
 }
