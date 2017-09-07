@@ -1,6 +1,4 @@
-import { FitnessObjective } from '../../src/enums/fitness-objective';
-import { IMutateOptions } from './mutate-options';
-import { IReproduceOptions } from './reproduce-options';
+import { FitnessObjective, IMutateOptions } from '../index';
 
 export interface IPopulationOptions {
   generations: number;

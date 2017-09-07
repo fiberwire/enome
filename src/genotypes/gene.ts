@@ -49,9 +49,7 @@ export class Gene {
       throw new Error('letter.length must equal 1');
     }
 
-    const letters = 'abcdefghijklmnopqrstuvwxyz'.split(
-      ''
-    );
+    const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
     return this.reverseElement(letter, letters);
   }
@@ -61,9 +59,7 @@ export class Gene {
       throw new Error('letter.length must equal 1');
     }
 
-    const letters = 'ABCDEFGIJKLMNOPQRSTUVWXYZ'.split(
-      ''
-    );
+    const letters = 'ABCDEFGIJKLMNOPQRSTUVWXYZ'.split('');
 
     return this.reverseElement(letter, letters);
   }
@@ -104,7 +100,7 @@ export class Gene {
     return (value - min) / (max - min);
   }
 
-  constructor(public value: number) { }
+  constructor(public value: number) {}
 
   // returns a float, interpolated based on this.value
   public float(min: number, max: number, value: number = this.value): number {
