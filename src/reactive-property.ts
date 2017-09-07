@@ -6,6 +6,7 @@ import {
   Subject,
   Subscription,
 } from 'rxjs';
+// tslint:disable-next-line:no-submodule-imports
 import { IScheduler } from 'rxjs/Scheduler';
 
 export class ReactiveProperty<T> {

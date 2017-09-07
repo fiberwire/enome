@@ -123,6 +123,7 @@ export abstract class Population<
         error => console.log(`population.populate(): ${error.stack}`),
         // tslint:disable-next-line:no-console
         () =>
+          // tslint:disable-next-line:no-console
           console.log(
             `Evolution completed after ${this.generation++} generations.`
           )

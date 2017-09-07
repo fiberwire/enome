@@ -116,7 +116,9 @@ export class Simulation<
               break;
           }
         },
+        // tslint:disable-next-line:no-console
         error => console.log(`error from simulation.updateBest: ${error}`),
+        // tslint:disable-next-line:no-console
         () => console.log('simulation complete')
       );
 
@@ -143,6 +145,7 @@ export class Simulation<
           );
           this.top.value = taken;
         },
+        // tslint:disable-next-line:no-console
         error => console.log(`error from simulation.updateTop: ${error}`)
       );
 
@@ -158,6 +161,7 @@ export class Simulation<
         e => {
           this.avgFitness.value = (this.avgFitness.value + e.fitness) / 2;
         },
+        // tslint:disable-next-line:no-console
         error => console.log(`error from simulation.updateAvgFitness: ${error}`)
       );
 
@@ -178,6 +182,7 @@ export class Simulation<
           this.organisms.push(org);
         },
         error =>
+          // tslint:disable-next-line:no-console
           console.log(`error from simulation.introduceOrganism: ${error}`)
       );
 
