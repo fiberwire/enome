@@ -1,4 +1,5 @@
 import * as Chance from 'chance';
+import * as _ from 'lodash';
 
 const chance = new Chance();
 
@@ -100,7 +101,7 @@ export class Gene {
     return (t - min) / (max - min);
   }
 
-  constructor(public value: number = chance.floating({ min: 0, max: 1 })) { }
+  constructor(public value: number = chance.floating({ min: 0, max: 1 })) {}
 
   // returns a float, interpolated based on this.value
   public float(min: number, max: number, t: number = this.value): number {
@@ -165,12 +166,12 @@ export class Gene {
 
   // returns a number of elements of the given array, the number of elements is interpolated based on this.value
   public elements<T>(array: T[], t: number = this.value): T[] {
-    return array.slice(0, this.int(0, array.length, t));
+    return _.take(array, this.int(0, array.length, t));
   }
 
   // returns a number of randomly selected elements of the given array,
   // the number of elements is interpolated based on this.value
   public randomElements<T>(array: T[], t: number = this.value): T[] {
-    return chance.shuffle(array).slice(0, this.int(0, array.length, t));
+    return _.take(chance.shuffle(array), this.int(0, array.length, t));
   }
 }
