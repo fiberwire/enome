@@ -3,14 +3,15 @@ import {
   Observable,
   Observer,
   ReplaySubject,
+  Scheduler,
   Subject,
   Subscription,
 } from 'rxjs';
+// tslint:disable-next-line:no-submodule-imports
 import { IScheduler } from 'rxjs/Scheduler';
 import { ReactiveProperty } from './index';
 
 import * as _ from 'lodash';
-import * as Rx from 'rxjs';
 
 export class ReactiveCollection<T> {
   private pushed: ReplaySubject<T> = new ReplaySubject<T>(1);
@@ -57,8 +58,8 @@ export class ReactiveCollection<T> {
     observer: (value: T) => void | Observer<T>
   ): Subscription {
     return this.pushed
-      .observeOn(Rx.Scheduler.asap)
-      .subscribeOn(Rx.Scheduler.asap)
+      .observeOn(Scheduler.asap)
+      .subscribeOn(Scheduler.asap)
       .subscribe(observer);
   }
 
@@ -66,8 +67,8 @@ export class ReactiveCollection<T> {
     observer: (value: T) => void | Observer<T>
   ): Subscription {
     return this.popped
-      .observeOn(Rx.Scheduler.asap)
-      .subscribeOn(Rx.Scheduler.asap)
+      .observeOn(Scheduler.asap)
+      .subscribeOn(Scheduler.asap)
       .subscribe(observer);
   }
 
@@ -75,8 +76,8 @@ export class ReactiveCollection<T> {
     observer: (value: T) => void | Observer<T>
   ): Subscription {
     return this.shifted
-      .observeOn(Rx.Scheduler.asap)
-      .subscribeOn(Rx.Scheduler.asap)
+      .observeOn(Scheduler.asap)
+      .subscribeOn(Scheduler.asap)
       .subscribe(observer);
   }
 
@@ -84,8 +85,8 @@ export class ReactiveCollection<T> {
     observer: (value: T) => void | Observer<T>
   ): Subscription {
     return this.unshifted
-      .observeOn(Rx.Scheduler.asap)
-      .subscribeOn(Rx.Scheduler.asap)
+      .observeOn(Scheduler.asap)
+      .subscribeOn(Scheduler.asap)
       .subscribe(observer);
   }
 
@@ -93,8 +94,8 @@ export class ReactiveCollection<T> {
     observer: (value: T) => void | Observer<T>
   ): Subscription {
     return this.removed
-      .observeOn(Rx.Scheduler.asap)
-      .subscribeOn(Rx.Scheduler.asap)
+      .observeOn(Scheduler.asap)
+      .subscribeOn(Scheduler.asap)
       .subscribe(observer);
   }
 
@@ -102,8 +103,8 @@ export class ReactiveCollection<T> {
     observer: (value: T) => void | Observer<T>
   ): Subscription {
     return this.rotated
-      .observeOn(Rx.Scheduler.asap)
-      .subscribeOn(Rx.Scheduler.asap)
+      .observeOn(Scheduler.asap)
+      .subscribeOn(Scheduler.asap)
       .subscribe(observer);
   }
 
