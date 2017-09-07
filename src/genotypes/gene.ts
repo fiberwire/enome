@@ -92,85 +92,85 @@ export class Gene {
     return this.reverseInt(0, array.length, elements.length);
   }
 
-  private static lerp(min: number, max: number, value: number): number {
-    return min - (max - min) * value;
+  private static lerp(min: number, max: number, t: number): number {
+    return min - (max - min) * t;
   }
 
-  private static reverseLerp(min: number, max: number, value: number): number {
-    return (value - min) / (max - min);
+  private static reverseLerp(min: number, max: number, t: number): number {
+    return (t - min) / (max - min);
   }
 
-  constructor(public value: number) {}
+  constructor(public value: number = chance.floating({ min: 0, max: 1 })) { }
 
   // returns a float, interpolated based on this.value
-  public float(min: number, max: number, value: number = this.value): number {
-    return Gene.lerp(min, max, value);
+  public float(min: number, max: number, t: number = this.value): number {
+    return Gene.lerp(min, max, t);
   }
 
   // returns an integer, interpolated based on this.value
-  public int(min: number, max: number, value: number = this.value): number {
-    return Math.round(Gene.lerp(min, max, value));
+  public int(min: number, max: number, t: number = this.value): number {
+    return Math.round(Gene.lerp(min, max, t));
   }
 
   // returns a natural number, interpolated based on this.value
-  public natural(min: number, max: number, value: number = this.value): number {
-    return Math.max(0, this.int(min, max, value));
+  public natural(min: number, max: number, t: number = this.value): number {
+    return Math.max(0, this.int(min, max, t));
   }
 
   // returns a boolean, interpolated based on this.value
-  public bool(value: number = this.value): boolean {
-    return this.element([true, false], value);
+  public bool(t: number = this.value): boolean {
+    return this.element([true, false], t);
   }
 
   // returns an upper or lower case letter, interpolated based on this.value
-  public letter(value: number = this.value): string {
+  public letter(t: number = this.value): string {
     const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ'.split(
       ''
     );
-    return this.element(letters, value);
+    return this.element(letters, t);
   }
 
   // returns an upper or lower case letter or a space, interpolated based on this.value
-  public letterOrSpace(value: number = this.value): string {
+  public letterOrSpace(t: number = this.value): string {
     const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ '.split(
       ''
     );
-    return this.element(letters, value);
+    return this.element(letters, t);
   }
 
   // returns a lower case letter, interpolated based on this.value
-  public letterLower(value: number = this.value): string {
+  public letterLower(t: number = this.value): string {
     const letters = 'abcdefghijklmnopqrstuvwxyz'.split('');
-    return this.element(letters, value);
+    return this.element(letters, t);
   }
 
   // returns an upper case letter, interpolated based on this.value
-  public letterUpper(value: number = this.value): string {
+  public letterUpper(t: number = this.value): string {
     const letters = 'ABCDEFGIJKLMNOPQRSTUVWXYZ'.split('');
-    return this.element(letters, value);
+    return this.element(letters, t);
   }
 
   // returns a character, interpolated based on this.value
-  public char(value: number = this.value): string {
+  public char(t: number = this.value): string {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()'.split(
       ''
     );
-    return this.element(chars, value);
+    return this.element(chars, t);
   }
 
   // returns an element of the given array, interpolated based on this.value;
-  public element<T>(array: T[], value: number = this.value): T {
-    return array[this.int(0, array.length - 1, value)];
+  public element<T>(array: T[], t: number = this.value): T {
+    return array[this.int(0, array.length - 1, t)];
   }
 
   // returns a number of elements of the given array, the number of elements is interpolated based on this.value
-  public elements<T>(array: T[], value: number = this.value): T[] {
-    return array.slice(0, this.int(0, array.length, value));
+  public elements<T>(array: T[], t: number = this.value): T[] {
+    return array.slice(0, this.int(0, array.length, t));
   }
 
   // returns a number of randomly selected elements of the given array,
   // the number of elements is interpolated based on this.value
-  public randomElements<T>(array: T[], value: number = this.value): T[] {
-    return chance.shuffle(array).slice(0, this.int(0, array.length, value));
+  public randomElements<T>(array: T[], t: number = this.value): T[] {
+    return chance.shuffle(array).slice(0, this.int(0, array.length, t));
   }
 }
