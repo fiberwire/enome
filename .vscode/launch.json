@@ -32,8 +32,20 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug examples/sum",
+      "name": "Debug sum example",
       "program": "${workspaceRoot}/lib/examples/sum/sum",
+      "cwd": "${workspaceRoot}",
+      "sourceMaps": true,
+      "smartStep": true,
+      "outFiles": [
+        "${workspaceRoot}/lib/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug specimen example",
+      "program": "${workspaceRoot}/lib/examples/specimen/example",
       "cwd": "${workspaceRoot}",
       "sourceMaps": true,
       "smartStep": true,
