@@ -26,7 +26,7 @@ export abstract class ArtificialSelection<
     const state = this.currentState.state;
     const { cmd, specimenIndex } = interaction.state;
     const spec = state.specimens[specimenIndex];
-    const agedParents = state.parents.map(p => p.ageSpecimen());
+    const agedParents = state.parents.map(p => p.ageSpecimen(1));
     const withoutSpec = _.without(state.specimens, spec);
 
     if (cmd === ArtificialCmd.kill) {
@@ -41,9 +41,9 @@ export abstract class ArtificialSelection<
         },
       };
     } else if (cmd === ArtificialCmd.keep) {
-      const concatted = _.concat(agedParents, spec);
-      const sorted = _.sortBy(concatted, p => p.age);
-      const parents = _.take(sorted, this.options.parents);
+      const concatted = _.concat(agedParents, spec); // add spec to parents
+      const sorted = _.sortBy(concatted, p => p.age); // sort parents by age
+      const parents = _.take(sorted, this.options.parents); // don't take old parents that exceed the parent limit
 
       const specimens = this.reproduceSpecimens(withoutSpec, parents);
 
@@ -55,7 +55,7 @@ export abstract class ArtificialSelection<
         },
       };
     } else if (cmd === ArtificialCmd.randomize) {
-      const parents = state.parents.map(p => p.ageSpecimen());
+      const parents = agedParents;
       const specimens = this.fillSpecimens(withoutSpec);
 
       return {
@@ -74,6 +74,26 @@ export abstract class ArtificialSelection<
       specimens: this.fillSpecimens(),
     };
   }
+
+  /**
+   * creates a new randomly generated specimen
+   *
+   * @private
+   * @returns {Specimen<Gen, Pheno>}
+   * @memberof ArtificialSelection
+   */
+  public abstract createSpecimen(): Specimen<Gen, Pheno>;
+
+  /**
+   * creates an offspring of all parents
+   *
+   * @private
+   * @returns {Specimen<Gen, Pheno>}
+   * @memberof ArtificialSelection
+   */
+  public abstract reproduceSpecimen(
+    parents: Array<Specimen<Gen, Pheno>>
+  ): Specimen<Gen, Pheno>;
 
   /**
    * fills the provided array of specimens with new randomly generated specimens
@@ -110,54 +130,6 @@ export abstract class ArtificialSelection<
     );
 
     return parents.concat(newParents);
-  }
-
-  /**
-   * creates a new randomly generated specimen
-   *
-   * @private
-   * @returns {Specimen<Gen, Pheno>}
-   * @memberof ArtificialSelection
-   */
-  private createSpecimen(): Specimen<Gen, Pheno> {
-    const createPhenotype = this.currentState.state.parents[0].createPhenotype;
-    const genotype = new Genome<Gen>(
-      this.currentState.state.parents[0].genotype.options
-    );
-    const ageSpecimen = this.currentState.state.parents[0].ageSpecimen;
-    const phenotype = createPhenotype(genotype);
-
-    return {
-      age: 0,
-      ageSpecimen,
-      createPhenotype,
-      genotype,
-      phenotype,
-    };
-  }
-
-  /**
-   * creates an offspring of all parents
-   *
-   * @private
-   * @returns {Specimen<Gen, Pheno>}
-   * @memberof ArtificialSelection
-   */
-  private reproduceSpecimen(
-    parents: Array<Specimen<Gen, Pheno>>
-  ): Specimen<Gen, Pheno> {
-    const ageSpecimen = this.currentState.state.parents[0].ageSpecimen;
-    const createPhenotype = this.currentState.state.parents[0].createPhenotype;
-    const genotype = reproduceManyToOne(parents.map(p => p.genotype));
-    const phenotype = createPhenotype(genotype);
-
-    return {
-      age: 0,
-      ageSpecimen,
-      createPhenotype,
-      genotype,
-      phenotype,
-    };
   }
 
   /**
