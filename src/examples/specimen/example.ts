@@ -26,14 +26,14 @@ const genOptions = {
 const art = new SumArtificial(artOptions, genOptions);
 
 art.states.subscribe(s => {
-  console.log(s.state.parents)
-})
+  console.log(s.state.parents);
+});
 
 art.nextInteraction({
-  agentID: "example",
+  agentID: 'example',
   index: 1,
   state: {
     cmd: ArtificialCmd.keep,
-    specimenIndex: 0
-  }
-})
+    specimenIndex: 0,
+  },
+});
