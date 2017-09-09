@@ -19,6 +19,7 @@ import { concat } from './operators/concat';
 import { fill } from './operators/fill';
 import { fillRandom } from './operators/fill-random';
 import { generateGenomes } from './operators/generate-genomes';
+import { lerp } from "./operators/lerp";
 import { avg } from './operators/mutation/avg';
 import { mutate } from './operators/mutation/mutate';
 import { mutateMany } from './operators/mutation/mutate-many';
@@ -43,6 +44,7 @@ import { Population } from './populations/population';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
 import { Simulation } from './simulation/simulation';
+import { reverseLerp } from "./operators/reverse-lerp";
 
 // options
 export {
@@ -67,8 +69,10 @@ export {
   fill,
   fillRandom,
   generateGenomes,
+  lerp,
   pad,
   refill,
+  reverseLerp,
   value,
   values,
 };

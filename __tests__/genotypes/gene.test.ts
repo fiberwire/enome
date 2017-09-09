@@ -1,4 +1,4 @@
-import { Gene, refill } from '../../src/index';
+import { Gene, lerp, refill } from '../../src/index';
 import { mocks } from '../mocks';
 
 
@@ -9,11 +9,11 @@ describe('genotypes', () => {
     refill(genome);
   });
 
-  describe('nucleotide', () => {
+  describe('gene', () => {
 
     describe('lerp', () => {
       it('should interpolate between a min and max value', () => {
-        const lerped = Gene.lerp(0, 10, 0.5);
+        const lerped = lerp(0, 10, 0.5);
 
         expect(lerped).toEqual(5);
       })
