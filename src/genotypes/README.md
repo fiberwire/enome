@@ -9,7 +9,7 @@ classes used in the evolution process
     - [idLength](#genome-idLength)
     - [id](#genome-id)
     - [genes](#genome-genes)
-    - [nucleos](#genome-nucleos)
+    - [genes](#genome-genes)
     - [nuclei](#genome-nuclei)
  - [Gene](#gene)
     - [constructor](#gene-constructor)
@@ -69,7 +69,7 @@ let genome = new Genome(options, sequence);
 ```
 
 #### <a name="genome-idLength"></a> idLength: number
-Determines how long the `id` that is generated using the `Genome`'s `genes` will be (does not consume them from `nucleos`).
+Determines how long the `id` that is generated using the `Genome`'s `genes` will be (does not consume them from `genes`).
 
 #### <a name="genome-id"></a> get id(): string
 returns a `string` that is (or should be) unique to each `Genome`, because it is derived from the `Genome`'s `genes`. Length of `id` is determined by `idLength`.
@@ -79,21 +79,21 @@ returns an array of `Genes`. `Gene`s are derived by averaging together values fr
 
 example usage:
 ```
-// this will parse genome's sequence, derive Genes from it, and assign it to nucleos.
-let nucleos = genome.genes;
+// this will parse genome's sequence, derive Genes from it, and assign it to genes.
+let genes = genome.genes;
 ```
 
-#### <a name="genome-nucleo"></a> get nucleo(): Gene
-returns the next `Gene` in `nucleos`. This is how you are meant to get `Gene`s from the `Genome`.
+#### <a name="genome-gene"></a> get gene(): Gene
+returns the next `Gene` in `genes`. This is how you are meant to get `Gene`s from the `Genome`.
 
 example usage:
 ```
-//if the next nucleo's value is 0.5, this will print 5.
-console.log(genome.nucleo.int(1, 10));
+//if the next gene's value is 0.5, this will print 5.
+console.log(genome.g.int(1, 10));
 ```
 
 #### <a name="genome-nuclei"></a> nuclei(n: number): Gene[]
-returns the next `n` `Gene`s in `nucleos`. This is just a convenient way to get multiple `nucleo`s at a time.
+returns the next `n` `Gene`s in `genes`. This is just a convenient way to get multiple `gene`s at a time.
 
 example usage:
 ```
@@ -123,7 +123,7 @@ returns a floating point number between `min` (inclusive) and `max` (inclusive).
 
 usage example:
 ```
-let float = genome.nucleo.float(1, 10);
+let float = genome.g.float(1, 10);
 // float => 5.56789
 ```
 
@@ -138,7 +138,7 @@ returns an integer number between `min` (inclusive) and `max` (inclusive).
 
 usage example:
 ```
-let int = genome.nucleo.int(1, 10);
+let int = genome.g.int(1, 10);
 // int => 5
 ```
 
@@ -153,7 +153,7 @@ returns a positive (>= 0) integer number between `min` (inclusive) and `max` (in
 
 usage example:
 ```
-let natural = genome.nucleo.natural(-100, 10);
+let natural = genome.g.natural(-100, 10);
 // natural => 0
 ```
 
@@ -165,7 +165,7 @@ returns either `true` or `false`.
 
 usage example:
 ```
-let bool = genome.nucleo.bool();
+let bool = genome.g.bool();
 // bool => true
 ```
 
@@ -177,7 +177,7 @@ returns an uppercase or lowercase letter.
 
 usage example:
 ```
-let letter = genome.nucleo.letter();
+let letter = genome.g.letter();
 // letter => 'A'
 ```
 
@@ -189,7 +189,7 @@ returns a lowercase letter.
 
 usage example:
 ```
-let lower = genome.nucleo.letterLower();
+let lower = genome.g.letterLower();
 // lower => 'g'
 ```
 
@@ -201,7 +201,7 @@ returns an uppercase letter.
 
 usage example:
 ```
-let upper = genome.nucleo.upper();
+let upper = genome.g.upper();
 // upper => 'S'
 ```
 
@@ -213,7 +213,7 @@ returns an uppercase letter, a lowercase letter, a number (0-9), or a symbol.
 
 usage example:
 ```
-let char = genome.nucleo.char();
+let char = genome.g.char();
 // char => '@'
 ```
 
@@ -228,7 +228,7 @@ returns an element of `array`, interpolated by index.
 usage example:
 ```
 let array = [1, 2, 3, 4, 5];
-let element = genome.nucleo.element(array);
+let element = genome.g.element(array);
 // element => 4
 ```
 
@@ -243,7 +243,7 @@ returns a number of elements of `array`. The number of elements returned is inte
 usage example:
 ```
 let array = [1, 2, 3, 4, 5];
-let element = genome.nucleo.elements(array);
+let element = genome.g.elements(array);
 // element => [1, 2, 3]
 ```
 
@@ -258,6 +258,6 @@ returns a number of randomly selected elements of `array`. The number of element
 usage example:
 ```
 let array = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-let element = genome.nucleo.elements(array);
+let element = genome.g.elements(array);
 // element => ['e', 'a', 'd', 'g']
 ```

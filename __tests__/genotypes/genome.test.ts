@@ -24,18 +24,19 @@ describe('genotypes', () => {
         );
       });
 
-      it('should construct nucleotides', () => {
+      it('should construct genes', () => {
         expect(genome.genes.length).toEqual(genome.options.genomeLength);
       });
     });
 
     describe('id', () => {
       it('should generate an id of specified length', () => {
+        expect(genome.options).not.toBeUndefined();
         expect(genome.id.length).toEqual(genome.idLength);
       });
     });
 
-    describe('nucleotides', () => {
+    describe('freshGenes', () => {
       it('should produce genes from the sequence', () => {
         expect(genome.freshGenes.length).toEqual(genome.options.genomeLength);
 
@@ -43,8 +44,8 @@ describe('genotypes', () => {
       });
     });
 
-    describe('nucleo', () => {
-      it('should produce the next nucleotide in the genome', () => {
+    describe('g', () => {
+      it('should produce the next gene in the genome', () => {
         expect(genome.g).toBeInstanceOf(Gene);
         expect(genome.g.value).toBeGreaterThanOrEqual(0);
         expect(genome.g.value).toBeLessThanOrEqual(1);
@@ -57,7 +58,7 @@ describe('genotypes', () => {
     });
 
     describe('nuclei', () => {
-      it('should produce the next n nucleotides in the genome', () => {
+      it('should produce the next n genes in the genome', () => {
         const ns = genome.gs(5);
         const first5 = genome.freshGenes.slice(0, 5);
 
