@@ -26,6 +26,7 @@ const genOptions = {
 const art = new SumArtificial(artOptions, genOptions);
 
 art.states.subscribe(s => {
+  // tslint:disable-next-line:no-console
   console.log(s.state.parents);
 });
 

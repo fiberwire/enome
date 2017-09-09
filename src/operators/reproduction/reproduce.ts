@@ -1,10 +1,6 @@
 import { Chance } from 'chance';
 import * as _ from 'lodash';
-import { MutateOp } from '../../enums/mutate-op';
-import { Genome } from '../../genotypes/genome';
-import { IGenomeOptions } from '../../options/genome-options';
-import { mutate } from '../mutation/mutate';
-import { values } from '../values';
+import { Genome, IGenomeOptions, mutate, MutateOp } from '../../index';
 
 const chance = new Chance();
 
@@ -19,7 +15,6 @@ export function reproduce<T extends IGenomeOptions>(
     new Genome<T>(
       gen1.options,
       _.zip(gen1.sequence, gen2.sequence).map((vals: number[]) => {
-        // console.log(`w1: ${w1}, w2: ${w2}`);
         const v = chance.weighted(vals, [weight1, weight2]);
         return v;
       })

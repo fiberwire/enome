@@ -1,6 +1,4 @@
-import { Genome } from '../../genotypes/genome';
-import { IGenomeOptions } from '../../options/genome-options';
-import { value } from '../value';
+import { Genome, IGenomeOptions, weight } from '../../index';
 
 export function sub<T extends IGenomeOptions>(
   gen: Genome<T>,
@@ -9,8 +7,8 @@ export function sub<T extends IGenomeOptions>(
   return new Genome(
     gen.options,
     gen.sequence.map(v => {
-      if (value() <= mutateChance) {
-        return value();
+      if (weight() <= mutateChance) {
+        return weight();
       } else {
         return v;
       }

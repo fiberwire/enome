@@ -4,7 +4,7 @@ import {
   GenomeRefill,
   IGenomeOptions,
   refill,
-  value,
+  weight,
 } from '../src/index';
 
 export interface IMock {
@@ -31,7 +31,7 @@ function mockMutateChance(): number {
 }
 
 function mockWeights(): number[] {
-  return _.range(0, 10).map(i => value());
+  return _.range(0, 10).map(i => weight());
 }
 
 function mockGenomeOptions(): IGenomeOptions {

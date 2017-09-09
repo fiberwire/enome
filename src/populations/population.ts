@@ -17,7 +17,7 @@ import {
   ReactiveCollection,
   ReactiveProperty,
   reproduceManyToOne,
-  value,
+  weight,
 } from '../index';
 
 import * as Chance from 'chance';

@@ -5,8 +5,8 @@ import {
   GenomeRefill,
   IGenomeOptions,
   pad,
-  value,
-  values,
+  weight,
+  weights,
 } from '../index';
 
 const chance = new Chance();
@@ -20,7 +20,7 @@ export class Genome<T extends IGenomeOptions> {
   constructor(
     public options: T,
     public sequence: number[] = pad(
-      values(options.genomeLength),
+      weights(options.genomeLength),
       options.geneLength
     ),
     public idLength: number = Math.min(13, options.genomeLength)

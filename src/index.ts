@@ -29,8 +29,9 @@ import { refill } from './operators/refill';
 import { reproduce } from './operators/reproduction/reproduce';
 import { reproduceManyToMany } from './operators/reproduction/reproduce-many-to-many';
 import { reproduceManyToOne } from './operators/reproduction/reproduce-many-to-one';
-import { value } from './operators/value';
-import { values } from './operators/values';
+import { reverseLerp } from './operators/reverse-lerp';
+import { weight } from './operators/weight';
+import { weights } from './operators/weights';
 import { IArtificialOptions } from './options/artificial-options';
 import { IEnvironmentOptions } from './options/environment-options';
 import { IGenomeOptions } from './options/genome-options';
@@ -44,7 +45,6 @@ import { Population } from './populations/population';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
 import { Simulation } from './simulation/simulation';
-import { reverseLerp } from './operators/reverse-lerp';
 
 // options
 export {
@@ -73,8 +73,8 @@ export {
   pad,
   refill,
   reverseLerp,
-  value,
-  values,
+  weight,
+  weights,
 };
 
 // mutation operators
