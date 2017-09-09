@@ -14,7 +14,7 @@ export interface IMock {
 function mockGenome(): Genome<IGenomeOptions> {
   return new Genome({
     geneLength: 1,
-    genomeLength: 50
+    genomeLength: 50,
   });
 }
 

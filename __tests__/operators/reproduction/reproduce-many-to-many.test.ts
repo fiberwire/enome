@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
-import { refill } from '../../../../src/operators/refill';
-import { reproduceManyToMany } from '../../../../src/operators/reproduction/many-to-many/reproduce-many-to-many';
-import { mocks } from '../../../mocks';
+import { refill } from '../../../src/operators/refill';
+import { reproduceManyToMany } from '../../../src/operators/reproduction/reproduce-many-to-many';
+import { mocks } from '../../mocks';
 
 describe('operators', () => {
   describe('reproduction', () => {

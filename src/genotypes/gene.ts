@@ -93,11 +93,11 @@ export class Gene {
     return this.reverseInt(0, array.length, elements.length);
   }
 
-  private static lerp(min: number, max: number, t: number): number {
+  public static lerp(min: number, max: number, t: number): number {
     return min - (max - min) * t;
   }
 
-  private static reverseLerp(min: number, max: number, t: number): number {
+  public static reverseLerp(min: number, max: number, t: number): number {
     return (t - min) / (max - min);
   }
 

@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-import 'mocha';
 import { Genome } from '../../../src/genotypes/genome';
 import { mutate } from '../../../src/operators/mutation/mutate';
 import { refill } from '../../../src/operators/refill';
@@ -21,12 +19,12 @@ describe('operators', () => {
       const offspring: Genome<IGenomeOptions> = reproduce(genome, mutated);
 
       it('should produce an offspring genome with genetics from both parents', () => {
-        expect(mutated.sequence.length).to.eql(genome.sequence.length);
-        expect(offspring.sequence.length).to.eql(mutated.sequence.length);
+        expect(mutated.sequence.length).toEqual(genome.sequence.length);
+        expect(offspring.sequence.length).toEqual(mutated.sequence.length);
 
-        expect(genome.sequence).to.not.deep.equal(mutated.sequence);
-        expect(genome.sequence).to.not.deep.equal(offspring.sequence);
-        expect(mutated.sequence).to.not.deep.equal(offspring.sequence);
+        expect(genome.sequence).not.toEqual(mutated.sequence);
+        expect(genome.sequence).not.toEqual(offspring.sequence);
+        expect(mutated.sequence).not.toEqual(offspring.sequence);
       });
     });
   });

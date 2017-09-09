@@ -1,5 +1,6 @@
-import { refill } from '../../src/index';
+import { Gene, refill } from '../../src/index';
 import { mocks } from '../mocks';
+
 
 describe('genotypes', () => {
   const { genome } = mocks();
@@ -9,6 +10,15 @@ describe('genotypes', () => {
   });
 
   describe('nucleotide', () => {
+
+    describe('lerp', () => {
+      it('should interpolate between a min and max value', () => {
+        const lerped = Gene.lerp(0, 10, 0.5);
+
+        expect(lerped).toEqual(5);
+      })
+    })
+
     describe('float', () => {
       it('should produce a float between min and max', () => {
         const g = genome.g;
@@ -50,9 +60,9 @@ describe('genotypes', () => {
     describe('letter', () => {
       it('should produce an upper or lower case letter', () => {
         const letter = genome.g.letter();
-        expect(
-          'abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ'
-        ).toContain(letter);
+        expect('abcdefghijklmnopqrstuvwxyzABCDEFGIJKLMNOPQRSTUVWXYZ').toContain(
+          letter
+        );
       });
     });
 

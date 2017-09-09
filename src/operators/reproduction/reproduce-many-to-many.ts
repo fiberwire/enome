@@ -1,10 +1,5 @@
 import * as _ from 'lodash';
-import {
-  Genome,
-  IGenomeOptions,
-  reproduceManyToOne,
-  value,
-} from '../../../index';
+import { Genome, IGenomeOptions, reproduceManyToOne, value } from '../../index';
 
 export function reproduceManyToMany<T extends IGenomeOptions>(
   genomes: Array<Genome<T>>,
