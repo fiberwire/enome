@@ -1,9 +1,5 @@
-import { Genome } from '../../../src/genotypes/genome';
-import { mutate } from '../../../src/operators/mutation/mutate';
-import { refill } from '../../../src/operators/refill';
-import { reproduce } from '../../../src/operators/reproduction/reproduce';
-import { IGenomeOptions } from '../../../src/options/genome-options';
-import { mocks } from '../../mocks';
+import { Genome, IGenomeOptions, mutate, refill, reproduce } from "../../../src/index";
+import { mocks } from '../../../src/mocks';
 
 describe('operators', () => {
   describe('reproduction', () => {

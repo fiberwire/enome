@@ -1,7 +1,11 @@
 import * as _ from 'lodash';
-import { GenomeRefill } from '../src/enums/genome-refill';
-
-import { Genome, IGenomeOptions, refill, value } from '../src/index';
+import {
+  Genome,
+  GenomeRefill,
+  IGenomeOptions,
+  refill,
+  value,
+} from '../src/index';
 
 export interface IMock {
   genome: Genome<IGenomeOptions>;

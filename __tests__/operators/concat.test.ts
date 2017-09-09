@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
-
 import { concat, refill } from '../../src/index';
-import { mocks } from '../mocks';
+import { mocks } from '../../src/mocks';
 
 describe('operators', () => {
   describe('concat', () => {

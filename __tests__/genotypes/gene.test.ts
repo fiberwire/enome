@@ -1,6 +1,5 @@
 import { Gene, lerp, refill } from '../../src/index';
-import { mocks } from '../mocks';
-
+import { mocks } from '../../src/mocks';
 
 describe('genotypes', () => {
   const { genome } = mocks();
@@ -10,14 +9,13 @@ describe('genotypes', () => {
   });
 
   describe('gene', () => {
-
     describe('lerp', () => {
       it('should interpolate between a min and max value', () => {
         const lerped = lerp(0, 10, 0.5);
 
         expect(lerped).toEqual(5);
-      })
-    })
+      });
+    });
 
     describe('float', () => {
       it('should produce a float between min and max', () => {
@@ -53,7 +51,7 @@ describe('genotypes', () => {
     describe('bool', () => {
       it('should produce a boolean', () => {
         const bool = genome.g.bool();
-        expect(bool).toBe(true || false);
+        expect([true, false]).toContain(bool);
       });
     });
 

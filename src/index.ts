@@ -19,7 +19,7 @@ import { concat } from './operators/concat';
 import { fill } from './operators/fill';
 import { fillRandom } from './operators/fill-random';
 import { generateGenomes } from './operators/generate-genomes';
-import { lerp } from "./operators/lerp";
+import { lerp } from './operators/lerp';
 import { avg } from './operators/mutation/avg';
 import { mutate } from './operators/mutation/mutate';
 import { mutateMany } from './operators/mutation/mutate-many';
@@ -27,8 +27,8 @@ import { sub } from './operators/mutation/sub';
 import { pad } from './operators/pad';
 import { refill } from './operators/refill';
 import { reproduce } from './operators/reproduction/reproduce';
-import { reproduceManyToMany } from "./operators/reproduction/reproduce-many-to-many";
-import { reproduceManyToOne } from "./operators/reproduction/reproduce-many-to-one";
+import { reproduceManyToMany } from './operators/reproduction/reproduce-many-to-many';
+import { reproduceManyToOne } from './operators/reproduction/reproduce-many-to-one';
 import { value } from './operators/value';
 import { values } from './operators/values';
 import { IArtificialOptions } from './options/artificial-options';
@@ -44,7 +44,7 @@ import { Population } from './populations/population';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
 import { Simulation } from './simulation/simulation';
-import { reverseLerp } from "./operators/reverse-lerp";
+import { reverseLerp } from './operators/reverse-lerp';
 
 // options
 export {

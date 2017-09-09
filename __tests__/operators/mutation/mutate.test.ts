@@ -1,5 +1,5 @@
 import { Genome, IGenomeOptions, mutate, refill } from '../../../src/index';
-import { mocks } from '../../mocks';
+import { mocks } from '../../../src/mocks';
 
 describe('operators', () => {
   describe('mutation', () => {

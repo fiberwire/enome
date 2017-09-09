@@ -1,5 +1,5 @@
 import { refill } from '../../src/index';
-import { mocks } from '../mocks';
+import { mocks } from '../../src/mocks';
 
 describe('operators', () => {
   let { genome } = mocks();

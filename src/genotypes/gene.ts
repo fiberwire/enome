@@ -1,6 +1,6 @@
 import * as Chance from 'chance';
 import * as _ from 'lodash';
-import { lerp, reverseLerp } from "../index";
+import { lerp, reverseLerp } from '../index';
 
 const chance = new Chance();
 
@@ -94,7 +94,7 @@ export class Gene {
     return this.reverseInt(0, array.length, elements.length);
   }
 
-  constructor(public value: number = chance.floating({ min: 0, max: 1 })) { }
+  constructor(public value: number = chance.floating({ min: 0, max: 1 })) {}
 
   // returns a float, interpolated based on this.value
   public float(min: number, max: number, t: number = this.value): number {

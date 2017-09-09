@@ -1,6 +1,5 @@
-import { refill } from '../../../src/index';
-import { sub } from '../../../src/operators/mutation/sub';
-import { mocks } from '../../mocks';
+import { refill, sub } from "../../../src/index";
+import { mocks } from '../../../src/mocks';
 
 describe('operators', () => {
   describe('mutation', () => {

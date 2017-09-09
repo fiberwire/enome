@@ -1,7 +1,6 @@
-import { fill, refill } from '../../src/index';
-
 import * as _ from 'lodash';
-import { mocks } from '../mocks';
+import { fill, refill } from '../../src/index';
+import { mocks } from '../../src/mocks';
 
 describe('operators', () => {
   describe('fill', () => {

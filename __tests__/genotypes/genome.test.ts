@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { Gene, Genome, refill } from '../../src/index';
-import { mocks } from '../mocks';
+import { mocks } from '../../src/mocks';
 
 describe('genotypes', () => {
   describe('genome', () => {
