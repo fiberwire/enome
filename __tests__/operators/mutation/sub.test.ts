@@ -1,4 +1,4 @@
-import { refill, sub } from "../../../src/index";
+import { refill, sub } from '../../../src/index';
 import { mocks } from '../../../src/mocks';
 
 describe('operators', () => {

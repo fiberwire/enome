@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { refill, reproduceManyToMany } from "../../../src/index";
+import { refill, reproduceManyToMany } from '../../../src/index';
 import { mocks } from '../../../src/mocks';
 
 describe('operators', () => {
