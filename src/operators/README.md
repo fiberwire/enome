@@ -94,7 +94,7 @@ let b = bottom(genomes, fitness, 0.5);
 ```
 
 ### <a name=""></a> clone: Genome<T>
-returns an exact copy of the `Genome` passed to it, including the state of its `nucleos`.
+returns an exact copy of the `Genome` passed to it, including the state of its `genes`.
 - `genome`: `Genome<T>`
     - the `Genome` you would like to copy.
 

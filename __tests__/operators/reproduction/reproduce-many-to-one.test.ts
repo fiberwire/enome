@@ -1,9 +1,6 @@
-import { expect } from 'chai';
 import * as _ from 'lodash';
-import 'mocha';
-import { refill } from '../../../../src/operators/refill';
-import { reproduceManyToOne } from '../../../../src/operators/reproduction/many-to-one/reproduce-many-to-one';
-import { mocks } from '../../../mocks';
+import { refill, reproduceManyToOne } from "../../../src/index";
+import { mocks } from '../../../src/mocks';
 
 describe('operators', () => {
   describe('reproduction', () => {
@@ -16,10 +13,10 @@ describe('operators', () => {
 
       it('should produce an offspring from many genomes, given a weight array', () => {
         const offspring = reproduceManyToOne(genomes);
-        expect(offspring.genes.length).to.eql(genomes[0].options.genomeLength);
+        expect(offspring.genes.length).toEqual(genomes[0].options.genomeLength);
 
         genomes.forEach(g => {
-          expect(offspring.sequence).to.not.deep.equal(g.sequence);
+          expect(offspring.sequence).not.toEqual(g.sequence);
         });
       });
     });

@@ -1,8 +1,8 @@
 import * as Chance from 'chance';
 import * as _ from 'lodash';
-import { Genome } from '../../../genotypes/genome';
-import { IGenomeOptions } from '../../../options/genome-options';
-import { value } from '../../value';
+import { Genome } from '../../genotypes/genome';
+import { IGenomeOptions } from '../../options/genome-options';
+import { value } from '../value';
 const chance = new Chance();
 
 export function reproduceManyToOne<T extends IGenomeOptions>(

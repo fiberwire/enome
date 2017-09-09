@@ -1,9 +1,6 @@
-import { expect } from 'chai';
 import * as _ from 'lodash';
-import 'mocha';
-
 import { clone, refill } from '../../src/index';
-import { mocks } from '../mocks';
+import { mocks } from '../../src/mocks';
 
 describe('operators', () => {
   describe('clone', () => {
@@ -15,7 +12,7 @@ describe('operators', () => {
 
     it('should return an exact copy of the provided genome', () => {
       const c = clone(genome);
-      expect(c).to.eql(genome);
+      expect(c).toEqual(genome);
     });
   });
 });

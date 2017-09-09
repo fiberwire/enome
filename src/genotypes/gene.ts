@@ -1,16 +1,17 @@
 import * as Chance from 'chance';
 import * as _ from 'lodash';
+import { lerp, reverseLerp } from '../index';
 
 const chance = new Chance();
 
 export class Gene {
   public static reverseFloat(min: number, max: number, float: number): number {
-    return this.reverseLerp(min, max, float);
+    return reverseLerp(min, max, float);
   }
 
   public static reverseInt(min: number, max: number, int: number): number {
     const i = Math.round(int);
-    return this.reverseLerp(min, max, i);
+    return reverseLerp(min, max, i);
   }
 
   public static reverseNatural(
@@ -19,7 +20,7 @@ export class Gene {
     natural: number
   ): number {
     const n = Math.max(0, natural);
-    return this.reverseLerp(min, max, n);
+    return reverseLerp(min, max, n);
   }
 
   public static reverseBool(bool: boolean): number {
@@ -93,24 +94,16 @@ export class Gene {
     return this.reverseInt(0, array.length, elements.length);
   }
 
-  private static lerp(min: number, max: number, t: number): number {
-    return min - (max - min) * t;
-  }
-
-  private static reverseLerp(min: number, max: number, t: number): number {
-    return (t - min) / (max - min);
-  }
-
   constructor(public value: number = chance.floating({ min: 0, max: 1 })) {}
 
   // returns a float, interpolated based on this.value
   public float(min: number, max: number, t: number = this.value): number {
-    return Gene.lerp(min, max, t);
+    return lerp(min, max, t);
   }
 
   // returns an integer, interpolated based on this.value
   public int(min: number, max: number, t: number = this.value): number {
-    return Math.round(Gene.lerp(min, max, t));
+    return Math.round(lerp(min, max, t));
   }
 
   // returns a natural number, interpolated based on this.value
