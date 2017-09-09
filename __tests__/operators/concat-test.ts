@@ -1,6 +1,4 @@
-import { expect } from 'chai';
 import * as _ from 'lodash';
-import 'mocha';
 
 import { concat, refill } from '../../src/index';
 import { mocks } from '../mocks';
@@ -17,7 +15,7 @@ describe('operators', () => {
       const [g1, g2] = genomes;
       const g3 = concat(g1, g2);
 
-      expect(g3.sequence.length).to.eql(
+      expect(g3.sequence.length).toEqual(
         g1.sequence.length + g2.sequence.length
       );
     });
