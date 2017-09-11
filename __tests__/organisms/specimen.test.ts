@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Genome, IGenomeOptions, Specimen } from '../../src/index';
+import { Genome, IGenomeOptions, ISpecimen } from '../../src/index';
 
 interface IListOptions extends IGenomeOptions {
   length: number;
@@ -7,7 +7,13 @@ interface IListOptions extends IGenomeOptions {
   max: number;
 }
 
-class ListSpecimen extends Specimen<IListOptions, number[]> {
+class ListSpecimen implements ISpecimen<IListOptions, number[]> {
+  public phenotype: number[];
+
+  constructor(public genotype: Genome<IListOptions>, public age: number = 0) {
+    this.phenotype = this.createPhenotype(genotype);
+  }
+
   public createPhenotype(genotype: Genome<IListOptions>): number[] {
     const g = genotype;
     const o = g.options;
@@ -15,7 +21,7 @@ class ListSpecimen extends Specimen<IListOptions, number[]> {
     return _.range(o.length).map(i => g.g.int(o.min, o.max));
   }
 
-  public ageSpecimen(n: number): Specimen<IListOptions, number[]> {
+  public ageSpecimen(n: number): ISpecimen<IListOptions, number[]> {
     return new ListSpecimen(this.genotype, this.age + n);
   }
 }

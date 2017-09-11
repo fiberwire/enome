@@ -6,8 +6,8 @@ import {
   IArtificialEState,
   IArtificialOptions,
   IGenomeOptions,
+  ISpecimen,
   reproduceManyToOne,
-  Specimen,
 } from '../index';
 
 import * as _ from 'lodash';
@@ -16,8 +16,15 @@ export abstract class ArtificialSelection<
   Gen extends IGenomeOptions,
   Pheno
 > extends AgentEnvironment<IArtificialAState, IArtificialEState<Gen, Pheno>> {
-  constructor(public options: IArtificialOptions) {
+  constructor(public options: IArtificialOptions, public genOptions: Gen) {
     super(options);
+    this.nextState({
+      index: 0,
+      state: {
+        parents: this.fillParents(),
+        specimens: this.fillSpecimens()
+      }
+    })
   }
 
   public async interact(
@@ -70,44 +77,53 @@ export abstract class ArtificialSelection<
 
   public get defaultState(): IArtificialEState<Gen, Pheno> {
     return {
-      parents: this.fillParents(),
-      specimens: this.fillSpecimens(),
+      parents: [],
+      specimens: [],
     };
   }
 
+  // get initialState(): IStateUpdate<IArtificialEState<Gen, Pheno>> {
+  //   return {
+  //     index: 0,
+  //     state: this.defaultState
+  //   }
+  // }
+
   /**
-   * creates a new randomly generated specimen
+   * creates a new randomly generated ISpecimen
    *
    * @private
-   * @returns {Specimen<Gen, Pheno>}
+   * @returns {ISpecimen<Gen, Pheno>}
    * @memberof ArtificialSelection
    */
-  public abstract createSpecimen(): Specimen<Gen, Pheno>;
+  public abstract createSpecimen(options: Gen): ISpecimen<Gen, Pheno>;
 
   /**
    * creates an offspring of all parents
    *
    * @private
-   * @returns {Specimen<Gen, Pheno>}
+   * @returns {ISpecimen<Gen, Pheno>}
    * @memberof ArtificialSelection
    */
   public abstract reproduceSpecimen(
-    parents: Array<Specimen<Gen, Pheno>>
-  ): Specimen<Gen, Pheno>;
+    parents: Array<ISpecimen<Gen, Pheno>>
+  ): ISpecimen<Gen, Pheno>;
 
   /**
    * fills the provided array of specimens with new randomly generated specimens
    *
    * @private
-   * @param {Array<Specimen<Gen, Pheno>>} [specs=[]]
-   * @returns {Array<Specimen<Gen, Pheno>>}
+   * @param {Array<ISpecimen<Gen, Pheno>>} [specs=[]]
+   * @returns {Array<ISpecimen<Gen, Pheno>>}
    * @memberof ArtificialSelection
    */
   private fillSpecimens(
-    specs: Array<Specimen<Gen, Pheno>> = [],
+    specs: Array<ISpecimen<Gen, Pheno>> = [],
     n: number = this.options.specimens
-  ): Array<Specimen<Gen, Pheno>> {
-    const newSpecs = _.range(n - specs.length).map(i => this.createSpecimen());
+  ): Array<ISpecimen<Gen, Pheno>> {
+    const newSpecs = _.range(n - specs.length).map(i =>
+      this.createSpecimen(this.genOptions)
+    );
 
     return specs.concat(newSpecs);
   }
@@ -122,11 +138,11 @@ export abstract class ArtificialSelection<
    * @memberof ArtificialSelection
    */
   private fillParents(
-    parents: Array<Specimen<Gen, Pheno>> = [],
+    parents: Array<ISpecimen<Gen, Pheno>> = [],
     n: number = this.options.parents
-  ): Array<Specimen<Gen, Pheno>> {
+  ): Array<ISpecimen<Gen, Pheno>> {
     const newParents = _.range(n - parents.length).map(i =>
-      this.createSpecimen()
+      this.createSpecimen(this.genOptions)
     );
 
     return parents.concat(newParents);
@@ -136,15 +152,15 @@ export abstract class ArtificialSelection<
    * fills the provided array of specimens with the offspring of all parents
    *
    * @private
-   * @param {Array<Specimen<Gen, Pheno>>} specs - the array of specimens you want to fill with offspring
-   * @returns {Array<Specimen<Gen, Pheno>>}
+   * @param {Array<ISpecimen<Gen, Pheno>>} specs - the array of specimens you want to fill with offspring
+   * @returns {Array<ISpecimen<Gen, Pheno>>}
    * @memberof ArtificialSelection
    */
   private reproduceSpecimens(
-    specs: Array<Specimen<Gen, Pheno>>,
-    parents: Array<Specimen<Gen, Pheno>>,
+    specs: Array<ISpecimen<Gen, Pheno>>,
+    parents: Array<ISpecimen<Gen, Pheno>>,
     n: number = this.options.specimens
-  ): Array<Specimen<Gen, Pheno>> {
+  ): Array<ISpecimen<Gen, Pheno>> {
     const offspring = _.range(n - specs.length).map(i =>
       this.reproduceSpecimen(parents)
     );

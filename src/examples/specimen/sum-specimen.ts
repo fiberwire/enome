@@ -1,10 +1,19 @@
 import * as _ from 'lodash';
-import { Genome, Specimen } from '../../index';
+import { Genome, ISpecimen } from '../../index';
 import { ISumOptions } from './sum-gen-options';
 
-export class SumSpecimen extends Specimen<ISumOptions, number[]> {
+export class SumSpecimen implements ISpecimen<ISumOptions, number[]> {
+  public phenotype: number[];
+
+  constructor(public genotype: Genome<ISumOptions>, public age: number = 0) {
+    this.phenotype = this.createPhenotype(genotype);
+  }
+
   public ageSpecimen(n: number): SumSpecimen {
-    return new SumSpecimen(this.genotype, this.age + n);
+    const genotype = this.genotype;
+    const age = this.age + n;
+
+    return new SumSpecimen(genotype, age);
   }
   public createPhenotype(genotype: Genome<ISumOptions>): number[] {
     return _.range(genotype.options.length).map(i =>

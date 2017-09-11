@@ -12,6 +12,7 @@ import { Genome } from './genotypes/genome';
 import { IEvaluation } from './interfaces/evaluation';
 import { IEvolvable } from './interfaces/evolvable';
 import { IReversible } from './interfaces/reversible';
+import { ISpecimen } from './interfaces/specimen';
 import { clone } from './operators/clone';
 import { cloneEvaluation } from './operators/cloneEvaluation';
 import { cloneOrganism } from './operators/cloneOrganism';
@@ -40,7 +41,6 @@ import { IOrganismOptions } from './options/organism-options';
 import { IPopulationOptions } from './options/population-options';
 import { IReproduceOptions } from './options/reproduce-options';
 import { Organism } from './organisms/organism';
-import { Specimen } from './organisms/specimen';
 import { Population } from './populations/population';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
@@ -90,10 +90,11 @@ export {
   IArtificialAState,
   IArtificialEState,
   IReversible,
+  ISpecimen,
 };
 
 // evolution stuff
-export { ArtificialSelection, Organism, Population, Specimen, Simulation };
+export { ArtificialSelection, Organism, Population, Simulation };
 
 // enums
 export {
