@@ -22,9 +22,9 @@ export abstract class ArtificialSelection<
       index: 0,
       state: {
         parents: this.fillParents(),
-        specimens: this.fillSpecimens()
-      }
-    })
+        specimens: this.fillSpecimens(),
+      },
+    });
   }
 
   public async interact(
