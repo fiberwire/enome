@@ -2,9 +2,10 @@ import { ArtificialCmd } from '../../index';
 import { SumArtificial } from './sum-artificial';
 
 import * as _ from 'lodash';
+import { Observable } from 'rxjs';
 
 const artOptions = {
-  interactionTime: 10,
+  interactionTime: 0,
   parents: 5,
   specimens: 10,
 };
@@ -19,22 +20,31 @@ const genOptions = {
 
 const art = new SumArtificial(artOptions, genOptions);
 
-art.states.subscribe(s => {
-  // tslint:disable-next-line:no-console
-  console.log(`[${s.index}] ${s.state.parents}`);
-});
+art.states
+  .filter(s => s.state.parents.length > 0)
+  .filter(s => s.state.specimens.length > 0)
+  .subscribe(s => {
+    const specs = s.state.specimens.map(p => p.genotype.id).reduce((p, c) => `${p}, ${c}`)
+    const parents = s.state.parents.map(p => p.genotype.id).reduce((p, c) => `${p}, ${c}`)
+
+    // tslint:disable-next-line:no-console
+    console.log(`[${s.index}]
+      Specimens: ${specs}
+      Parents:   ${parents}`);
+  });
 
 art.agentInteractions('example').subscribe(i => {
   console.log(`[${i.interaction.index}] ${i.interaction.agentID}`);
 });
 
-_.range(10).map(i => {
-  art.nextInteraction({
-    agentID: 'example',
-    index: i,
-    state: {
-      cmd: ArtificialCmd.kill,
-      specimenIndex: 0,
-    },
-  });
-});
+Observable.interval(75)
+  .subscribe(i => {
+    art.nextInteraction({
+      agentID: 'example',
+      index: i,
+      state: {
+        cmd: ArtificialCmd.keep,
+        specimenIndex: 0,
+      },
+    });
+  })

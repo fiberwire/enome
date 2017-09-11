@@ -7,7 +7,6 @@ import {
   IArtificialOptions,
   IGenomeOptions,
   ISpecimen,
-  reproduceManyToOne,
 } from '../index';
 
 import * as _ from 'lodash';
@@ -82,12 +81,12 @@ export abstract class ArtificialSelection<
     };
   }
 
-  // get initialState(): IStateUpdate<IArtificialEState<Gen, Pheno>> {
-  //   return {
-  //     index: 0,
-  //     state: this.defaultState
-  //   }
-  // }
+  get initialState(): IStateUpdate<IArtificialEState<Gen, Pheno>> {
+    return {
+      index: -1,
+      state: this.defaultState
+    }
+  }
 
   /**
    * creates a new randomly generated ISpecimen
