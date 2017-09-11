@@ -84,8 +84,8 @@ export abstract class ArtificialSelection<
   get initialState(): IStateUpdate<IArtificialEState<Gen, Pheno>> {
     return {
       index: -1,
-      state: this.defaultState
-    }
+      state: this.defaultState,
+    };
   }
 
   /**
