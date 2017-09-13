@@ -20,6 +20,7 @@ import { concat } from './operators/concat';
 import { fill } from './operators/fill';
 import { fillRandom } from './operators/fill-random';
 import { generateGenomes } from './operators/generate-genomes';
+import { hexColor } from './operators/hex-color';
 import { lerp } from './operators/lerp';
 import { avg } from './operators/mutation/avg';
 import { mutate } from './operators/mutation/mutate';
@@ -69,6 +70,7 @@ export {
   fill,
   fillRandom,
   generateGenomes,
+  hexColor,
   lerp,
   pad,
   refill,
