@@ -94,6 +94,10 @@ export class Gene {
     return this.reverseInt(0, array.length, elements.length);
   }
 
+  public static reverseHex(hex: string): number {
+    return this.reverseElement(hex, '0123456789abcdef'.split(''));
+  }
+
   constructor(public value: number = chance.floating({ min: 0, max: 1 })) {}
 
   // returns a float, interpolated based on this.value
@@ -166,5 +170,10 @@ export class Gene {
   // the number of elements is interpolated based on this.value
   public randomElements<T>(array: T[], t: number = this.value): T[] {
     return _.take(chance.shuffle(array), this.int(0, array.length, t));
+  }
+
+  public hex(t: number = this.value): string {
+    const hex = '0123456789abcdef'.split('');
+    return this.element(hex);
   }
 }
