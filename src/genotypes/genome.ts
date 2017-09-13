@@ -16,6 +16,7 @@ export class Genome<T extends IGenomeOptions> {
   public genes: Gene[];
 
   private extended: number = 0;
+  private index: number = 0;
 
   constructor(
     public options: T,
@@ -87,7 +88,7 @@ export class Genome<T extends IGenomeOptions> {
     if (this.genes.length === 0) {
       switch (this.options.refill) {
         case GenomeRefill.loop:
-          this.genes = this.freshGenes;
+          this.index = 0;
           break;
 
         case GenomeRefill.none:
@@ -96,31 +97,18 @@ export class Genome<T extends IGenomeOptions> {
         case GenomeRefill.extend:
         default:
           // default to extend if refill isn't specified
-          this.genes = this.extendedGenes;
+          this.genes = _.concat(this.genes, this.extendedGenes)
       }
     }
 
-    return this.genes.shift();
+    const gene = this.genes[this.index];
+    this.index += 1;
+
+    return gene;
   }
 
   // gets the next n genes
   public gs(n: number): Gene[] {
-    if (this.genes.length < n) {
-      switch (this.options.refill) {
-        case GenomeRefill.loop:
-          this.genes = this.freshGenes;
-          break;
-
-        case GenomeRefill.none:
-          throw new Error(`${this.id} ran out of genes`);
-
-        case GenomeRefill.extend:
-        default:
-          // default to extend if refill isn't specified
-          this.genes = this.extendedGenes;
-      }
-    }
-
     return _.range(n).map(i => this.g);
   }
 }
