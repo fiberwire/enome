@@ -6,12 +6,12 @@ import { Observable } from 'rxjs';
 
 const artOptions = {
   interactionTime: 0,
-  parents: 5,
+  parents: 50,
   specimens: 10,
 };
 
 const genOptions = {
-  geneLength: 3,
+  geneLength: 30,
   genomeLength: 100,
   length: 5,
   max: 100,
@@ -36,10 +36,6 @@ art.states
       Specimens: ${specs}
       Parents:   ${parents}`);
   });
-
-art.agentInteractions('example').subscribe(i => {
-  console.log(`[${i.interaction.index}] ${i.interaction.agentID}`);
-});
 
 Observable.interval(75).subscribe(i => {
   art.nextInteraction({
