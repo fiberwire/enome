@@ -1,6 +1,5 @@
-import { hexColor } from "../../src/index";
-import { mocks } from "../../src/mocks";
-
+import { hexColor } from '../../src/index';
+import { mocks } from '../../src/mocks';
 
 const { genome } = mocks();
 
@@ -10,6 +9,6 @@ describe('operators', () => {
       const color = hexColor(genome);
       expect(typeof color).toBe('string');
       expect(color.length).toBe(7);
-    })
-  })
-})
+    });
+  });
+});

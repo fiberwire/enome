@@ -120,7 +120,7 @@ describe('genotypes', () => {
         expect(digit.length).toBe(1);
 
         expect(hex).toContainEqual(digit);
-      })
-    })
+      });
+    });
   });
 });
