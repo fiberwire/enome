@@ -2,10 +2,10 @@ import { Gene, lerp, refill } from '../../src/index';
 import { mocks } from '../../src/mocks';
 
 describe('genotypes', () => {
-  const { genome } = mocks();
+  let { genome } = mocks();
 
   beforeEach(() => {
-    refill(genome);
+    genome = refill(genome);
   });
 
   describe('gene', () => {
@@ -110,5 +110,17 @@ describe('genotypes', () => {
         elements.forEach(e => expect(array).toContain(e));
       });
     });
+
+    describe('hex', () => {
+      it('should return a hexidecimal digit between 0 and f', () => {
+        const hex = '0123456789abcdef'.split('');
+        const digit = genome.g.hex();
+
+        expect(typeof digit).toBe('string');
+        expect(digit.length).toBe(1);
+
+        expect(hex).toContainEqual(digit);
+      })
+    })
   });
 });
