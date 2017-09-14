@@ -9,7 +9,7 @@ describe('operators', () => {
       const color = rgbaColor(genome);
       expect(typeof color).toBe('string');
       expect(color.slice(0, 5)).toEqual('rgba(');
-      expect(color.slice(color.length-1, color.length)).toEqual(')');
+      expect(color.slice(color.length - 1, color.length)).toEqual(')');
     });
   });
 });
