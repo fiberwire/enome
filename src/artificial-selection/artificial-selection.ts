@@ -1,4 +1,5 @@
 import { AgentEnvironment, IAgentUpdate, IStateUpdate } from 'enviro-rx';
+import { Subscription } from 'rxjs';
 import {
   ArtificialCmd,
   Genome,
@@ -7,6 +8,7 @@ import {
   IArtificialOptions,
   IGenomeOptions,
   ISpecimen,
+  ReactiveCollection,
 } from '../index';
 
 import * as _ from 'lodash';
@@ -15,6 +17,10 @@ export abstract class ArtificialSelection<
   Gen extends IGenomeOptions,
   Pheno
 > extends AgentEnvironment<IArtificialAState, IArtificialEState<Gen, Pheno>> {
+
+  public specimens: ReactiveCollection<ISpecimen<Gen, Pheno>>;
+  public parents: ReactiveCollection<ISpecimen<Gen, Pheno>>;
+
   constructor(public options: IArtificialOptions, public genOptions: Gen) {
     super(options);
     this.nextState({
@@ -24,6 +30,11 @@ export abstract class ArtificialSelection<
         specimens: this.fillSpecimens(),
       },
     });
+
+    this.specimens = new ReactiveCollection<ISpecimen<Gen, Pheno>>();
+    this.parents = new ReactiveCollection<ISpecimen<Gen, Pheno>>();
+
+    this.subs.add(this.syncSpecimens());
   }
 
   public async interact(
@@ -165,5 +176,12 @@ export abstract class ArtificialSelection<
     );
 
     return specs.concat(offspring);
+  }
+
+  private syncSpecimens(): Subscription {
+    return this.states.subscribe(s => {
+      this.specimens.value = s.state.specimens;
+      this.parents.value = s.state.parents;
+    })
   }
 }
