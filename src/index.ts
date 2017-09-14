@@ -32,6 +32,7 @@ import { reproduce } from './operators/reproduction/reproduce';
 import { reproduceManyToMany } from './operators/reproduction/reproduce-many-to-many';
 import { reproduceManyToOne } from './operators/reproduction/reproduce-many-to-one';
 import { reverseLerp } from './operators/reverse-lerp';
+import { rgbaColor } from './operators/rgba-color';
 import { weight } from './operators/weight';
 import { weights } from './operators/weights';
 import { IArtificialOptions } from './options/artificial-options';
@@ -75,6 +76,7 @@ export {
   pad,
   refill,
   reverseLerp,
+  rgbaColor,
   weight,
   weights,
 };
