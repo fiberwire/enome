@@ -14,9 +14,9 @@ const chance = new Chance();
 export class Genome<T extends IGenomeOptions> {
   // the genes derived from the base values, consumed by gene property
   public genes: Gene[];
+  public index: number = 0;
 
   private extended: number = 0;
-  private index: number = 0;
 
   constructor(
     public options: T,
@@ -85,7 +85,7 @@ export class Genome<T extends IGenomeOptions> {
 
   // gets the next gene
   get g(): Gene {
-    if (this.genes.length === 0) {
+    if (this.index >= this.genes.length) {
       switch (this.options.refill) {
         case GenomeRefill.loop:
           this.index = 0;
