@@ -142,6 +142,11 @@ export class ReactiveCollection<T> {
     return this;
   }
 
+  public removeAt(i: number): ReactiveCollection<T> {
+    this.remove(this.value[i]);
+    return this;
+  }
+
   //////// DON'T ROTATE INSIDE OF A SUBSCRIBER TO ROTATE
   //////// IT WILL CAUSE AN ENDLESS RECURSION
   //////// It's like telling the collection to rotate when it rotates
