@@ -567,9 +567,9 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
 
-enviro-rx@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/enviro-rx/-/enviro-rx-2.0.1.tgz#6133c3a687b0502277e95db4a2ddb2e3ede2dfb0"
+enviro-rx@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/enviro-rx/-/enviro-rx-2.0.2.tgz#5e0c7ea2ea1e2f40ca53f3086629ae71128aa8a0"
   dependencies:
     chance "^1.0.10"
     lodash "^4.17.4"
