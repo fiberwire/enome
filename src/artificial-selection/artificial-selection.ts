@@ -118,6 +118,15 @@ export abstract class ArtificialSelection<
     parents: Array<ISpecimen<Gen, Pheno>>
   ): ISpecimen<Gen, Pheno>;
 
+
+  
+  /**
+   * Sends an interaction to the environment that kills the specimen with the given index
+   * The killed specimen will be replaced with a new offspring of the parents
+   * 
+   * @param {number} [i=0]  - index of the specimen you want to kill
+   * @memberof ArtificialSelection
+   */
   public kill(i: number = 0): void {
     this.nextInteraction({
       agentID: 'env',
@@ -129,6 +138,14 @@ export abstract class ArtificialSelection<
     });
   }
 
+
+  /**
+   * Sends an interaction to the environment that keeps the specimen with the given index as a parent
+   * the new parent will be replaced with a new offspring (including the new one)
+   * 
+   * @param {number} [i=0] - the index of the specimen you want to keep as a parent
+   * @memberof ArtificialSelection
+   */
   public keep(i: number = 0): void {
     this.nextInteraction({
       agentID: 'env',
@@ -140,6 +157,14 @@ export abstract class ArtificialSelection<
     });
   }
 
+
+  /**
+   * Send an interaction to the environment that replaces the specimen 
+   * with the given index with a randomly generated one.
+   * 
+   * @param {number} [i=0] - the index of the specimen you want to replace
+   * @memberof ArtificialSelection
+   */
   public randomize(i: number = 0): void {
     this.nextInteraction({
       agentID: 'env',
