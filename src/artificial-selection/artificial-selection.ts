@@ -17,7 +17,6 @@ export abstract class ArtificialSelection<
   Gen extends IGenomeOptions,
   Pheno
 > extends AgentEnvironment<IArtificialAState, IArtificialEState<Gen, Pheno>> {
-
   public specimens: ReactiveCollection<ISpecimen<Gen, Pheno>>;
   public parents: ReactiveCollection<ISpecimen<Gen, Pheno>>;
 
@@ -118,6 +117,39 @@ export abstract class ArtificialSelection<
   public abstract reproduceSpecimen(
     parents: Array<ISpecimen<Gen, Pheno>>
   ): ISpecimen<Gen, Pheno>;
+
+  public kill(i: number = 0): void {
+    this.nextInteraction({
+      agentID: 'env',
+      index: this.index + 1,
+      state: {
+        cmd: ArtificialCmd.kill,
+        specimenIndex: i,
+      },
+    });
+  }
+
+  public keep(i: number = 0): void {
+    this.nextInteraction({
+      agentID: 'env',
+      index: this.index + 1,
+      state: {
+        cmd: ArtificialCmd.keep,
+        specimenIndex: i,
+      },
+    });
+  }
+
+  public randomize(i: number = 0): void {
+    this.nextInteraction({
+      agentID: 'env',
+      index: this.index + 1,
+      state: {
+        cmd: ArtificialCmd.randomize,
+        specimenIndex: i,
+      },
+    });
+  }
 
   /**
    * fills the provided array of specimens with new randomly generated specimens
