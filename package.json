@@ -1,6 +1,6 @@
 {
   "name": "enome",
-  "version": "4.4.5",
+  "version": "4.5.0",
   "description": "A genome generation and evolution library.",
   "license": "ISC",
   "repository": {
