@@ -16,7 +16,7 @@ import * as _ from 'lodash';
 export abstract class ArtificialSelection<
   Gen extends IGenomeOptions,
   Pheno
-  > extends AgentEnvironment<IArtificialAState, IArtificialEState<Gen, Pheno>> {
+> extends AgentEnvironment<IArtificialAState, IArtificialEState<Gen, Pheno>> {
   public specimens: ReactiveCollection<ISpecimen<Gen, Pheno>>;
   public parents: ReactiveCollection<ISpecimen<Gen, Pheno>>;
 
@@ -260,15 +260,13 @@ export abstract class ArtificialSelection<
     parents: Array<ISpecimen<Gen, Pheno>>,
     keep: Array<ISpecimen<Gen, Pheno>>
   ): {
-      parents: Array<ISpecimen<Gen, Pheno>>;
-      specimens: Array<ISpecimen<Gen, Pheno>>;
-    } {
+    parents: Array<ISpecimen<Gen, Pheno>>;
+    specimens: Array<ISpecimen<Gen, Pheno>>;
+  } {
     const keptParents = _.take(
-      _.sortBy(
-        _.concat(
-          this.ageSpecimens(parents), keep),
-        p => p.age),
-      this.options.parents);
+      _.sortBy(_.concat(this.ageSpecimens(parents), keep), p => p.age),
+      this.options.parents
+    );
 
     return {
       parents: keptParents,
