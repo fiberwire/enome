@@ -1,6 +1,7 @@
 import { IArtificialAState } from './artificial-selection/artificial-astate';
-import { ArtificialCmd } from './artificial-selection/artificial-cmd';
+import { IArtificialCmd } from './artificial-selection/artificial-cmd';
 import { IArtificialEState } from './artificial-selection/artificial-estate';
+import { ArtificialOp } from './artificial-selection/artificial-op';
 import { ArtificialSelection } from './artificial-selection/artificial-selection';
 import { FillType } from './enums/fill-type';
 import { FitnessObjective } from './enums/fitness-objective';
@@ -92,6 +93,7 @@ export {
   IEvaluation,
   IEvolvable,
   IArtificialAState,
+  IArtificialCmd,
   IArtificialEState,
   IReversible,
   ISpecimen,
@@ -102,7 +104,7 @@ export { ArtificialSelection, Organism, Population, Simulation };
 
 // enums
 export {
-  ArtificialCmd,
+  ArtificialOp,
   FillType,
   FitnessObjective,
   GenomeRefill,

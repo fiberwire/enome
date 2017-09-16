@@ -1,6 +1,5 @@
-import { ArtificialCmd } from '../index';
+import { ArtificialOp, IArtificialCmd } from '../index';
 
 export interface IArtificialAState {
-  cmd: ArtificialCmd;
-  specimenIndex: number;
+  cmds: IArtificialCmd[];
 }
