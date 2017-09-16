@@ -1,5 +1,6 @@
-export enum ArtificialCmd {
-  keep,
-  kill,
-  randomize,
+import { ArtificialOp } from '../index';
+
+export interface IArtificialCmd {
+  op: ArtificialOp;
+  index: number;
 }
