@@ -14,12 +14,12 @@ import { ReactiveProperty } from './index';
 import * as _ from 'lodash';
 
 export class ReactiveCollection<T> {
-  private pushed: ReplaySubject<T> = new ReplaySubject<T>(1);
-  private popped: ReplaySubject<T> = new ReplaySubject<T>(1);
-  private shifted: ReplaySubject<T> = new ReplaySubject<T>(1);
-  private unshifted: ReplaySubject<T> = new ReplaySubject<T>(1);
-  private removed: ReplaySubject<T> = new ReplaySubject<T>(1);
-  private rotated: ReplaySubject<T> = new ReplaySubject<T>(1);
+  private pushedSubject: ReplaySubject<T> = new ReplaySubject<T>(1);
+  private poppedSubject: ReplaySubject<T> = new ReplaySubject<T>(1);
+  private shiftedSubject: ReplaySubject<T> = new ReplaySubject<T>(1);
+  private unshiftedSubject: ReplaySubject<T> = new ReplaySubject<T>(1);
+  private removedSubject: ReplaySubject<T> = new ReplaySubject<T>(1);
+  private rotatedSubject: ReplaySubject<T> = new ReplaySubject<T>(1);
 
   private subs: Subscription[];
 
@@ -31,6 +31,25 @@ export class ReactiveCollection<T> {
 
   public set value(value: T[]) {
     this.array.value = value;
+  }
+
+  public get pushed(): Observable<T> {
+    return this.pushedSubject;
+  }
+  public get popped(): Observable<T> {
+    return this.poppedSubject;
+  }
+  public get shifted(): Observable<T> {
+    return this.shiftedSubject;
+  }
+  public get unshifted(): Observable<T> {
+    return this.unshiftedSubject;
+  }
+  public get removed(): Observable<T> {
+    return this.removedSubject;
+  }
+  public get rotated(): Observable<T> {
+    return this.rotatedSubject;
   }
 
   constructor(value: T[] = []) {
@@ -57,7 +76,7 @@ export class ReactiveCollection<T> {
   public subscribeToPush(
     observer: (value: T) => void | Observer<T>
   ): Subscription {
-    return this.pushed
+    return this.pushedSubject
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(observer);
@@ -66,7 +85,7 @@ export class ReactiveCollection<T> {
   public subscribeToPop(
     observer: (value: T) => void | Observer<T>
   ): Subscription {
-    return this.popped
+    return this.poppedSubject
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(observer);
@@ -75,7 +94,7 @@ export class ReactiveCollection<T> {
   public subscribeToShift(
     observer: (value: T) => void | Observer<T>
   ): Subscription {
-    return this.shifted
+    return this.shiftedSubject
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(observer);
@@ -84,7 +103,7 @@ export class ReactiveCollection<T> {
   public subscribeToUnshift(
     observer: (value: T) => void | Observer<T>
   ): Subscription {
-    return this.unshifted
+    return this.unshiftedSubject
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(observer);
@@ -93,7 +112,7 @@ export class ReactiveCollection<T> {
   public subscribeToRemove(
     observer: (value: T) => void | Observer<T>
   ): Subscription {
-    return this.removed
+    return this.removedSubject
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(observer);
@@ -102,21 +121,21 @@ export class ReactiveCollection<T> {
   public subscribeToRotate(
     observer: (value: T) => void | Observer<T>
   ): Subscription {
-    return this.rotated
+    return this.rotatedSubject
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
       .subscribe(observer);
   }
 
   public push(value: T): ReactiveCollection<T> {
-    this.pushed.next(value);
+    this.pushedSubject.next(value);
     return this;
   }
 
   public pop(value: T): T {
     const v = this.value;
     const popped = v.pop();
-    this.popped.next(popped);
+    this.poppedSubject.next(popped);
     this.value = v;
     return popped;
   }
@@ -124,13 +143,13 @@ export class ReactiveCollection<T> {
   public shift(): T {
     const v = this.value;
     const shifted = v.shift();
-    this.shifted.next(shifted);
+    this.shiftedSubject.next(shifted);
     this.value = v;
     return shifted;
   }
 
   public unshift(value: T): ReactiveCollection<T> {
-    this.unshifted.next(value);
+    this.unshiftedSubject.next(value);
     return this;
   }
 
@@ -138,7 +157,7 @@ export class ReactiveCollection<T> {
     const v = this.value;
     const removed = v.splice(v.indexOf(value));
     this.value = v;
-    this.removed.next(removed[0]);
+    this.removedSubject.next(removed[0]);
     return this;
   }
 
@@ -159,7 +178,7 @@ export class ReactiveCollection<T> {
     const value = this.value;
     const shifted = value.shift();
     value.push(shifted);
-    this.rotated.next(shifted);
+    this.rotatedSubject.next(shifted);
     this.value = value;
     return shifted;
   }
