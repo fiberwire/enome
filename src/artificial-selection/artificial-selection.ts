@@ -1,7 +1,7 @@
 import { AgentEnvironment, IAgentUpdate, IStateUpdate } from 'enviro-rx';
 import { Subscription } from 'rxjs';
 import {
-  ArtificialCmd,
+  ArtificialOp,
   Genome,
   IArtificialAState,
   IArtificialEState,
@@ -16,7 +16,7 @@ import * as _ from 'lodash';
 export abstract class ArtificialSelection<
   Gen extends IGenomeOptions,
   Pheno
-> extends AgentEnvironment<IArtificialAState, IArtificialEState<Gen, Pheno>> {
+  > extends AgentEnvironment<IArtificialAState, IArtificialEState<Gen, Pheno>> {
   public specimens: ReactiveCollection<ISpecimen<Gen, Pheno>>;
   public parents: ReactiveCollection<ISpecimen<Gen, Pheno>>;
 
@@ -40,48 +40,32 @@ export abstract class ArtificialSelection<
     interaction: IAgentUpdate<IArtificialAState>
   ): Promise<IStateUpdate<IArtificialEState<Gen, Pheno>>> {
     const state = this.currentState.state;
-    const { cmd, specimenIndex } = interaction.state;
-    const spec = state.specimens[specimenIndex];
-    const agedParents = state.parents.map(p => p.ageSpecimen(1));
-    const withoutSpec = _.without(state.specimens, spec);
+    const { specimens, parents } = state;
+    const cmds = interaction.state.cmds;
 
-    if (cmd === ArtificialCmd.kill) {
-      const parents = agedParents;
-      const specimens = this.reproduceSpecimens(withoutSpec, parents);
+    const keeps = cmds
+      .filter(c => c.op === ArtificialOp.keep)
+      .map(c => state.specimens[c.index]);
 
-      return {
-        index: this.index + 1,
-        state: {
-          parents,
-          specimens,
-        },
-      };
-    } else if (cmd === ArtificialCmd.keep) {
-      const concatted = _.concat(agedParents, spec); // add spec to parents
-      const sorted = _.sortBy(concatted, p => p.age); // sort parents by age
-      const parents = _.take(sorted, this.options.parents); // don't take old parents that exceed the parent limit
+    const kills = cmds
+      .filter(c => c.op === ArtificialOp.kill)
+      .map(c => state.specimens[c.index]);
 
-      const specimens = this.reproduceSpecimens(withoutSpec, parents);
+    const randoms = cmds
+      .filter(c => c.op === ArtificialOp.randomize)
+      .map(c => state.specimens[c.index]);
 
-      return {
-        index: this.index + 1,
-        state: {
-          parents,
-          specimens,
-        },
-      };
-    } else if (cmd === ArtificialCmd.randomize) {
-      const parents = agedParents;
-      const specimens = this.fillSpecimens(withoutSpec);
+    const kept = this.keepSpecimens(specimens, parents, keeps);
+    const killed = this.killSpecimens(kept.specimens, kept.parents, kills);
+    const randomized = this.randomizeSpecimens(killed, kept.parents, randoms);
 
-      return {
-        index: this.index + 1,
-        state: {
-          parents,
-          specimens,
-        },
-      };
-    }
+    return {
+      index: this.index + 1,
+      state: {
+        parents: kept.parents,
+        specimens: randomized,
+      },
+    };
   }
 
   public get defaultState(): IArtificialEState<Gen, Pheno> {
@@ -118,8 +102,6 @@ export abstract class ArtificialSelection<
     parents: Array<ISpecimen<Gen, Pheno>>
   ): ISpecimen<Gen, Pheno>;
 
-
-  
   /**
    * Sends an interaction to the environment that kills the specimen with the given index
    * The killed specimen will be replaced with a new offspring of the parents
@@ -127,17 +109,22 @@ export abstract class ArtificialSelection<
    * @param {number} [i=0]  - index of the specimen you want to kill
    * @memberof ArtificialSelection
    */
-  public kill(i: number = 0): void {
+  public kill(indices: number[] = [0]): void {
+    const cmds = indices.map(i => {
+      return {
+        index: i,
+        op: ArtificialOp.kill,
+      };
+    });
+
     this.nextInteraction({
       agentID: 'env',
       index: this.index + 1,
       state: {
-        cmd: ArtificialCmd.kill,
-        specimenIndex: i,
+        cmds,
       },
     });
   }
-
 
   /**
    * Sends an interaction to the environment that keeps the specimen with the given index as a parent
@@ -146,17 +133,22 @@ export abstract class ArtificialSelection<
    * @param {number} [i=0] - the index of the specimen you want to keep as a parent
    * @memberof ArtificialSelection
    */
-  public keep(i: number = 0): void {
+  public keep(indices: number[] = [0]): void {
+    const cmds = indices.map(i => {
+      return {
+        index: i,
+        op: ArtificialOp.keep,
+      };
+    });
+
     this.nextInteraction({
       agentID: 'env',
       index: this.index + 1,
       state: {
-        cmd: ArtificialCmd.keep,
-        specimenIndex: i,
+        cmds,
       },
     });
   }
-
 
   /**
    * Send an interaction to the environment that replaces the specimen 
@@ -165,13 +157,19 @@ export abstract class ArtificialSelection<
    * @param {number} [i=0] - the index of the specimen you want to replace
    * @memberof ArtificialSelection
    */
-  public randomize(i: number = 0): void {
+  public randomize(indices: number[] = [0]): void {
+    const cmds = indices.map(i => {
+      return {
+        index: i,
+        op: ArtificialOp.randomize,
+      };
+    });
+
     this.nextInteraction({
       agentID: 'env',
       index: this.index + 1,
       state: {
-        cmd: ArtificialCmd.randomize,
-        specimenIndex: i,
+        cmds,
       },
     });
   }
@@ -239,6 +237,50 @@ export abstract class ArtificialSelection<
     return this.states.subscribe(s => {
       this.specimens.value = s.state.specimens;
       this.parents.value = s.state.parents;
-    })
+    });
+  }
+
+  private ageSpecimens(
+    specs: Array<ISpecimen<Gen, Pheno>>
+  ): Array<ISpecimen<Gen, Pheno>> {
+    return specs.map(s => s.ageSpecimen(1));
+  }
+
+  private killSpecimens(
+    specs: Array<ISpecimen<Gen, Pheno>>,
+    parents: Array<ISpecimen<Gen, Pheno>>,
+    kill: Array<ISpecimen<Gen, Pheno>>
+  ): Array<ISpecimen<Gen, Pheno>> {
+    const killed = _.without(specs, ...kill);
+    return this.reproduceSpecimens(killed, parents);
+  }
+
+  private keepSpecimens(
+    specs: Array<ISpecimen<Gen, Pheno>>,
+    parents: Array<ISpecimen<Gen, Pheno>>,
+    keep: Array<ISpecimen<Gen, Pheno>>
+  ): {
+      parents: Array<ISpecimen<Gen, Pheno>>;
+      specimens: Array<ISpecimen<Gen, Pheno>>;
+    } {
+    const keptParents = _.take(
+      _.sortBy(
+        _.concat(
+          this.ageSpecimens(parents), keep),
+        p => p.age),
+      this.options.parents);
+
+    return {
+      parents: keptParents,
+      specimens: _.without(specs, ...keep),
+    };
+  }
+
+  private randomizeSpecimens(
+    specs: Array<ISpecimen<Gen, Pheno>>,
+    parents: Array<ISpecimen<Gen, Pheno>>,
+    randomize: Array<ISpecimen<Gen, Pheno>>
+  ): Array<ISpecimen<Gen, Pheno>> {
+    return this.fillSpecimens(_.without(specs, ...randomize));
   }
 }
