@@ -40,6 +40,6 @@ art.states
       `);
   });
 
-Observable.interval(75).subscribe(i => {
+Observable.interval(1000).subscribe(i => {
   art.keep();
 });
