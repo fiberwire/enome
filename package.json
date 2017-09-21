@@ -41,7 +41,7 @@
   "dependencies": {
     "chance": "^1.0.10",
     "d3-interpolate": "^1.1.5",
-    "enviro-rx": "^2.0.2",
+    "enviro-rx": "^2.0.4",
     "lodash": "^4.17.4",
     "rxjs": "^5.4.3"
   },
