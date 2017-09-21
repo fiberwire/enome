@@ -6,7 +6,8 @@ export interface IPopulationOptions {
   objective: FitnessObjective;
   logInterval?: number;
   logProgress?: boolean;
-  size: number;
+  specimens: number;
+  parents: number;
   topPercent?: number;
   updateWeights?: {
     randomize: number;
