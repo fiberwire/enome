@@ -4,6 +4,7 @@ import { ISumOptions } from './sum-gen-options';
 
 export class SumSpecimen implements ISpecimen<ISumOptions, number[]> {
   public phenotype: number[];
+  public fitness: number;
 
   constructor(public genotype: Genome<ISumOptions>, public age: number = 0) {
     this.phenotype = this.createPhenotype(genotype);

@@ -1,44 +1,29 @@
-import { FitnessObjective } from '../../enums/fitness-objective';
 import {
   Genome,
-  IEvaluation,
+  IDataEvaluation,
   IOrganismOptions,
+  ISpecimen,
   mutate,
   Organism,
-  Population,
+  reproduceManyToOne,
+  SpecimenPopulation,
 } from '../../index';
-import { ISumAgentState } from './interfaces/sum-agent-state';
-import { ISumData } from './interfaces/sum-data';
-import { ISumEnvState } from './interfaces/sum-env-state';
-import { ISumGenomeOptions } from './interfaces/sum-genome-options';
-import { ISumOrganismOptions } from './interfaces/sum-organism-options';
-import { ISumPopOptions } from './interfaces/sum-pop-options';
-import { SumEnv } from './sum-environment';
-import { SumOrganism } from './sum-organism';
 
 import * as _ from 'lodash';
+import { SumSpecimen } from '../specimen/sum-specimen';
+import { ISumGenomeOptions } from './interfaces/sum-genome-options';
 
-export class SumPopulation extends Population<
+export class SumPopulation extends SpecimenPopulation<
   ISumGenomeOptions,
-  ISumPopOptions,
-  ISumOrganismOptions,
-  ISumData,
-  number[],
-  ISumAgentState,
-  ISumEnvState
+  number[]
 > {
-  public createOrganism(
-    genome: Genome<ISumGenomeOptions>,
-    options: ISumOrganismOptions
-  ): Organism<
-    ISumGenomeOptions,
-    ISumPopOptions,
-    ISumOrganismOptions,
-    ISumData,
-    number[],
-    ISumAgentState,
-    ISumEnvState
-  > {
-    return new SumOrganism(genome, options);
+  public createSpecimen(options: ISumGenomeOptions): SumSpecimen {
+    return new SumSpecimen(new Genome(options));
+  }
+  public reproduceSpecimen(parents: SumSpecimen[]): SumSpecimen {
+    return new SumSpecimen(reproduceManyToOne(parents.map(p => p.genotype)));
+  }
+  public determineWorstParent(parents: SumSpecimen[]): SumSpecimen {
+    return _.minBy(parents, p => p.fitness);
   }
 }

@@ -1,25 +1,24 @@
+import * as _ from 'lodash';
 import {
   FitnessObjective,
   GenomeRefill,
   IOrganismOptions,
   MutateOp,
-  Simulation,
+  NaturalSelection,
   UpdateType,
 } from '../../index';
 import { ISumGenomeOptions } from './interfaces/sum-genome-options';
-import { ISumOrganismOptions } from './interfaces/sum-organism-options';
 import { ISumPopOptions } from './interfaces/sum-pop-options';
-import { SumEnv } from './sum-environment';
 import { SumPopulation } from './sum-population';
-
-import * as _ from 'lodash';
-import * as Rx from 'rxjs';
+import { SumSelection } from './sum-selection';
 
 const genOptions: ISumGenomeOptions = {
+  geneLength: 1,
   genomeLength: 10,
   length: 10,
   max: 5000,
   min: 1,
+  refill: GenomeRefill.extend
 };
 
 const popOptions: ISumPopOptions = {
@@ -27,21 +26,13 @@ const popOptions: ISumPopOptions = {
   logInterval: 10,
   logProgress: true,
   objective: FitnessObjective.minimize,
-  size: 10,
+  parents: 5,
+  specimens: 10,
 };
 
-const orgOptions: ISumOrganismOptions = {
-  interactions: 1,
-  target: 14567,
-};
+const pop = new SumPopulation(popOptions, genOptions);
 
-const env = new SumEnv({
-  interactionTime: 1,
-});
-
-const pop = new SumPopulation(genOptions, popOptions, orgOptions);
-
-const sim = new Simulation(pop, env).start();
+const sim = new SumSelection(popOptions, genOptions);
 
 sim.best.subscribe(b => {
   const list = b.phenotype;
