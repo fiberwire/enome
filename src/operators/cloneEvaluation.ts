@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import {
-  IEvaluation,
+  IDataEvaluation,
   IGenomeOptions,
   IPopulationOptions,
   Organism,
@@ -14,7 +14,7 @@ export function cloneEvaluation<
   PhenoType,
   EnvStateType
 >(
-  evaluation: IEvaluation<GenType, DataType, PhenoType>
-): IEvaluation<GenType, DataType, PhenoType> {
+  evaluation: IDataEvaluation<GenType, DataType, PhenoType>
+): IDataEvaluation<GenType, DataType, PhenoType> {
   return _.cloneDeep(evaluation);
 }
