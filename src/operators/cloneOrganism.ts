@@ -1,3 +1,4 @@
+import { IAgent } from 'enviro-rx';
 import * as _ from 'lodash';
 import {
   IGenomeOptions,
@@ -7,31 +8,15 @@ import {
 } from '../index';
 
 export function cloneOrganism<
-  GenType extends IGenomeOptions,
-  PopType extends IPopulationOptions,
-  OrgType extends IOrganismOptions,
-  DataType,
-  PhenoType,
-  AgentStateType,
-  EnvStateType
+  Gen extends IGenomeOptions,
+  Pop extends IPopulationOptions,
+  Org extends IOrganismOptions,
+  Data,
+  Pheno extends IAgent<AState, EState>,
+  AState,
+  EState
 >(
-  org: Organism<
-    GenType,
-    PopType,
-    OrgType,
-    DataType,
-    PhenoType,
-    AgentStateType,
-    EnvStateType
-  >
-): Organism<
-  GenType,
-  PopType,
-  OrgType,
-  DataType,
-  PhenoType,
-  AgentStateType,
-  EnvStateType
-> {
+  org: Organism<Gen, Pop, Org, Data, Pheno, AState, EState>
+): Organism<Gen, Pop, Org, Data, Pheno, AState, EState> {
   return _.cloneDeep(org);
 }
