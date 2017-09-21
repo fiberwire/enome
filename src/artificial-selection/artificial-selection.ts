@@ -9,6 +9,7 @@ import {
   IGenomeOptions,
   ISpecimen,
   ReactiveCollection,
+  SpecimenPopulation,
 } from '../index';
 
 import * as _ from 'lodash';
@@ -17,90 +18,47 @@ export abstract class ArtificialSelection<
   Gen extends IGenomeOptions,
   Pheno
 > extends AgentEnvironment<IArtificialAState, IArtificialEState<Gen, Pheno>> {
-  public specimens: ReactiveCollection<ISpecimen<Gen, Pheno>>;
-  public parents: ReactiveCollection<ISpecimen<Gen, Pheno>>;
+  public population: SpecimenPopulation<Gen, Pheno>;
 
-  constructor(public options: IArtificialOptions, public genOptions: Gen) {
+  constructor(
+    public options: IArtificialOptions,
+    public genOptions: Gen
+  ) {
     super(options);
-    this.nextState({
-      index: 0,
-      state: {
-        parents: this.fillParents(),
-        specimens: this.fillSpecimens(),
-      },
-    });
-
-    this.specimens = new ReactiveCollection<ISpecimen<Gen, Pheno>>();
-    this.parents = new ReactiveCollection<ISpecimen<Gen, Pheno>>();
-
-    this.subs.add(this.syncSpecimens());
   }
+
+  public abstract createPopulation(): SpecimenPopulation<Gen, Pheno>;
 
   public async interact(
     interaction: IAgentUpdate<IArtificialAState>
   ): Promise<IStateUpdate<IArtificialEState<Gen, Pheno>>> {
     const state = this.currentState.state;
-    const { specimens, parents } = state;
+    const { specimens, parents } = state.population;
     const cmds = interaction.state.cmds;
 
     const keeps = cmds
       .filter(c => c.op === ArtificialOp.keep)
-      .map(c => state.specimens[c.index]);
+      .map(c => specimens.value[c.index]);
 
     const kills = cmds
       .filter(c => c.op === ArtificialOp.kill)
-      .map(c => state.specimens[c.index]);
+      .map(c => specimens.value[c.index]);
 
     const randoms = cmds
       .filter(c => c.op === ArtificialOp.randomize)
-      .map(c => state.specimens[c.index]);
+      .map(c => specimens.value[c.index]);
 
-    const kept = this.keepSpecimens(specimens, parents, keeps);
-    const killed = this.killSpecimens(kept.specimens, kept.parents, kills);
-    const randomized = this.randomizeSpecimens(killed, kept.parents, randoms);
+    keeps.forEach(k => this.population.keep(k));
+    kills.forEach(k => this.population.kill(k));
+    randoms.forEach(r => this.population.randomize(r));
 
     return {
       index: this.index + 1,
       state: {
-        parents: kept.parents,
-        specimens: randomized,
+        population: this.population,
       },
     };
   }
-
-  public get defaultState(): IArtificialEState<Gen, Pheno> {
-    return {
-      parents: [],
-      specimens: [],
-    };
-  }
-
-  get initialState(): IStateUpdate<IArtificialEState<Gen, Pheno>> {
-    return {
-      index: -1,
-      state: this.defaultState,
-    };
-  }
-
-  /**
-   * creates a new randomly generated ISpecimen
-   *
-   * @private
-   * @returns {ISpecimen<Gen, Pheno>}
-   * @memberof ArtificialSelection
-   */
-  public abstract createSpecimen(options: Gen): ISpecimen<Gen, Pheno>;
-
-  /**
-   * creates an offspring of all parents
-   *
-   * @private
-   * @returns {ISpecimen<Gen, Pheno>}
-   * @memberof ArtificialSelection
-   */
-  public abstract reproduceSpecimen(
-    parents: Array<ISpecimen<Gen, Pheno>>
-  ): ISpecimen<Gen, Pheno>;
 
   /**
    * Sends an interaction to the environment that kills the specimen with the given index
@@ -172,113 +130,5 @@ export abstract class ArtificialSelection<
         cmds,
       },
     });
-  }
-
-  /**
-   * fills the provided array of specimens with new randomly generated specimens
-   *
-   * @private
-   * @param {Array<ISpecimen<Gen, Pheno>>} [specs=[]]
-   * @returns {Array<ISpecimen<Gen, Pheno>>}
-   * @memberof ArtificialSelection
-   */
-  private fillSpecimens(
-    specs: Array<ISpecimen<Gen, Pheno>> = [],
-    n: number = this.options.specimens
-  ): Array<ISpecimen<Gen, Pheno>> {
-    const newSpecs = _.range(n - specs.length).map(i =>
-      this.createSpecimen(this.genOptions)
-    );
-
-    return specs.concat(newSpecs);
-  }
-
-  /**
-   * fills the provided array of parents with new randomly generated parents
-   *
-   * @private
-   * @param {Array<IParentSpecimen<Gen, Pheno>>} [parents=[]]
-   * @param {number} [n=this.options.parents]
-   * @returns {Array<IParentSpecimen<Gen, Pheno>>}
-   * @memberof ArtificialSelection
-   */
-  private fillParents(
-    parents: Array<ISpecimen<Gen, Pheno>> = [],
-    n: number = this.options.parents
-  ): Array<ISpecimen<Gen, Pheno>> {
-    const newParents = _.range(n - parents.length).map(i =>
-      this.createSpecimen(this.genOptions)
-    );
-
-    return parents.concat(newParents);
-  }
-
-  /**
-   * fills the provided array of specimens with the offspring of all parents
-   *
-   * @private
-   * @param {Array<ISpecimen<Gen, Pheno>>} specs - the array of specimens you want to fill with offspring
-   * @returns {Array<ISpecimen<Gen, Pheno>>}
-   * @memberof ArtificialSelection
-   */
-  private reproduceSpecimens(
-    specs: Array<ISpecimen<Gen, Pheno>>,
-    parents: Array<ISpecimen<Gen, Pheno>>,
-    n: number = this.options.specimens
-  ): Array<ISpecimen<Gen, Pheno>> {
-    const offspring = _.range(n - specs.length).map(i =>
-      this.reproduceSpecimen(parents)
-    );
-
-    return specs.concat(offspring);
-  }
-
-  private syncSpecimens(): Subscription {
-    return this.states.subscribe(s => {
-      this.specimens.value = s.state.specimens;
-      this.parents.value = s.state.parents;
-    });
-  }
-
-  private ageSpecimens(
-    specs: Array<ISpecimen<Gen, Pheno>>
-  ): Array<ISpecimen<Gen, Pheno>> {
-    return specs.map(s => s.ageSpecimen(1));
-  }
-
-  private killSpecimens(
-    specs: Array<ISpecimen<Gen, Pheno>>,
-    parents: Array<ISpecimen<Gen, Pheno>>,
-    kill: Array<ISpecimen<Gen, Pheno>>
-  ): Array<ISpecimen<Gen, Pheno>> {
-    const killed = _.without(specs, ...kill);
-    return this.reproduceSpecimens(killed, parents);
-  }
-
-  private keepSpecimens(
-    specs: Array<ISpecimen<Gen, Pheno>>,
-    parents: Array<ISpecimen<Gen, Pheno>>,
-    keep: Array<ISpecimen<Gen, Pheno>>
-  ): {
-    parents: Array<ISpecimen<Gen, Pheno>>;
-    specimens: Array<ISpecimen<Gen, Pheno>>;
-  } {
-    const keptParents = _.take(
-      _.sortBy(_.concat(this.ageSpecimens(parents), keep), p => p.age),
-      this.options.parents
-    );
-
-    return {
-      parents: keptParents,
-      specimens: _.without(specs, ...keep),
-    };
-  }
-
-  private randomizeSpecimens(
-    specs: Array<ISpecimen<Gen, Pheno>>,
-    parents: Array<ISpecimen<Gen, Pheno>>,
-    randomize: Array<ISpecimen<Gen, Pheno>>
-  ): Array<ISpecimen<Gen, Pheno>> {
-    return this.fillSpecimens(_.without(specs, ...randomize));
   }
 }
