@@ -18,12 +18,16 @@ import {
 import * as _ from 'lodash';
 import {
   Genome,
-  IEvaluation,
+  IArtificialAState,
+  IArtificialEState,
+  IDataEvaluation,
   IEvolvable,
   IGenomeOptions,
+  IOrganism,
   IOrganismOptions,
   IPopulationOptions,
-  Population,
+  ISpecimen,
+  NaturalSelection,
   ReactiveCollection,
   ReactiveProperty,
 } from '../index';
@@ -33,10 +37,12 @@ export abstract class Organism<
   Pop extends IPopulationOptions,
   Org extends IOrganismOptions,
   Data,
-  Pheno,
+  Pheno extends IAgent<AState, EState>,
   AState,
   EState
-> extends Agent<AState, EState> implements IEvolvable<Gen, Pheno> {
+> implements IOrganism<Gen, Pheno, AState, EState> {
+  public interactionCount: number;
+  public age: number;
   public phenotype: Pheno;
 
   public alive: ReactiveProperty<boolean> = new ReactiveProperty(true);
@@ -46,25 +52,30 @@ export abstract class Organism<
   }
 
   constructor(public genotype: Genome<Gen>, public options: Org) {
-    super();
     this.phenotype = this.createPhenotype(this.genotype);
   }
 
-  public abstract interact(state: IStateUpdate<EState>): IAgentUpdate<AState>;
+  public abstract interact(
+    state: IStateUpdate<IArtificialEState<Gen, Pheno>>
+  ): IAgentUpdate<IArtificialAState>;
 
-  public abstract observe(interaction: IInteraction<AState, EState>): Data;
+  public abstract observe(
+    interaction: IInteraction<IArtificialAState, IArtificialEState<Gen, Pheno>>
+  ): Data;
+
+  public abstract ageSpecimen(n: number): ISpecimen<Gen, Pheno>;
 
   public abstract evaluate(
     data: Data[],
     genotype: Genome<Gen>,
     phenotype: Pheno
-  ): IEvaluation<Gen, Data, Pheno>;
+  ): IDataEvaluation<Gen, Data, Pheno>;
 
   public abstract createPhenotype(genotype: Genome<Gen>): Pheno;
 
   public evaluation(
-    env: AgentEnvironment<AState, EState>,
-    evaluations: Observer<IEvaluation<Gen, Data, Pheno>>
+    env: AgentEnvironment<IArtificialAState, IArtificialEState<Gen, Pheno>>,
+    evaluations: Observer<IDataEvaluation<Gen, Data, Pheno>>
   ): Subscription {
     return env
       .agentInteractions(this.id)
@@ -80,14 +91,14 @@ export abstract class Organism<
 
   // collects data from interactions
   private async observeInteraction(
-    interaction: IInteraction<AState, EState>
+    interaction: IInteraction<IArtificialAState, IArtificialEState<Gen, Pheno>>
   ): Promise<Data> {
     return Promise.resolve(interaction).then(i => this.observe(i));
   }
 
   private async evaluateObservations(
     observations: Promise<Data[]>
-  ): Promise<IEvaluation<Gen, Data, Pheno>> {
+  ): Promise<IDataEvaluation<Gen, Data, Pheno>> {
     return observations.then(o =>
       this.evaluate(o, this.genotype, this.phenotype)
     );
