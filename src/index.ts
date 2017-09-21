@@ -10,10 +10,13 @@ import { MutateOp } from './enums/mutate-op';
 import { UpdateType } from './enums/update-type';
 import { Gene } from './genotypes/gene';
 import { Genome } from './genotypes/genome';
+import { IDataEvaluation } from './interfaces/data-evaluation';
 import { IEvaluation } from './interfaces/evaluation';
 import { IEvolvable } from './interfaces/evolvable';
+import { IOrganism } from './interfaces/organism';
 import { IReversible } from './interfaces/reversible';
 import { ISpecimen } from './interfaces/specimen';
+import { NaturalSelection } from './natural-selection/natural-selection';
 import { clone } from './operators/clone';
 import { cloneEvaluation } from './operators/cloneEvaluation';
 import { cloneOrganism } from './operators/cloneOrganism';
@@ -43,11 +46,10 @@ import { IMutateOptions } from './options/mutate-options';
 import { IOrganismOptions } from './options/organism-options';
 import { IPopulationOptions } from './options/population-options';
 import { IReproduceOptions } from './options/reproduce-options';
-import { Organism } from './organisms/organism';
-import { Population } from './populations/population';
+import { SpecimenPopulation } from './populations/specimen-population';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
-import { Simulation } from './simulation/simulation';
+import { Organism } from './specimens/organism';
 
 // options
 export {
@@ -90,17 +92,19 @@ export { reproduce, reproduceManyToMany, reproduceManyToOne };
 
 // interfaces
 export {
+  IDataEvaluation,
   IEvaluation,
   IEvolvable,
   IArtificialAState,
   IArtificialCmd,
   IArtificialEState,
+  IOrganism,
   IReversible,
   ISpecimen,
 };
 
 // evolution stuff
-export { ArtificialSelection, Organism, Population, Simulation };
+export { ArtificialSelection, NaturalSelection, Organism, SpecimenPopulation };
 
 // enums
 export {
