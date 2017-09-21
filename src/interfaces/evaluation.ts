@@ -1,12 +1,6 @@
-import { Genome, IGenomeOptions, ReactiveCollection } from '../index';
+import { Genome, IGenomeOptions, ISpecimen } from '../index';
 
-export interface IEvaluation<
-  GenType extends IGenomeOptions,
-  DataType,
-  PhenoType
-> {
+export interface IEvaluation<Gen extends IGenomeOptions, Pheno> {
   fitness: number;
-  genotype: Genome<GenType>;
-  data: DataType[];
-  phenotype: PhenoType;
+  specimen: ISpecimen<Gen, Pheno>;
 }
