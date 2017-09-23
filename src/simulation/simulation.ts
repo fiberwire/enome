@@ -98,7 +98,7 @@ export class Simulation<
       .subscribeOn(Scheduler.asap)
       .subscribe(
         evaluation => {
-          if (this._best.value === undefined || this._best.value == null) {
+          if (this._best.value === undefined || this._best.value === null) {
             this._best.value = evaluation;
           }
 
