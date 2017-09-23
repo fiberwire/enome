@@ -12,7 +12,7 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
 ## enome has three main parts to its evolution system.
 
 * ### `Organism`:
-    * an `Organism` is just an object that contains a `genotype` and a `phenotype` and has the ability to interact with an `Environment`.
+    * an `Organism` is an object that contains a `genotype` and a `phenotype` and has the ability to interact with an `Environment`.
         * a `genotype`, in this case, is a `Genome`, which contains genetic information that you use to create a `phenotype`.
         * a `phenotype`, in this case, is whatever kind of object you would like to evolve.
     * `Organisms` record data as they are interacting with the `Environment`.
@@ -20,7 +20,7 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
         * You specify the function that determines the `fitness` of the `Organism` based on its data.
     
 * ### `Environment`:
-    * an `Environment` is essentially just an asynchronous state container.
+    * an `Environment` is essentially an asynchronous state container.
     * You interact with an `Environment` by sending `IStateUpdates` to its `state` property.
     * an `Environment` may have multiple `Organisms` interacting with it at a time.
     * `Environments` have an `interactionRate` property which you can set that limits how often it accepts `IStateUpdates` (think of it like a frame rate).
@@ -36,7 +36,6 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
                     * `sub` will substitute the value for a new randomly generated one.
                     * `avg` will average the value with a new randomly generated one.
                 * `Randomize` will replace the genome with a new randomly generated one (using the same options).
-                * `Keep` will just send the organism back into the environment. This is good for when you get a genotype with a very good fitness and you don't want it to be mutated which has the possibility of making it worse.
             * By default, `Populations` will choose between the different update methods randomly based on an array of weights that you provide.
                 
 
@@ -44,12 +43,12 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
 
 ## Underlying the evolution system are `Genomes` and `Genes`:
 * ### `Genome`:
-    * A `Genome` is just a container for genetic information, or a `sequence`.
-    * At its heart, a `sequence` is just an array of numbers between 0 and 1.
+    * A `Genome` is a container for genetic information, or a `sequence`.
+    * At its heart, a `sequence` is an array of numbers between 0 and 1.
     * When created, the `Genome` takes that `sequence` and produces `Genes` from it.
     * `Genome` provides the `g` property which allows you to get the next `Gene` in the list, so you can consume them one by one in a queue-like manner.
 * ### `Gene`:
-    * A `Gene` is just a container for a `value` between 0 and 1.
+    * A `Gene` is a container for a `value` between 0 and 1.
     * `Genes` give you methods that interpolate their value into a value that is useful when creating the `phenotype`.
         * `int: number` - gives you an integer, for when you need whole numbers, such as the number of legs an insect should have.
             ```
