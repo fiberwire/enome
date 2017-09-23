@@ -77,7 +77,8 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
                 diet: genome.g.element(["blood", "insects", "grass"])
             }
             ```
-        * all together:
+    ### Insect phenotype creation example:
+
         ```
         // define your phenotype
         interface Insect {
@@ -96,7 +97,7 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
             diets: string[]; // could use an enum instead of strings, but for this example, I'm trying to keep it simple
         }
 
-        // define the function that translates a genome into an insect
+        // define the function that translates your genotype into your phenotype
         createPhenotype(genome: Genome<InsectOptions>): Insect {
 
             // determine number of legs
