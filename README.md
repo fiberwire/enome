@@ -12,16 +12,19 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
 ## enome has three main parts to its evolution system.
 
 * ### `Organism`:
-    * an `Organism` is an object that contains a `genotype` and a `phenotype` and has the ability to interact with an `Environment`.
+    * an `Organism` is an object that contains a `genotype` and a `phenotype`, has the ability to transform a `genotype` into a `phenotype`, and has the ability to interact with an `Environment`.
         * a `genotype`, in this case, is a `Genome`, which contains genetic information that you use to create a `phenotype`.
         * a `phenotype`, in this case, is whatever kind of object you would like to evolve.
     * `Organisms` record data as they are interacting with the `Environment`.
         * Once the `Organism` has done a specified number of `interactions`, it evaluates itself based on the data it collected and sends the evaluation to the `Population`, which will decide how to evolve the organism.
-        * You specify the function that determines the `fitness` of the `Organism` based on its data.
+        * You specify the function that determines the `fitness` of the `Organism` based on its collected data.
     
 * ### `Environment`:
     * an `Environment` is essentially an asynchronous state container.
-    * You interact with an `Environment` by sending `IStateUpdates` to its `state` property.
+    * In order to interact with an `Environment`:
+        * subscribe to its `states` observable to receive state updates
+        * create `interactions` based on the state updates received
+        * call its `nextInteraction(interaction)` method to send interactions.
     * an `Environment` may have multiple `Organisms` interacting with it at a time.
     * `Environments` have an `interactionRate` property which you can set that limits how often it accepts `IStateUpdates` (think of it like a frame rate).
         * `Environments` deal with multiple asynchronous sources of incoming `IStateUpdates` by buffering them over time based on the `interactionRate` and then randomly choosing between them. The `Environment` will only accept state updates that are based on the current `state`, otherwise state updates could happen out of order (think of it like an asynchronous way of having a shared order of events even though everything is happening out of order, technically).
@@ -78,7 +81,7 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
             }
             ```
         * There are more methods for different types of values 
-        
+
     ### Insect phenotype creation example:
 
         ```
@@ -150,6 +153,7 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
         // create an insect based on the genotype
         const insect = createPhenotype(genotype);
         ```
+    For mor examples, see the `src/examples` folder
 
 How enome generates `Genomes`:
 - Generates a `sequence` of `values` between 0 and 1.
