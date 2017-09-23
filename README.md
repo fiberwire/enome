@@ -7,7 +7,7 @@
 ### This library is written in TypeScript, and I recommend using it with a TypeScript project.
 
 ## What is enome?
-enome is a javascript/typescript library that allows you to asynchronously (using rxjs) evolve any kind of object you can think of.
+enome is a javascript/typescript library that allows you to asynchronously (using rxjs) evolve any kind of object you can think of on node and in the browser.
 
 ## enome has three main parts to its evolution system.
 
@@ -40,6 +40,8 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
             * By default, `Populations` will choose between the different update methods randomly based on an array of weights that you provide.
                 
 
+    
+
 ## Underlying the evolution system are `Genomes` and `Genes`:
 * ### `Genome`:
     * A `Genome` is just a container for genetic information, or a `sequence`.
@@ -48,55 +50,111 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
     * `Genome` provides the `g` property which allows you to get the next `Gene` in the list, so you can consume them one by one in a queue-like manner.
 * ### `Gene`:
     * A `Gene` is just a container for a `value` between 0 and 1.
-    * `Genes` give you methods that interpolate their value into a value that it useful when creating the `phenotype`.
-        * for instance, say your phenotype is a first and last name:
+    * `Genes` give you methods that interpolate their value into a value that is useful when creating the `phenotype`.
+        * `int: number` - gives you an integer, for when you need whole numbers, such as the number of legs an insect should have.
+            ```
+            const insect = {
+                legs: genome.g.int(minLegs, maxLegs)
+            }
+            ```
+        * `float: number` - gives you a floating point number, for when you need decimal numbers, such as how long an insects legs should be.
+            ```
+            const insect = {
+                ...
+                legLength: genome.g.float(minLegLength, maxLegLength)
+            }
+            ```
+        * `bool` - true or false, for when your phenotype has binary properties, such as whether an insect can swim/survive in water.
+            ```
+            const insect = {
+                ...
+                aquatic: genome.g.bool()
+            }
+            ```
+        * `element` - picks an element out of an array, for when you need to choose between different options, such as what an insect eats.
+            ```
+            const insect = {
+                ...
+                diet: genome.g.element(["blood", "insects", "grass"])
+            }
+            ```
+        * all together:
         ```
-        interface Name {
-            first: string;
-            last: string;
+        // define your phenotype
+        interface Insect {
+            legs: number;
+            legLength: number;
+            aquatic: boolean;
+            diet: string
         }
 
-        interface NameOptions extends IGenomeOptions {
-            firstMinLength: number;
-            firstMaxLength: number;
-            lastMinLength: number;
-            lastMaxLength: number;
+        //define your genotype
+        interface InsectOptions extends IGenomeOptions {
+            minLegs: number;
+            maxLegs: number;
+            minLegLength: number;
+            maxLegLength: number;
+            diets: string[]; // could use an enum instead of strings, but for this example, I'm trying to keep it simple
         }
 
-        public createPhenotype(genome: Genome<NameOptions>): Name {
+        // define the function that translates a genome into an insect
+        createPhenotype(genome: Genome<InsectOptions>): Insect {
 
-            // determine length of first name
-            const firstLength = genome.g.int(
-                genome.options.firstMinLength, 
-                genome.options.firstMaxLength
+            // determine number of legs
+            const legs = genome.g.int(
+                genome.options.minLegs, 
+                genome.options.maxLegs
             );
 
-            // determine length of last name
-            const lastLength = genome.g.int(
-                genome.options.lastMinLength, 
-                genome.options.lastMaxLength
+            // determine length of legs
+            const legLength = genome.g.float(
+                genome.options.minLegLength,
+                genome.options.maxLegLength
             );
 
-            //create first name
-            const first = _.range(firstLength)
-                .map(i => genome.g.letter())
-                .reduce((first, letter) => `${first}${letter}`)
+            // determine whether aquatic
+            const aquatic = genome.g.bool()
 
-            // create last name
-            const last = _.range(lastLength)
-                .map(i => genome.g.letter())
-                .reduce((last, letter) => `${last}${letter}`)
+            // determine diet
+            const diet = genome.g.element(
+                genome.options.diets
+            );
 
-            return { first, last };
+            return { 
+                legs, 
+                legLength, 
+                aquatic, 
+                diet 
+            };
         }
-        
+
+        // define the parameters of your insects
+        const insectOptions = {
+            genomeLength: 4, // the total number of genes needed to create an insect
+            minLegs: 6,
+            maxLegs: 100,
+            minLegLength: 1,
+            maxLegLength: 30,
+            diets: [
+                "blood",
+                "insects",
+                "grass"
+            ]
+        }
+
+        // generate a random insect genome
+        const genotype = new Genome(insectOptions);
+
+        // create an insect based on the genotype
+        const insect = createPhenotype(genotype);
         ```
 
 How enome generates `Genomes`:
 - Generates a `sequence` of `values` between 0 and 1.
 - Groups those `values` into `Genes` by averaging them together
-  - This results in the `Genome` being less sensitive to `mutation`
-  - The sensitivity is customizable by varying the number of `values` that go into each `Gene`
+  - This results in the `Genome` being less sensitive to mutation
+  - The sensitivity is customizable by varying the `geneLength`, or the number of `values` that go into each `Gene`
+  - If you average enough random numbers between 0 and 1 together, you're very statisically likely to get a gene with a value of 0.5, which would mean every genome generated would be dead in the middle of all of the possible combinations. To solve this problem, when a genome is generated, it is generated as if the `geneLength` is 1, then it takes those values and copies them `geneLength` times. For instance, if you had a `geneLength` of 3, you might get something like this: `[0.1, 0.1, 0.1, 0.2, 0.2, 0.2, 0.3, 0.3, 0.3]` as your sequence. When these sequence values are averaged together, you get gene values that look like `[0.1, 0.2, 0.3]`, but each value in the sequence is still individually mutable, and only contributes to 1/3 of a gene. 
 - Groups those `Genes` into a `Genome`
   - `Genome` exposes a property called `g` that allows you to get the next `Gene` in the `Genome`.
     - This allows you to pass the `Genome` around, consuming its `Genes` as you need them.
