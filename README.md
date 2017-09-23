@@ -153,7 +153,7 @@ enome is a javascript/typescript library that allows you to asynchronously (usin
         // create an insect based on the genotype
         const insect = createPhenotype(genotype);
         ```
-    For mor examples, see the `src/examples` folder
+    For more examples, see the `src/examples` folder
 
 How enome generates `Genomes`:
 - Generates a `sequence` of `values` between 0 and 1.
