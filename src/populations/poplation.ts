@@ -63,15 +63,33 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
   }
 
   public kill(spec: ISpecimen<Gen, Pheno>) {
+    this.reproduceNext();
     this.specimens.remove(spec);
   }
 
   public killAt(index: number) {
+    this.reproduceNext();
     this.specimens.removeAt(index);
   }
 
   public keep(spec: ISpecimen<Gen, Pheno>) {
+    this.reproduceNext();
     this.specimens.remove(spec);
+  }
+
+  public keepAt(index: number) {
+    this.reproduceNext();
+    this.specimens.removeAt(index);
+  }
+
+  public randomize(spec: ISpecimen<Gen, Pheno>) {
+    this.randomizeNext();
+    this.specimens.remove(spec);
+  }
+
+  public randomizeAt(index: number) {
+    this.randomizeNext();
+    this.specimens.removeAt(index);
   }
 
   private reproduceNext() {
