@@ -12,6 +12,18 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
   public specimens: ReactiveCollection<ISpecimen<Gen, Pheno>>;
   public parents: ReactiveCollection<ISpecimen<Gen, Pheno>>;
 
+  private get newGenome(): Genome<Gen> {
+    return new Genome(this.options.genOptions);
+  }
+
+  private get newSpecimen(): ISpecimen<Gen, Pheno> {
+    return this.createSpecimen(this.newGenome);
+  }
+
+  private get newOffspring(): ISpecimen<Gen, Pheno> {
+    return this.reproduceSpecimen();
+  }
+
   constructor(public options: IPopulationOptions<Gen>) {
     const { specimens, parents } = options;
     this.specimens = this.initializeSpecimens(options);
