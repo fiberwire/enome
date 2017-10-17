@@ -136,6 +136,13 @@ export class ReactiveCollection<T> {
     return this;
   }
 
+  public pushMap(value: T, map: (value: T) => T): ReactiveCollection<T> {
+    this.pushedSubject.next(value);
+    const v = this.value;
+    this.value = v.map(map);
+    return this;
+  }
+
   public pop(value: T): T {
     const v = this.value;
     const popped = v.pop();
@@ -157,17 +164,29 @@ export class ReactiveCollection<T> {
     return this;
   }
 
-  public remove(value: T): ReactiveCollection<T> {
+  public remove(value: T): { removed: T, rest: ReactiveCollection<T> } {
     const v = this.value;
-    const removed = v.splice(v.indexOf(value));
+    const removed = v.splice(v.indexOf(value))[0];
     this.value = v;
-    this.removedSubject.next(removed[0]);
-    return this;
+    this.removedSubject.next(removed);
+    return { removed, rest: this };
   }
 
-  public removeAt(i: number): ReactiveCollection<T> {
-    this.remove(this.value[i]);
-    return this;
+  public removeMap(value: T, map: (value: T) => T): { removed: T, rest: ReactiveCollection<T> } {
+    const v = this.value;
+    const removed = v.splice(v.indexOf(value))[0];
+    this.value = v.map(map);
+    this.removedSubject.next(removed);
+
+    return { removed, rest: this };
+  }
+
+  public removeAt(i: number): { removed: T, rest: ReactiveCollection<T> } {
+    return this.remove(this.value[i]);
+  }
+
+  public removeAtMap(i: number, map: (value: T) => T): { removed: T, rest: ReactiveCollection<T> } {
+    return this.removeMap(this.value[i], map);
   }
 
   //////// DON'T ROTATE INSIDE OF A SUBSCRIBER TO ROTATE
