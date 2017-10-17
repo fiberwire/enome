@@ -57,7 +57,7 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
     parents,
     genOptions,
   }: IPopulationOptions<Gen>): ReactiveCollection<ISpecimen<Gen, Pheno>> {
-    const specs = _.range(parents).map(i => this.createSpecimen(genOptions));
+    const specs = _.range(parents).map(i => this.newSpecimen);
 
     return new ReactiveCollection(specs);
   }
