@@ -16,7 +16,6 @@ import { IReversible } from './interfaces/reversible';
 import { ISpecimen } from './interfaces/specimen';
 import { clone } from './operators/clone';
 import { cloneEvaluation } from './operators/cloneEvaluation';
-import { cloneOrganism } from './operators/cloneOrganism';
 import { concat } from './operators/concat';
 import { fill } from './operators/fill';
 import { fillRandom } from './operators/fill-random';
@@ -40,14 +39,10 @@ import { IArtificialOptions } from './options/artificial-options';
 import { IEnvironmentOptions } from './options/environment-options';
 import { IGenomeOptions } from './options/genome-options';
 import { IMutateOptions } from './options/mutate-options';
-import { IOrganismOptions } from './options/organism-options';
 import { IPopulationOptions } from './options/population-options';
 import { IReproduceOptions } from './options/reproduce-options';
-import { Organism } from './organisms/organism';
-import { Population } from './populations/population';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
-import { Simulation } from './simulation/simulation';
 
 // options
 export {
@@ -56,8 +51,7 @@ export {
   IMutateOptions,
   IReproduceOptions,
   IPopulationOptions,
-  IEnvironmentOptions,
-  IOrganismOptions,
+  IEnvironmentOptions
 };
 
 // genotypes
@@ -67,7 +61,6 @@ export { Genome, Gene };
 export {
   clone,
   cloneEvaluation,
-  cloneOrganism,
   concat,
   fill,
   fillRandom,
@@ -100,7 +93,7 @@ export {
 };
 
 // evolution stuff
-export { ArtificialSelection, Organism, Population, Simulation };
+export { ArtificialSelection };
 
 // enums
 export {
