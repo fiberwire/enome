@@ -4,7 +4,6 @@ import {
   IEvaluation,
   IGenomeOptions,
   IPopulationOptions,
-  Organism,
 } from '../index';
 
 export function cloneEvaluation<
