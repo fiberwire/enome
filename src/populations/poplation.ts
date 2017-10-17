@@ -26,8 +26,9 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
 
   constructor(public options: IPopulationOptions<Gen>) {
     const { specimens, parents } = options;
-    this.specimens = this.initializeSpecimens(options);
+
     this.parents = this.initializeParents(options);
+    this.specimens = this.initializeSpecimens(options);
   }
 
   public abstract createSpecimen(gen: Gen | Genome<Gen>): ISpecimen<Gen, Pheno>;
