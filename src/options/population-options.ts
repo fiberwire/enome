@@ -1,15 +1,7 @@
-import { FitnessObjective, IMutateOptions } from '../index';
+import { IGenomeOptions } from '../index';
 
-export interface IPopulationOptions {
-  generations: number;
-  mutate?: IMutateOptions;
-  objective: FitnessObjective;
-  logInterval?: number;
-  logProgress?: boolean;
-  size: number;
-  topPercent?: number;
-  updateWeights?: {
-    randomize: number;
-    reproduce: number;
-  };
+export interface IPopulationOptions<Gen extends IGenomeOptions> {
+  parents: number;
+  specimens: number;
+  genOptions: Gen;
 }
