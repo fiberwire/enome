@@ -74,12 +74,14 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
 
   public keep(spec: ISpecimen<Gen, Pheno>) {
     this.reproduceNext();
-    this.specimens.remove(spec);
+    const { removed } = this.specimens.remove(spec);
+    this.parents.pushMap(removed, parent => parent.ageSpecimen(1))
   }
 
   public keepAt(index: number) {
     this.reproduceNext();
-    this.specimens.removeAt(index);
+    const { removed } = this.specimens.removeAt(index);
+    this.parents.pushMap(removed, parent => parent.ageSpecimen(1))
   }
 
   public randomize(spec: ISpecimen<Gen, Pheno>) {
