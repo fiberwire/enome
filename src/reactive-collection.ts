@@ -25,6 +25,10 @@ export class ReactiveCollection<T> {
 
   private array: ReactiveProperty<T[]>;
 
+  public get length() {
+    return this.array.value.length
+  }
+
   public get value() {
     return this.array.value;
   }
