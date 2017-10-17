@@ -33,8 +33,8 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
 
   public abstract createSpecimen(gen: Genome<Gen>): ISpecimen<Gen, Pheno>;
 
-  public reproduceSpecimen(): ISpecimen<Gen, Pheno> {
-    const parentGens = this.parents.mapCollection(spec => spec.genotype).value;
+  public reproduceSpecimen(parents: Array<ISpecimen<Gen, Pheno>> = this.parents.value): ISpecimen<Gen, Pheno> {
+    const parentGens = parents.map(spec => spec.genotype);
     const offspring = reproduceManyToOne(parentGens);
 
     return this.createSpecimen(offspring);
