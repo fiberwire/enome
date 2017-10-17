@@ -56,4 +56,20 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
   public keep(spec: ISpecimen<Gen, Pheno>) {
     this.specimens.remove(spec);
   }
+
+  private reproduceNext() {
+    return this.specimens.removed
+      .take(1)
+      .subscribe(removed => {
+        this.specimens.push(this.newOffspring);
+      });
+  }
+
+  private randomizeNext() {
+    return this.specimens.removed
+      .take(1)
+      .subscribe(removed => {
+        this.specimens.push(this.newSpecimen);
+      });
+  }
 }
