@@ -78,7 +78,7 @@ export abstract class Selection<
     this.parents = this.initializeParents(options);
     this.specimens = this.initializeSpecimens(options);
 
-    this.subs.add(this.removeOldParents()).add(this.incrementGeneration());
+    this.subs.add(this.incrementGeneration());
 
     this.start();
   }

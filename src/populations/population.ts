@@ -36,8 +36,6 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
 
     this.parents = this.initializeParents(options);
     this.specimens = this.initializeSpecimens(options);
-
-    this.subs.add(this.removeOldParents());
   }
 
   public abstract createSpecimen(gen: Genome<Gen>): ISpecimen<Gen, Pheno>;
