@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { Subscription } from 'rxjs';
 import {
   Genome,
   IGenomeOptions,
@@ -12,16 +13,22 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
   public specimens: ReactiveCollection<ISpecimen<Gen, Pheno>>;
   public parents: ReactiveCollection<ISpecimen<Gen, Pheno>>;
 
-  private get newGenome(): Genome<Gen> {
+  public subs = new Subscription();
+
+  public get newGenome(): Genome<Gen> {
     return new Genome(this.options.genOptions);
   }
 
-  private get newSpecimen(): ISpecimen<Gen, Pheno> {
+  public get newSpecimen(): ISpecimen<Gen, Pheno> {
     return this.createSpecimen(this.newGenome);
   }
 
-  private get newOffspring(): ISpecimen<Gen, Pheno> {
+  public get newOffspring(): ISpecimen<Gen, Pheno> {
     return this.reproduceSpecimen();
+  }
+
+  public get oldestParent(): ISpecimen<Gen, Pheno> {
+    return _.maxBy(this.parents.value, p => p.age);
   }
 
   constructor(public options: IPopulationOptions<Gen>) {
@@ -29,11 +36,15 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
 
     this.parents = this.initializeParents(options);
     this.specimens = this.initializeSpecimens(options);
+
+    this.subs.add(this.removeOldParents());
   }
 
   public abstract createSpecimen(gen: Genome<Gen>): ISpecimen<Gen, Pheno>;
 
-  public reproduceSpecimen(parents: Array<ISpecimen<Gen, Pheno>> = this.parents.value): ISpecimen<Gen, Pheno> {
+  public reproduceSpecimen(
+    parents: Array<ISpecimen<Gen, Pheno>> = this.parents.value
+  ): ISpecimen<Gen, Pheno> {
     const parentGens = parents.map(spec => spec.genotype);
     const offspring = reproduceManyToOne(parentGens);
 
@@ -42,7 +53,6 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
 
   public initializeSpecimens({
     specimens,
-    genOptions,
   }: IPopulationOptions<Gen>): ReactiveCollection<ISpecimen<Gen, Pheno>> {
     if (this.parents !== undefined && this.parents.length > 0) {
       this.parents = this.initializeParents(this.options);
@@ -55,58 +65,65 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
 
   public initializeParents({
     parents,
-    genOptions,
   }: IPopulationOptions<Gen>): ReactiveCollection<ISpecimen<Gen, Pheno>> {
     const specs = _.range(parents).map(i => this.newSpecimen);
 
     return new ReactiveCollection(specs);
   }
 
+  public removeOldParents() {
+    return this.parents
+      .filter(parents => parents.length > this.options.parents)
+      .subscribe(parents => {
+        const n = parents.length - this.options.parents;
+
+        for (let i = 0; i < n; i++) {
+          this.parents.remove(this.oldestParent);
+        }
+      });
+  }
+
   public kill(spec: ISpecimen<Gen, Pheno>) {
-    this.reproduceNext();
+    this.subs.add(this.reproduceNext());
     this.specimens.remove(spec);
   }
 
   public killAt(index: number) {
-    this.reproduceNext();
+    this.subs.add(this.reproduceNext());
     this.specimens.removeAt(index);
   }
 
   public keep(spec: ISpecimen<Gen, Pheno>) {
-    this.reproduceNext();
+    this.subs.add(this.reproduceNext());
     const { removed } = this.specimens.remove(spec);
-    this.parents.pushMap(removed, parent => parent.ageSpecimen(1))
+    this.parents.pushMap(removed, parent => parent.ageSpecimen(1));
   }
 
   public keepAt(index: number) {
-    this.reproduceNext();
+    this.subs.add(this.reproduceNext());
     const { removed } = this.specimens.removeAt(index);
-    this.parents.pushMap(removed, parent => parent.ageSpecimen(1))
+    this.parents.pushMap(removed, parent => parent.ageSpecimen(1));
   }
 
   public randomize(spec: ISpecimen<Gen, Pheno>) {
-    this.randomizeNext();
+    this.subs.add(this.randomizeNext());
     this.specimens.remove(spec);
   }
 
   public randomizeAt(index: number) {
-    this.randomizeNext();
+    this.subs.add(this.randomizeNext());
     this.specimens.removeAt(index);
   }
 
   private reproduceNext() {
-    return this.specimens.removed
-      .take(1)
-      .subscribe(removed => {
-        this.specimens.push(this.newOffspring);
-      });
+    return this.specimens.removed.take(1).subscribe(removed => {
+      this.specimens.push(this.newOffspring);
+    });
   }
 
   private randomizeNext() {
-    return this.specimens.removed
-      .take(1)
-      .subscribe(removed => {
-        this.specimens.push(this.newSpecimen);
-      });
+    return this.specimens.removed.take(1).subscribe(removed => {
+      this.specimens.push(this.newSpecimen);
+    });
   }
 }

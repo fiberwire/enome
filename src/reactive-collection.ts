@@ -26,7 +26,7 @@ export class ReactiveCollection<T> {
   private array: ReactiveProperty<T[]>;
 
   public get length() {
-    return this.array.value.length
+    return this.array.value.length;
   }
 
   public get value() {
@@ -164,7 +164,7 @@ export class ReactiveCollection<T> {
     return this;
   }
 
-  public remove(value: T): { removed: T, rest: ReactiveCollection<T> } {
+  public remove(value: T): { removed: T; rest: ReactiveCollection<T> } {
     const v = this.value;
     const removed = v.splice(v.indexOf(value))[0];
     this.value = v;
@@ -172,7 +172,10 @@ export class ReactiveCollection<T> {
     return { removed, rest: this };
   }
 
-  public removeMap(value: T, map: (value: T) => T): { removed: T, rest: ReactiveCollection<T> } {
+  public removeMap(
+    value: T,
+    map: (value: T) => T
+  ): { removed: T; rest: ReactiveCollection<T> } {
     const v = this.value;
     const removed = v.splice(v.indexOf(value))[0];
     this.value = v.map(map);
@@ -181,11 +184,14 @@ export class ReactiveCollection<T> {
     return { removed, rest: this };
   }
 
-  public removeAt(i: number): { removed: T, rest: ReactiveCollection<T> } {
+  public removeAt(i: number): { removed: T; rest: ReactiveCollection<T> } {
     return this.remove(this.value[i]);
   }
 
-  public removeAtMap(i: number, map: (value: T) => T): { removed: T, rest: ReactiveCollection<T> } {
+  public removeAtMap(
+    i: number,
+    map: (value: T) => T
+  ): { removed: T; rest: ReactiveCollection<T> } {
     return this.removeMap(this.value[i], map);
   }
 

@@ -19,12 +19,37 @@ export class Genome<T extends IGenomeOptions> {
 
   constructor(
     public options: T,
-    public sequence: number[] = pad(
-      weights(options.genomeLength),
-      options.geneLength
-    ),
-    public idLength: number = Math.min(13, options.genomeLength)
+    public sequence?: number[],
+    public idLength: number = Math.max(
+      10,
+      Math.round(Math.sqrt(options.genomeLength))
+    )
   ) {
+    // const { geneLength, refill } = options;
+
+    // if (geneLength === undefined) {
+    //   this.options.geneLength = 1;
+    // }
+
+    // if (refill === undefined) {
+    //   this.options.refill = GenomeRefill.extend;
+    // }
+
+    const defaults = {
+      geneLength: 1,
+      refill: GenomeRefill.extend,
+    };
+
+    // tslint:disable-next-line:no-object-literal-type-assertion
+    this.options = { ...defaults, ...this.options as object } as T;
+
+    if (sequence === undefined) {
+      this.sequence = pad(
+        weights(options.genomeLength),
+        this.options.geneLength
+      );
+    }
+
     this.genes = this.freshGenes;
   }
 
