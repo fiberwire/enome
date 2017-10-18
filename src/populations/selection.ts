@@ -26,15 +26,7 @@ export abstract class Selection<
     const { objective } = this.options;
 
     return this.parents
-      .map(parents => {
-        switch (objective) {
-          case FitnessObjective.minimize:
-            return _.minBy(parents, p => p.fitness);
-
-          case FitnessObjective.maximize:
-            return _.maxBy(parents, p => p.fitness);
-        }
-      })
+      .map(parents => this.bestParent)
       .distinctUntilChanged();
   }
 
