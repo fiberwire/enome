@@ -105,6 +105,7 @@ export abstract class Selection<
             } else {
               this.kill(spec);
             }
+            break;
 
           case FitnessObjective.maximize:
             if (spec.fitness > this.worstParent.fitness) {
@@ -112,6 +113,7 @@ export abstract class Selection<
             } else {
               this.kill(spec);
             }
+            break;
         }
       });
   }
