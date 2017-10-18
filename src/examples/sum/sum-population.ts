@@ -1,9 +1,9 @@
 import { Genome, Population, Selection } from '../../index';
 import { ISumGenOptions } from './options';
-import SumSpecimen from './sum-specimen';
+import SumOrganism from './sum-organism';
 
 export default class SumPopulation extends Selection<ISumGenOptions, number[]> {
-  public createSpecimen(gen: Genome<ISumGenOptions>): SumSpecimen {
-    return new SumSpecimen(gen);
+  public createSpecimen(gen: Genome<ISumGenOptions>): SumOrganism {
+    return new SumOrganism(gen);
   }
 }
