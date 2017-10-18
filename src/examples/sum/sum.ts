@@ -11,10 +11,10 @@ const options: ISumPopOptions = {
     min: 1,
     target: 1337,
   },
-  generations: 100,
+  generations: 10,
   objective: FitnessObjective.minimize,
-  parents: 10,
-  specimens: 40,
+  parents: 2,
+  specimens: 5,
 };
 
 const pop = new SumPopulation(options);
