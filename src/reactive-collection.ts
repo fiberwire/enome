@@ -166,8 +166,8 @@ export class ReactiveCollection<T> {
 
   public remove(value: T): { removed: T; rest: ReactiveCollection<T> } {
     const v = this.value;
-    const removed = v.splice(v.indexOf(value))[0];
-    this.value = v;
+    const removed = v[v.indexOf(value)];
+    this.value = _.without(v, removed);
     this.removedSubject.next(removed);
     return { removed, rest: this };
   }
@@ -177,8 +177,8 @@ export class ReactiveCollection<T> {
     map: (value: T) => T
   ): { removed: T; rest: ReactiveCollection<T> } {
     const v = this.value;
-    const removed = v.splice(v.indexOf(value))[0];
-    this.value = v.map(map);
+    const removed = v[v.indexOf(value)];
+    this.value = _.without(v, removed).map(map);
     this.removedSubject.next(removed);
 
     return { removed, rest: this };
