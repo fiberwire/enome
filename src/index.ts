@@ -12,6 +12,8 @@ import { Gene } from './genotypes/gene';
 import { Genome } from './genotypes/genome';
 import { IEvaluation } from './interfaces/evaluation';
 import { IEvolvable } from './interfaces/evolvable';
+import { IGenetic } from './interfaces/genetic';
+import { IOrganism } from './interfaces/organism';
 import { IReversible } from './interfaces/reversible';
 import { ISpecimen } from './interfaces/specimen';
 import { clone } from './operators/clone';
@@ -41,6 +43,9 @@ import { IGenomeOptions } from './options/genome-options';
 import { IMutateOptions } from './options/mutate-options';
 import { IPopulationOptions } from './options/population-options';
 import { IReproduceOptions } from './options/reproduce-options';
+import { ISelectionOptions } from './options/selection-options';
+import { Population } from './populations/population';
+import { Selection } from './populations/selection';
 import { ReactiveCollection } from './reactive-collection';
 import { ReactiveProperty } from './reactive-property';
 
@@ -51,7 +56,8 @@ export {
   IMutateOptions,
   IReproduceOptions,
   IPopulationOptions,
-  IEnvironmentOptions
+  IEnvironmentOptions,
+  ISelectionOptions,
 };
 
 // genotypes
@@ -84,16 +90,18 @@ export { reproduce, reproduceManyToMany, reproduceManyToOne };
 // interfaces
 export {
   IEvaluation,
+  IGenetic,
   IEvolvable,
   IArtificialAState,
   IArtificialCmd,
   IArtificialEState,
   IReversible,
   ISpecimen,
+  IOrganism,
 };
 
 // evolution stuff
-export { ArtificialSelection };
+export { ArtificialSelection, Population, Selection };
 
 // enums
 export {
