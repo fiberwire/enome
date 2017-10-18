@@ -2,11 +2,11 @@ import * as _ from 'lodash';
 import { Genome, IOrganism, ISpecimen } from '../../index';
 import { ISumGenOptions } from './options';
 
-export default class SumSpecimen
+export default class SumOrganism
   implements IOrganism<ISumGenOptions, number[]> {
   public fitness: number;
   public evaluated: boolean = false;
-  public age: number;
+  public age: number = 0;
 
   public phenotype: number[];
 
@@ -32,7 +32,7 @@ export default class SumSpecimen
     return _.range(length).map(i => g.g.int(min, max));
   }
 
-  public ageSpecimen(n: number = 1): SumSpecimen {
+  public ageSpecimen(n: number = 1): SumOrganism {
     this.age += n;
     return this;
   }
