@@ -82,46 +82,34 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
   }
 
   public kill(spec: ISpecimen<Gen, Pheno>) {
-    this.subs.add(this.reproduceNext());
     this.specimens.remove(spec);
+    this.specimens.push(this.newOffspring);
   }
 
   public killAt(index: number) {
-    this.subs.add(this.reproduceNext());
     this.specimens.removeAt(index);
+    this.specimens.push(this.newOffspring);
   }
 
   public keep(spec: ISpecimen<Gen, Pheno>) {
-    this.subs.add(this.reproduceNext());
     const { removed } = this.specimens.remove(spec);
     this.parents.pushMap(removed, parent => parent.ageSpecimen(1));
+    this.specimens.push(this.newOffspring);
   }
 
   public keepAt(index: number) {
-    this.subs.add(this.reproduceNext());
     const { removed } = this.specimens.removeAt(index);
     this.parents.pushMap(removed, parent => parent.ageSpecimen(1));
+    this.specimens.push(this.newOffspring);
   }
 
   public randomize(spec: ISpecimen<Gen, Pheno>) {
-    this.subs.add(this.randomizeNext());
     this.specimens.remove(spec);
+    this.specimens.push(this.newSpecimen);
   }
 
   public randomizeAt(index: number) {
-    this.subs.add(this.randomizeNext());
     this.specimens.removeAt(index);
-  }
-
-  private reproduceNext() {
-    return this.specimens.removed.take(1).subscribe(removed => {
-      this.specimens.push(this.newOffspring);
-    });
-  }
-
-  private randomizeNext() {
-    return this.specimens.removed.take(1).subscribe(removed => {
-      this.specimens.push(this.newSpecimen);
-    });
+    this.specimens.push(this.newSpecimen);
   }
 }
