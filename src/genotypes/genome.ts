@@ -48,7 +48,7 @@ export class Genome<T extends IGenomeOptions> {
   // the longer the genes are, the less sensitive to mutation they are.
   get freshGenes(): Gene[] {
     const genes = _.chunk(this.sequence, this.options.geneLength)
-      .map(n => _.reduce(n, (memo, num) => memo + num, 0) / n.length || 1)
+      .map(n => _.mean(n))
       .map(n => new Gene(n));
     return genes;
   }
