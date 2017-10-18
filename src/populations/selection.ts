@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Scheduler } from 'rxjs';
 import {
   FitnessObjective,
   Genome,
@@ -99,6 +99,9 @@ export abstract class Selection<
     return this.specimens
       .asObservable()
       .takeWhile(s => this.generation < generations)
+      .filter(s => s.length > 0)
+      .observeOn(Scheduler.asap)
+      .subscribeOn(Scheduler.asap)
       .subscribe(specs => {
         const spec = specs[0];
         spec.evaluate();
