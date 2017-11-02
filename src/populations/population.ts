@@ -73,7 +73,7 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
     return new ReactiveCollection(specs);
   }
 
-  public removeOldParents() {
+  public removeOldParents(): Subscription {
     return this.parents
       .filter(parents => parents.length > this.options.parents)
       .subscribe(parents => {
@@ -85,34 +85,34 @@ export abstract class Population<Gen extends IGenomeOptions, Pheno> {
       });
   }
 
-  public kill(spec: ISpecimen<Gen, Pheno>) {
+  public kill(spec: ISpecimen<Gen, Pheno>): void {
     this.specimens.remove(spec);
     this.specimens.push(this.newOffspring);
   }
 
-  public killAt(index: number) {
+  public killAt(index: number): void {
     this.specimens.removeAt(index);
     this.specimens.push(this.newOffspring);
   }
 
-  public keep(spec: ISpecimen<Gen, Pheno>) {
+  public keep(spec: ISpecimen<Gen, Pheno>): void {
     const { removed } = this.specimens.remove(spec);
     this.parents.pushMap(removed, parent => parent.ageSpecimen(1));
     this.specimens.push(this.newOffspring);
   }
 
-  public keepAt(index: number) {
+  public keepAt(index: number): void {
     const { removed } = this.specimens.removeAt(index);
     this.parents.pushMap(removed, parent => parent.ageSpecimen(1));
     this.specimens.push(this.newOffspring);
   }
 
-  public randomize(spec: ISpecimen<Gen, Pheno>) {
+  public randomize(spec: ISpecimen<Gen, Pheno>): void {
     this.specimens.remove(spec);
     this.specimens.push(this.newSpecimen);
   }
 
-  public randomizeAt(index: number) {
+  public randomizeAt(index: number): void {
     this.specimens.removeAt(index);
     this.specimens.push(this.newSpecimen);
   }
