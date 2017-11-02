@@ -6,8 +6,8 @@ import {
   IPopulationOptions,
   ISpecimen,
   ReactiveCollection,
+  reproduceManyToOne,
 } from '../index';
-import { reproduceManyToOne } from '../operators/reproduction/reproduce-many-to-one';
 
 export abstract class Population<Gen extends IGenomeOptions, Pheno> {
   public specimens: ReactiveCollection<ISpecimen<Gen, Pheno>>;
