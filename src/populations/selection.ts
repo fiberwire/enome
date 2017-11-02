@@ -14,7 +14,7 @@ import {
 export abstract class Selection<
   Gen extends IGenomeOptions,
   Pheno
-> extends Population<Gen, Pheno> {
+  > extends Population<Gen, Pheno> {
   public specimens: ReactiveCollection<IOrganism<Gen, Pheno>>;
   public parents: ReactiveCollection<IOrganism<Gen, Pheno>>;
 
@@ -25,9 +25,7 @@ export abstract class Selection<
   public get best(): Observable<IOrganism<Gen, Pheno>> {
     const { objective } = this.options;
 
-    return this.parents
-      .map(parents => this.bestParent)
-      .distinctUntilChanged();
+    return this.parents.map(parents => this.bestParent).distinctUntilChanged();
   }
 
   public get newSpecimen(): IOrganism<Gen, Pheno> {
@@ -85,12 +83,13 @@ export abstract class Selection<
 
   public abstract createSpecimen(gen: Genome<Gen>): IOrganism<Gen, Pheno>;
 
-  public evolve() {
+  public evolve(): Subscription {
     const { objective, generations } = this.options;
+    const { generation, worstParent } = this;
 
     return this.specimens
       .asObservable()
-      .takeWhile(s => this.generation < generations)
+      .takeWhile(s => generation < generations)
       .filter(s => s.length > 0)
       .observeOn(Scheduler.asap)
       .subscribeOn(Scheduler.asap)
@@ -100,7 +99,7 @@ export abstract class Selection<
 
         switch (objective) {
           case FitnessObjective.minimize:
-            if (spec.fitness < this.worstParent.fitness) {
+            if (spec.fitness < worstParent.fitness) {
               this.keep(spec);
             } else {
               this.kill(spec);
@@ -108,7 +107,7 @@ export abstract class Selection<
             break;
 
           case FitnessObjective.maximize:
-            if (spec.fitness > this.worstParent.fitness) {
+            if (spec.fitness > worstParent.fitness) {
               this.keep(spec);
             } else {
               this.kill(spec);
@@ -122,6 +121,8 @@ export abstract class Selection<
     if (!this.evolving) {
       this.evolution = this.evolve();
     }
+
+    return this.evolution;
   }
 
   public stop() {
